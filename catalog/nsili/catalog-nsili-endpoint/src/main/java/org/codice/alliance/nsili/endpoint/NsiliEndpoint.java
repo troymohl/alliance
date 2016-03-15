@@ -120,6 +120,7 @@ public class NsiliEndpoint {
 
         java.util.Properties props = new java.util.Properties();
         props.put("org.omg.CORBA.ORBInitialPort", port);
+        props.put("com.sun.CORBA.POA.ORBPersistentServerPort", port);
         final ORB orb = ORB.init(new String[0], props);
 
         POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
@@ -127,8 +128,8 @@ public class NsiliEndpoint {
         rootPOA.the_POAManager()
                 .activate();
 
-
         library = new LibraryImpl(rootPOA);
+        library.setCatalogFramework(framework);
 
         org.omg.CORBA.Object objref = rootPOA.servant_to_reference(library);
 

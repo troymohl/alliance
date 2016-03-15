@@ -14,6 +14,8 @@
 package org.codice.alliance.nsili.endpoint;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 
 import org.codice.alliance.nsili.common.GIAS.AccessCriteria;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrHelper;
@@ -40,35 +42,42 @@ import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
 import org.omg.PortableServer.POAPackage.WrongPolicy;
 import org.slf4j.LoggerFactory;
 
+import ddf.catalog.CatalogFramework;
+
 public class LibraryImpl extends LibraryPOA {
 
     private static final String LIBRARY_VERSION = "NSILI|1.0";
-    //
-    //    private List<String> manager = Arrays.asList("OrderMgr",
-    //            "CatalogMgr",
-    //            "ProductMgr",
-    //            "DataModelMgr"
-    //            /* Optional :
-    //            "QueryOrderMgr",
-    //            "StandingQueryMgr",
-    //            "CreationMgr",
-    //            "UpdateMgr" */);
+
+        private List<String> managers = Arrays.asList(
+//                "OrderMgr",
+                NsiliManagerType.CATALOG_MGR.getSpecName()
+//                "ProductMgr",
+//                "DataModelMgr"
+                /* Optional :
+                "QueryOrderMgr",
+                "StandingQueryMgr",
+                "CreationMgr",
+                "UpdateMgr" */);
 
     private static final String ENCODING = "UTF-8";
 
     private POA poa;
 
+    private CatalogFramework catalogFramework;
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LibraryImpl.class);
+
     public LibraryImpl(POA poa) {
         this.poa = poa;
     }
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LibraryImpl.class);
+    public void setCatalogFramework(CatalogFramework catalogFramework) {
+        this.catalogFramework = catalogFramework;
+    }
 
     @Override
     public String[] get_manager_types() throws ProcessingFault, SystemFault {
-        // return (String[]) manager.toArray();
-        //No Managers currently implemented, return empty array
-        return new String[] {};
+         return (String[]) managers.toArray();
     }
 
     @Override
@@ -79,6 +88,7 @@ public class LibraryImpl extends LibraryPOA {
 
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
             CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa);
+            catalogMgr.setCatalogFramework(catalogFramework);
             try {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);

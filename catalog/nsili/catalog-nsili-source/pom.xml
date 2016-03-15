@@ -139,6 +139,11 @@
             <version>1.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.5.1-1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -164,7 +169,8 @@
                             platform-util,
                             platform-util-unavailableurls,
                             joda-time,
-                            jts
+                            jts,
+                            antlr4-runtime
                         </Embed-Dependency>
                     </instructions>
                 </configuration>

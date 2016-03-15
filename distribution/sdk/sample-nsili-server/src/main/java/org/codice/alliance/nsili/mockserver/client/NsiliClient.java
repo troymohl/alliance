@@ -123,6 +123,8 @@ public class NsiliClient {
 
     public void initManagers(String[] managers) throws Exception {
         for (String managerType : managers){
+            System.out.println("Attempting to initialize manager type: "+managerType);
+
             if (managerType.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
                 // Get Mandatory Managers
                 System.out.println("Getting CatalogMgr from source...");

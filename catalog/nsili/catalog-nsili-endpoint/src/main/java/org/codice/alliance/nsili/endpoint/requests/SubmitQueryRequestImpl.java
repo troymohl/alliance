@@ -13,6 +13,9 @@
  */
 package org.codice.alliance.nsili.endpoint.requests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codice.alliance.nsili.common.CB.Callback;
 import org.codice.alliance.nsili.common.GIAS.DelayEstimate;
 import org.codice.alliance.nsili.common.GIAS.RequestManager;
@@ -27,21 +30,50 @@ import org.codice.alliance.nsili.common.UCO.State;
 import org.codice.alliance.nsili.common.UCO.Status;
 import org.codice.alliance.nsili.common.UCO.StringDAGListHolder;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
+import org.codice.alliance.nsili.endpoint.ResultDAGConverter;
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ddf.catalog.data.Result;
 
 public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubmitQueryRequestImpl.class);
+
+    private int maxNumReturnedHits = -1;
+
+    private List<Result> queryResults;
+
+    public void setQueryResults(List<Result> queryResults) {
+        this.queryResults = queryResults;
+    }
 
     @Override
     public void set_number_of_hits(int hits)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-        return;
+        this.maxNumReturnedHits = hits;
     }
 
     @Override
-    public State complete_DAG_results(DAGListHolder results)
-            throws ProcessingFault, SystemFault {
-        DAG[] result = null;  //TODO TROY DAGGenerator.generateDAGResultNSILAllView(_orb());
-        results.value = result;
+    public State complete_DAG_results(DAGListHolder results) throws ProcessingFault, SystemFault {
+        if (queryResults != null) {
+            DAG[] result =
+                    new DAG[0];
+            results.value = result;
+        } else {
+            //TODO TROY REMOVE
+            LOGGER.warn("Number of results: "+queryResults.size());
+
+            List<DAG> dags = new ArrayList<>();
+            for (Result result : queryResults) {
+                DAG dag = ResultDAGConverter.convertResult(result, _orb());
+                if (dag != null) {
+                    dags.add(dag);
+                }
+            }
+            results.value = (DAG[])dags.toArray();
+        }
         return State.COMPLETED;
     }
 

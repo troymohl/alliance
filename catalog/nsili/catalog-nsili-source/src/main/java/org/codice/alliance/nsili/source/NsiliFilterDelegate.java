@@ -24,7 +24,7 @@ import org.codice.alliance.nsili.common.GIAS.AttributeInformation;
 
 import ddf.catalog.filter.FilterDelegate;
 
-public class NsiliFilterDelegate extends FilterDelegate<String> {
+public class  NsiliFilterDelegate extends FilterDelegate<String> {
 
     private NsiliFilterFactory filterFactory;
 

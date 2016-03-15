@@ -22,93 +22,27 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>catalog-nsili-common</artifactId>
-    <name>Alliance :: NSILI :: Common</name>
+    <artifactId>catalog-nsili-bqs</artifactId>
+    <name>Alliance :: NSILI :: BQS</name>
     <packaging>jar</packaging>
 
+    <!--
     <properties>
         <findbugs.skip>true</findbugs.skip>
         <checkstyle.skip>true</checkstyle.skip>
     </properties>
+    -->
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ddf.catalog.core</groupId>
-            <artifactId>catalog-core-api-impl</artifactId>
-            <version>${ddf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
-        </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.5.1-1</version>
         </dependency>
-        <dependency>
-            <groupId>org.codice.alliance.nsili</groupId>
-            <artifactId>catalog-nsili-bqs</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ddf.catalog.core</groupId>
-            <artifactId>filter-proxy</artifactId>
-            <version>${ddf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>idlj-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-sources-from-idl</id>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/generated-sources</outputDirectory>
-                            <sources>
-                                <source>
-                                    <additionalArguments>
-                                        <list>-pkgTranslate</list>
-                                        <list>GIAS</list>
-                                        <list>org.codice.alliance.nsili.common.GIAS</list>
-                                        <list>-pkgTranslate</list>
-                                        <list>UCO</list>
-                                        <list>org.codice.alliance.nsili.common.UCO</list>
-                                        <list>-pkgTranslate</list>
-                                        <list>CB</list>
-                                        <list>org.codice.alliance.nsili.common.CB</list>
-                                        <list>-pkgTranslate</list>
-                                        <list>PS</list>
-                                        <list>org.codice.alliance.nsili.common.PS</list>
-                                        <list>-pkgTranslate</list>
-                                        <list>UID</list>
-                                        <list>org.codice.alliance.nsili.common.UID</list>
-                                    </additionalArguments>
-                                    <compatible>false</compatible>
-                                </source>
-                            </sources>
-                        </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
@@ -116,9 +50,6 @@
                 <executions>
                     <execution>
                         <id>antlr</id>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/codice/alliance/nsili/common/grammer/</outputDirectory>
-                        </configuration>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
