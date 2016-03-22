@@ -24,5 +24,10 @@ public enum BqsOperator {
     GTE,
     GT,
     LT,
-    NOT
+    NOT,
+    INTERSECT,
+    OUTSIDE,
+    INSIDE,
+    WITHIN,
+    BEYOND
 }

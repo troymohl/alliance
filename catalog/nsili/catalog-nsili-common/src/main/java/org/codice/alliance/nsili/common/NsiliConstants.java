@@ -126,7 +126,7 @@ public class NsiliConstants {
 
     public static final String DATE_TIME_DECLARED = "dateTimeDeclared";
 
-    public static final String PRODUCT_URL = "productUrl";
+    public static final String PRODUCT_URL = "productURL";
 
     public static final String CLASSIFICATION = "classification";
 

@@ -57,7 +57,7 @@ public class TestNsiliLibraryImpl {
 
         //Right now no managers implemented, so we should have empty array
         assertThat(managerTypes, notNullValue());
-        assertThat(managerTypes.length, is(0));
+        assertThat(managerTypes.length, is(1));
     }
 
     @Test

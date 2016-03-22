@@ -57,12 +57,12 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
 
     @Override
     public State complete_DAG_results(DAGListHolder results) throws ProcessingFault, SystemFault {
-        if (queryResults != null) {
+        if (queryResults == null) {
             DAG[] result =
                     new DAG[0];
             results.value = result;
         } else {
-            //TODO TROY REMOVE
+            //TODO REMOVE
             LOGGER.warn("Number of results: "+queryResults.size());
 
             List<DAG> dags = new ArrayList<>();
@@ -98,7 +98,7 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
     @Override
     public void set_user_info(String message)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return;
+
     }
 
     @Override
@@ -113,7 +113,7 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
 
     @Override
     public void cancel() throws ProcessingFault, SystemFault {
-        return;
+
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
     @Override
     public void free_callback(String id)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return;
+
     }
 
     @Override

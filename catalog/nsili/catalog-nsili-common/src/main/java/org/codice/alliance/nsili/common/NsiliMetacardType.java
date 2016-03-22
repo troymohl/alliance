@@ -425,7 +425,7 @@ public abstract class NsiliMetacardType implements MetacardType {
                 true /* stored */,
                 false /* tokenized */,
                 false /* multivalued */,
-                BasicTypes.STRING_TYPE));
+                BasicTypes.LONG_TYPE));
 
         NSILI_DESCRIPTORS.add(new AttributeDescriptorImpl(LANGUAGE,
                 true /* indexed */,

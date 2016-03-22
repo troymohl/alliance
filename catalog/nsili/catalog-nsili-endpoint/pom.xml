@@ -21,7 +21,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>Codice :: Alliance :: NSILI :: Endpoint</name>
+    <name>Alliance :: NSILI :: Endpoint</name>
     <artifactId>catalog-nsili-endpoint</artifactId>
     <packaging>bundle</packaging>
 
@@ -48,6 +48,11 @@
         </dependency>
         <dependency>
             <groupId>org.codice.alliance.nsili</groupId>
+            <artifactId>catalog-nsili-bqs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codice.alliance.nsili</groupId>
             <artifactId>catalog-nsili-common</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -55,6 +60,11 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -74,11 +84,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ddf.catalog.core</groupId>
-            <artifactId>filter-proxy</artifactId>
-            <version>${ddf.version}</version>
-        </dependency>
-        <dependency>
             <groupId>ddf.security.core</groupId>
             <artifactId>security-core-api</artifactId>
             <version>${ddf.version}</version>
@@ -92,6 +97,21 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.5.1-1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ddf.catalog.core</groupId>
+            <artifactId>filter-proxy</artifactId>
+            <version>${ddf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codice.ddf</groupId>
+            <artifactId>geospatial</artifactId>
+            <version>${ddf.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -112,12 +132,16 @@
                         <!-- Don't Export Anything -->
                         <Export-Package/>
                         <Embed-Dependency>
+                            catalog-nsili-bqs,
                             catalog-nsili-common,
                             catalog-core-api-impl,
                             filter-proxy,
                             platform-util,
                             jgrapht-core,
-                            antlr4-runtime
+                            antlr4-runtime,
+                            guava,
+                            commons-lang3,
+                            geospatial
                         </Embed-Dependency>
                     </instructions>
                 </configuration>
@@ -150,7 +174,7 @@
                                         <limit>
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.20</minimum>
+                                            <minimum>0.10</minimum>
                                         </limit>
                                         <limit>
                                             <counter>COMPLEXITY</counter>
@@ -160,7 +184,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.20</minimum>
+                                            <minimum>0.10</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

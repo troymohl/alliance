@@ -31,7 +31,7 @@ public class GetParametersRequestImpl extends GetParametersRequestPOA {
 
     @Override
     public State complete(DAGHolder parameters) throws ProcessingFault, SystemFault {
-        parameters.value = null; //TODO TROY DAGGenerator.generateDAGResultNSILAllView(_orb())[0];
+        parameters.value = null; //TODO DAGGenerator.generateDAGResultNSILAllView(_orb())[0];
         return State.COMPLETED;
     }
 

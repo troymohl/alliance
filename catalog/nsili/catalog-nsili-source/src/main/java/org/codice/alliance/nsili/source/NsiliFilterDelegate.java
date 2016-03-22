@@ -79,6 +79,7 @@ public class  NsiliFilterDelegate extends FilterDelegate<String> {
     public String propertyIsEqualTo(String propertyName, Date literal) {
         String filter = filterFactory.buildPropertyIsEqualTo(propertyName,
                 getStringFromDate(literal));
+
         return filter;
     }
 
@@ -514,13 +515,17 @@ public class  NsiliFilterDelegate extends FilterDelegate<String> {
     }
 
     private boolean isSupportedQueryableAttribute(String propertyName) {
-        String mappedProperty = NsiliFilterFactory.mapToNsil(propertyName);
+        List<String> mappedProperties = NsiliFilterFactory.mapToNsilQuery(propertyName);
 
+        boolean supportedQueryAttribute = false;
         for (AttributeInformation attributeInformation : queryableAttributes.get(view)) {
-            if (attributeInformation.attribute_name.equals(mappedProperty)) {
-                return true;
+            for (String mappedProperty : mappedProperties) {
+                if (attributeInformation.attribute_name.equals(mappedProperty)) {
+                    supportedQueryAttribute = true;
+                    break;
+                }
             }
         }
-        return false;
+        return supportedQueryAttribute;
     }
 }

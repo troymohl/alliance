@@ -11,14 +11,13 @@
  * is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
-package org.codice.alliance.nsili.endpoint;
+package org.codice.alliance.nsili.common;
 
-import org.codice.alliance.nsili.common.GIAS.Query;
-import org.opengis.filter.Filter;
-
-import ddf.catalog.filter.FilterBuilder;
-import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
-
-public class BQSConverter {
-
+public enum BqsShape {
+    RECTANGLE,
+    POLYGON,
+    ELLIPSE,
+    CIRCLE,
+    POINT,
+    LINE
 }

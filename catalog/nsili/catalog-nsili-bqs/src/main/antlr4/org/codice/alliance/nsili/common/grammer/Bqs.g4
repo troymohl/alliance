@@ -6,7 +6,7 @@ factor : primary (NOT BLANK primary)*;
 primary :
     simple_attribute_name BLANK comp_op BLANK constant_expression
     | simple_attribute_name BLANK geo_op BLANK geo_element
-    | simple_attribute_name BLANK rel_geo_op number BLANK dist_units BLANK OF BLANK geo_element
+    | simple_attribute_name BLANK rel_geo_op BLANK number BLANK dist_units BLANK OF BLANK geo_element
     | simple_attribute_name BLANK LIKE BLANK quoted_string
     | attribute_name BLANK EXISTS
     | LPAREN query RPAREN;
@@ -42,10 +42,10 @@ rectangle : RECTANGLE LPAREN upper_left Del lower_right RPAREN;
 upper_left : coordinate;
 lower_right : coordinate;
 circle : CIRCLE LPAREN coordinate Del radius RPAREN;
-radius : number dist_units;
+radius : number BLANK dist_units;
 ellipse : ELLIPSE LPAREN coordinate Del major_axis_len Del minor_axis_len Del north_angle RPAREN;
-major_axis_len : number dist_units;
-minor_axis_len : number dist_units;
+major_axis_len : number BLANK dist_units;
+minor_axis_len : number BLANK dist_units;
 north_angle : number;
 line : LINE LPAREN coordinate Del coordinate ( Del coordinate )* RPAREN;
 polygon_set : POLYGON_SET LPAREN polygon ( Del polygon )* RPAREN;

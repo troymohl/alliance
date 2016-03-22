@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.codice.alliance.nsili.common.BqsConverter;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrPOA;
 import org.codice.alliance.nsili.common.GIAS.HitCountRequest;
 import org.codice.alliance.nsili.common.GIAS.HitCountRequestHelper;
@@ -31,7 +32,6 @@ import org.codice.alliance.nsili.common.UCO.InvalidInputParameter;
 import org.codice.alliance.nsili.common.UCO.NameValue;
 import org.codice.alliance.nsili.common.UCO.ProcessingFault;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
-import org.codice.alliance.nsili.endpoint.BQSConverter;
 import org.codice.alliance.nsili.endpoint.requests.HitCountRequestImpl;
 import org.codice.alliance.nsili.endpoint.requests.SubmitQueryRequestImpl;
 import org.omg.CORBA.NO_IMPLEMENT;
@@ -67,6 +67,8 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
     private CatalogFramework catalogFramework;
 
     private long defaultTimeout = DEFAULT_TIMEOUT;
+
+    private BqsConverter bqsConverter = new BqsConverter();
 
     public CatalogMgrImpl(POA poa) {
         this.poa_ = poa;
@@ -177,7 +179,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
     protected List<Result> getResults(Query aQuery) {
         List<Result> results = new ArrayList<>();
 
-        Filter parsedFilter = BQSConverter.convertBQSToDDF(aQuery);
+        Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
         FilterBuilder filterBuilder = new GeotoolsFilterBuilder();
         Filter queryFilter = filterBuilder.attribute("id")

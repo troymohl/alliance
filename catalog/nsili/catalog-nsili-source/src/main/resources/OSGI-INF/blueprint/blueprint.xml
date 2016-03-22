@@ -22,6 +22,9 @@
 
     <reference id="filterAdapter" interface="ddf.catalog.filter.FilterAdapter"/>
 
+    <reference id="resourceReader" interface="ddf.catalog.resource.ResourceReader"
+               filter="(shortname=URLResourceReader)"/>
+
     <cm:managed-service-factory
             id="org.codice.alliance.nsili.source.NsiliSource.FederatedSource.id"
             factory-pid="NSILI_Federated_Source"
@@ -38,6 +41,7 @@
             <property name="pollInterval" value="5"/>
             <property name="maxHitCount" value="250"/>
             <property name="filterAdapter" ref="filterAdapter"/>
+            <property name="resourceReader" ref="resourceReader"/>
         </cm:managed-component>
     </cm:managed-service-factory>
 

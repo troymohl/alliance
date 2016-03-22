@@ -16,13 +16,15 @@ package org.codice.alliance.nsili.endpoint;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codice.alliance.nsili.common.NsiliWeb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Path("/")
-public class NsiliWebEndpoint {
+public class NsiliWebEndpoint implements NsiliWeb {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NsiliWebEndpoint.class);
 
@@ -37,9 +39,10 @@ public class NsiliWebEndpoint {
         this.nsiliEndpoint = nsiliEndpoint;
     }
 
+    @Override
     @GET
     @Path("ior.txt")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getIorFile() {
         Response.ResponseBuilder response = Response.ok(nsiliEndpoint.getIorString());
         return response.build();

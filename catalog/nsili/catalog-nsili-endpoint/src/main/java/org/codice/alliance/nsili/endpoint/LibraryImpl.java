@@ -93,7 +93,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.info("Error activating CatalogMgr", e);
+                LOGGER.error("Error activating CatalogMgr", e);
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -104,7 +104,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         orderMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.info("Error activating OrderMgr", e);
+                LOGGER.error("Error activating OrderMgr", e);
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -115,7 +115,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         productMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.info("Error activating ProductMgr", e);
+                LOGGER.error("Error activating ProductMgr", e);
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -126,7 +126,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         dataModelMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.info("Error activating DataModelMgr", e);
+                LOGGER.error("Error activating DataModelMgr", e);
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
