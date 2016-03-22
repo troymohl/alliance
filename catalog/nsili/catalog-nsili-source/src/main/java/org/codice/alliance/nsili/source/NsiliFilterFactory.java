@@ -109,7 +109,7 @@ public class NsiliFilterFactory {
         for (AttributeInformation attributeInformation : attributeInformationList) {
             if (isTextAttributeType(attributeInformation)) {
                 filters.add(LP + attributeInformation.attribute_name + LIKE + NsiliFilterDelegate.SQ
-                        + value + NsiliFilterDelegate.SQ + RP);
+                        + NsiliFilterDelegate.WILDCARD + value + NsiliFilterDelegate.WILDCARD +  NsiliFilterDelegate.SQ + RP);
             }
         }
         return buildOrFilter(filters);

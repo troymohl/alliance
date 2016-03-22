@@ -62,9 +62,6 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
                     new DAG[0];
             results.value = result;
         } else {
-            //TODO REMOVE
-            LOGGER.warn("Number of results: "+queryResults.size());
-
             List<DAG> dags = new ArrayList<>();
             for (Result result : queryResults) {
                 DAG dag = ResultDAGConverter.convertResult(result, _orb());

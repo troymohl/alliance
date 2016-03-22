@@ -459,8 +459,6 @@ public class DAGConverter {
                     getString(node.value)));
             break;
         case NsiliConstants.PRODUCT_URL:
-            //TODO TROY REMOVE
-            LOGGER.debug("{} : **** Product URL : " + getString(node.value), sourceId);
             metacard.setAttribute(new AttributeImpl(NsiliMetacardType.FILE_URL,
                     getString(node.value)));
             break;
@@ -1142,22 +1140,22 @@ public class DAGConverter {
 
     public static void logMetacard(Metacard metacard, String id) {
         MetacardType metacardType = metacard.getMetacardType();
-        LOGGER.debug("{} : Metacard Type : " + metacardType.getClass()
-                .getCanonicalName(), id);
         LOGGER.debug("{} : ID : " + metacard.getId(), id);
-        LOGGER.debug("{} : Title : " + metacard.getTitle(), id);
+        LOGGER.debug("{} :  Metacard Type : " + metacardType.getClass()
+                .getCanonicalName(), id);
+        LOGGER.debug("{} :  Title : " + metacard.getTitle(), id);
         if (metacard instanceof MetacardImpl) {
-            LOGGER.debug("{} : Description : " + ((MetacardImpl) metacard).getDescription(), id);
+            LOGGER.debug("{} :  Description : " + ((MetacardImpl) metacard).getDescription(), id);
         }
-        LOGGER.debug("{} : Content Type Name : " + metacard.getContentTypeName(), id);
-        LOGGER.debug("{} : Content Type Version : " + metacard.getContentTypeVersion(), id);
-        LOGGER.debug("{} : Created Date : " + metacard.getCreatedDate(), id);
-        LOGGER.debug("{} : Effective Date : " + metacard.getEffectiveDate(), id);
-        LOGGER.debug("{} : Location : " + metacard.getLocation(), id);
-        LOGGER.debug("{} : SourceID : " + metacard.getSourceId(), id);
-        LOGGER.debug("{} : Modified Date : " + metacard.getModifiedDate(), id);
+        LOGGER.debug("{} :  Content Type Name : " + metacard.getContentTypeName(), id);
+        LOGGER.debug("{} :  Content Type Version : " + metacard.getContentTypeVersion(), id);
+        LOGGER.debug("{} :  Created Date : " + metacard.getCreatedDate(), id);
+        LOGGER.debug("{} :  Effective Date : " + metacard.getEffectiveDate(), id);
+        LOGGER.debug("{} :  Location : " + metacard.getLocation(), id);
+        LOGGER.debug("{} :  SourceID : " + metacard.getSourceId(), id);
+        LOGGER.debug("{} :  Modified Date : " + metacard.getModifiedDate(), id);
         if (metacard.getResourceURI() != null) {
-            LOGGER.debug("{} : Resource URI : " + metacard.getResourceURI()
+            LOGGER.debug("{} :  Resource URI : " + metacard.getResourceURI()
                     .toString(), id);
         }
 

@@ -34,6 +34,8 @@ public class  NsiliFilterDelegate extends FilterDelegate<String> {
 
     public static final String UTC = "UTC";
 
+    public static final String WILDCARD = "%";
+
     private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     private static String view;
