@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import org.codice.alliance.nsili.common.BqsConverter;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrPOA;
@@ -34,6 +35,7 @@ import org.codice.alliance.nsili.common.UCO.ProcessingFault;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
 import org.codice.alliance.nsili.endpoint.requests.HitCountRequestImpl;
 import org.codice.alliance.nsili.endpoint.requests.SubmitQueryRequestImpl;
+import org.codice.ddf.security.handler.api.AuthenticationHandler;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
@@ -44,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddf.catalog.CatalogFramework;
+import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.federation.FederationException;
 import ddf.catalog.filter.FilterBuilder;
@@ -53,6 +56,7 @@ import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
 import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
+import ddf.security.Subject;
 
 public class CatalogMgrImpl extends CatalogMgrPOA {
 
@@ -68,14 +72,21 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
     private long defaultTimeout = DEFAULT_TIMEOUT;
 
-    private BqsConverter bqsConverter = new BqsConverter();
+    private BqsConverter bqsConverter;
+
+    private Subject guestSubject;
 
     public CatalogMgrImpl(POA poa) {
         this.poa_ = poa;
+        bqsConverter = new BqsConverter();
     }
 
     public void setCatalogFramework(CatalogFramework catalogFramework) {
         this.catalogFramework = catalogFramework;
+    }
+
+    public void setGuestSubject(Subject guestSubject) {
+        this.guestSubject = guestSubject;
     }
 
     @Override
@@ -182,9 +193,13 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
         FilterBuilder filterBuilder = new GeotoolsFilterBuilder();
-        Filter queryFilter = filterBuilder.attribute("id")
+        Filter queryFilter = filterBuilder.attribute(Metacard.ANY_TEXT)
                 .like()
                 .text("*");
+
+        //TODO REMOVE
+        LOGGER.warn("Filter: "+queryFilter.toString());
+
         QueryImpl catalogQuery = new QueryImpl(queryFilter);
 
         if (defaultTimeout > 0) {
@@ -194,13 +209,39 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         QueryRequestImpl catalogQueryRequest = new QueryRequestImpl(catalogQuery);
 
         try {
-            QueryResponse queryResponse = catalogFramework.query(catalogQueryRequest);
-            if (queryResponse.getResults() != null) {
-                results.addAll(queryResponse.getResults());
-            }
-        } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
+            QueryCallable queryCallable = new QueryCallable(catalogQueryRequest);
+            results.addAll(guestSubject.execute(queryCallable));
+
+        } catch (Exception e) {
             LOGGER.warn("Unable to query catalog", e);
         }
+
+        //TODO REMOVE
+        LOGGER.warn("Return results: "+results.size());
         return results;
+    }
+
+    class QueryCallable implements Callable<List<Result>> {
+        QueryRequestImpl catalogQueryRequest;
+
+        public QueryCallable(QueryRequestImpl catalogQueryRequest) {
+            this.catalogQueryRequest = catalogQueryRequest;
+        }
+
+        @Override
+        public List<Result> call() throws Exception {
+            List<Result> results = new ArrayList<>();
+            QueryResponse queryResponse = catalogFramework.query(catalogQueryRequest);
+            if (queryResponse.getResults() != null) {
+
+                //TODO REMOVE
+            LOGGER.warn("Number of results: "+queryResponse.getResults().size());
+                results.addAll(queryResponse.getResults());
+            } else {
+                //TODO REMOVE
+                LOGGER.warn("No results returned");
+            }
+            return results;
+        }
     }
 }

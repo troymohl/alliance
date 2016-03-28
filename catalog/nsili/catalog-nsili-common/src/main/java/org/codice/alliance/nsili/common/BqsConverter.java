@@ -35,8 +35,8 @@ import org.codice.alliance.nsili.common.GIAS.Query;
 import org.codice.alliance.nsili.common.grammer.BqsLexer;
 import org.codice.alliance.nsili.common.grammer.BqsListener;
 import org.codice.alliance.nsili.common.grammer.BqsParser;
-import org.codice.ddf.libs.geo.coordinate.Latitude;
-import org.codice.ddf.libs.geo.coordinate.Longitude;
+import org.codice.ddf.libs.geo.GeoFormatException;
+import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.opengis.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +106,6 @@ public class BqsConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BqsConverter.class);
 
     public BqsConverter() {
-
     }
 
     public Filter convertBQSToDDF(Query query) {
@@ -115,7 +114,7 @@ public class BqsConverter {
     }
 
     public Filter convertBQSToDDF(String query) {
-        System.out.println("ORIG Query: " + query);
+        LOGGER.debug("ORIG Query: " + query);
 
         ANTLRInputStream inputStream = new ANTLRInputStream(query);
         BqsLexer lex = new BqsLexer(inputStream); // transforms characters into tokens
@@ -129,9 +128,11 @@ public class BqsConverter {
 
         Filter filter = bqsListener.getFilter();
         if (filter != null) {
-            System.out.println("PARSED: " + filter.toString());
+            LOGGER.debug("PARSED: " + filter.toString());
+
+            System.out.println("PARSED: "+filter.toString());
         } else {
-            System.out.println("NO FILTER PARSED");
+            LOGGER.debug("NO FILTER PARSED");
         }
 
         return filter;
@@ -139,7 +140,7 @@ public class BqsConverter {
 
     public static void main(String[] args) {
         BqsConverter converter = new BqsConverter();
-        converter.convertBQSToDDF(BASIC_BQS_5h);
+        converter.convertBQSToDDF(BASIC_BQS_5f);
     }
 
     class BqsTreeWalkerListener implements BqsListener {
@@ -186,10 +187,6 @@ public class BqsConverter {
         private double ellipseMinorLenMeters;
 
         private int northAngle;
-
-        private Latitude dmsBasedLat;
-
-        private Longitude dmsBasedLon;
 
         double relativeDistInMeters;
 
@@ -309,7 +306,7 @@ public class BqsConverter {
 
         @Override
         public void exitAttribute_name(BqsParser.Attribute_nameContext ctx) {
-            attribute = ctx.getText();
+            attribute = NsiliAttributeMap.getDdfAttributeForNsili(ctx.getText());
         }
 
         @Override
@@ -877,8 +874,11 @@ public class BqsConverter {
 
         @Override
         public void enterLatitude_DMS(BqsParser.Latitude_DMSContext ctx) {
-            System.out.println("LAT DMS: " + ctx.getText());
-            //TODO Call Latitude parsing from DDF once implemented
+            try {
+                latDecimalDeg = GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(ctx.getText());
+            } catch (GeoFormatException gfe) {
+                LOGGER.warn("Unable to parse DMS latitude: "+ctx.getText(), gfe);
+            }
         }
 
         @Override
@@ -888,8 +888,11 @@ public class BqsConverter {
 
         @Override
         public void enterLongitude_DMS(BqsParser.Longitude_DMSContext ctx) {
-            System.out.println("LON DMS: " + ctx.getText());
-            //TODO Call Longitude parsing from DDF once implemented
+            try {
+                lonDecimalDeg = GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(ctx.getText());
+            } catch (GeoFormatException gfe) {
+                LOGGER.warn("Unable to parse DMS longitude: "+ctx.getText(), gfe);
+            }
         }
 
         @Override
@@ -1011,8 +1014,6 @@ public class BqsConverter {
 
         @Override
         public void exitRadius(BqsParser.RadiusContext ctx) {
-            System.out.println("Converting Number Str: " + numberStr);
-
             double radius = Double.parseDouble(numberStr);
             Distance distance = new Distance(radius, distanceUnit);
             radiusInMeters = distance.getAs(Distance.LinearUnit.METER);
@@ -1124,11 +1125,18 @@ public class BqsConverter {
         }
 
         private void print(String text) {
-            for (int i = 0; i < bqsOperatorStack.size(); i++) {
-                System.out.print("   ");
+            if (LOGGER.isTraceEnabled()) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < bqsOperatorStack.size(); i++) {
+                    sb.append("   ");
+                }
+                sb.append(text);
+                sb.append("\n");
+
+                LOGGER.trace(sb.toString());
+
+                System.out.println(sb.toString());
             }
-            System.out.print(text);
-            System.out.print("\n");
         }
 
         private Number getNumber(String numberStr) {

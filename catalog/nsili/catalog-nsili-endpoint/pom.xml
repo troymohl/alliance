@@ -113,6 +113,11 @@
             <artifactId>geospatial</artifactId>
             <version>${ddf.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ddf.security.handler</groupId>
+            <artifactId>security-handler-api</artifactId>
+            <version>${ddf.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -141,7 +146,8 @@
                             antlr4-runtime,
                             guava,
                             commons-lang3,
-                            geospatial
+                            geospatial,
+                            security-handler-api-impl
                         </Embed-Dependency>
                     </instructions>
                 </configuration>

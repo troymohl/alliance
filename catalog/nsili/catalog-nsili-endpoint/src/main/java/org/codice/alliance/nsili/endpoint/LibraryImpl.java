@@ -35,6 +35,8 @@ import org.codice.alliance.nsili.endpoint.managers.CatalogMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.DataModelMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.OrderMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.ProductMgrImpl;
+import org.codice.ddf.security.handler.api.AuthenticationHandler;
+import org.codice.ddf.security.handler.api.GuestAuthenticationToken;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
@@ -43,6 +45,7 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 import org.slf4j.LoggerFactory;
 
 import ddf.catalog.CatalogFramework;
+import ddf.security.Subject;
 
 public class LibraryImpl extends LibraryPOA {
 
@@ -65,6 +68,8 @@ public class LibraryImpl extends LibraryPOA {
 
     private CatalogFramework catalogFramework;
 
+    private Subject guestSubject;
+
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LibraryImpl.class);
 
     public LibraryImpl(POA poa) {
@@ -75,9 +80,14 @@ public class LibraryImpl extends LibraryPOA {
         this.catalogFramework = catalogFramework;
     }
 
+    public void setGuestSubject(Subject guestSubject) {
+        this.guestSubject = guestSubject;
+    }
+
     @Override
     public String[] get_manager_types() throws ProcessingFault, SystemFault {
-         return (String[]) managers.toArray();
+        String[] managerArr = new String[managers.size()];
+         return managers.toArray(managerArr);
     }
 
     @Override
@@ -86,9 +96,12 @@ public class LibraryImpl extends LibraryPOA {
 
         org.omg.CORBA.Object obj;
 
+
+
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
             CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa);
             catalogMgr.setCatalogFramework(catalogFramework);
+            catalogMgr.setGuestSubject(guestSubject);
             try {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);

@@ -114,8 +114,8 @@ public class NsiliClient {
                         + libraryDescription.library_version_number);
         String[] types = library.get_manager_types();
         System.out.println("Got Manager Types from " + libraryDescription.library_name + " : ");
-        for (int i = 0; i < types.length; i++) {
-            System.out.println("\t" + types[i]);
+        for (String type : types) {
+            System.out.println("\t" + type);
         }
         System.out.println();
         return types;

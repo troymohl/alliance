@@ -16,8 +16,11 @@ package org.codice.alliance.nsili.common;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.opengis.filter.Filter;
+
+import com.sun.media.jfxmedia.logging.Logger;
 
 public class TestBqsConverter {
 
@@ -63,6 +66,11 @@ public class TestBqsConverter {
             "identifierMission like 'Test' and (spatialGeographicReferenceBox beyond 6 statute miles of CIRCLE(46.155441760892586,81.76504326406543,25.6 meters))";
 
     private BqsConverter bqsConverter = new BqsConverter();
+
+    @Before
+    public void setup() {
+        Logger.setLevel(Logger.DEBUG);
+    }
 
     @Test
     public void testSimpleIdConversion() {

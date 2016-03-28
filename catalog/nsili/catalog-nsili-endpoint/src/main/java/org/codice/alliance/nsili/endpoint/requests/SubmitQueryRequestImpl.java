@@ -30,7 +30,7 @@ import org.codice.alliance.nsili.common.UCO.State;
 import org.codice.alliance.nsili.common.UCO.Status;
 import org.codice.alliance.nsili.common.UCO.StringDAGListHolder;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
-import org.codice.alliance.nsili.endpoint.ResultDAGConverter;
+import org.codice.alliance.nsili.common.ResultDAGConverter;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +57,9 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
 
     @Override
     public State complete_DAG_results(DAGListHolder results) throws ProcessingFault, SystemFault {
+        DAG[] noResults = new DAG[0];
         if (queryResults == null) {
-            DAG[] result =
-                    new DAG[0];
-            results.value = result;
+            results.value = noResults;
         } else {
             List<DAG> dags = new ArrayList<>();
             for (Result result : queryResults) {
@@ -69,7 +68,17 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
                     dags.add(dag);
                 }
             }
-            results.value = (DAG[])dags.toArray();
+            if (!dags.isEmpty()) {
+                results.value = dags.toArray(results.value);
+
+                //TODO REMOVE
+                LOGGER.debug("{} : Number of results being returned: "+results.value.length);
+            } else {
+                //TODO REMOVE
+                LOGGER.debug("{} : No results will be returned");
+                results.value = noResults;
+            }
+
         }
         return State.COMPLETED;
     }
