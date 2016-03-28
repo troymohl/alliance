@@ -103,13 +103,34 @@ public class NsiliFilterFactory {
         List<String> filters = new ArrayList<>();
 
         // Replace * with %, since * is not a valid wildcard in BQS
-        value = value.replaceAll("\\*", "%");
-        value = value.replaceAll("\\?", "%");
+        value = value.replaceAll("\\*", NsiliFilterDelegate.WILDCARD);
+        value = value.replaceAll("\\?", NsiliFilterDelegate.WILDCARD);
+        boolean addPrefixWildcard = false;
+        boolean addPostfixWildcard = false;
+
+        if (!value.startsWith(NsiliFilterDelegate.WILDCARD)) {
+            addPrefixWildcard = true;
+        }
+
+        if (!value.endsWith(NsiliFilterDelegate.WILDCARD)) {
+            addPostfixWildcard = true;
+        }
 
         for (AttributeInformation attributeInformation : attributeInformationList) {
             if (isTextAttributeType(attributeInformation)) {
-                filters.add(LP + attributeInformation.attribute_name + LIKE + NsiliFilterDelegate.SQ
-                        + NsiliFilterDelegate.WILDCARD + value + NsiliFilterDelegate.WILDCARD +  NsiliFilterDelegate.SQ + RP);
+                String filterString = LP + attributeInformation.attribute_name + LIKE + NsiliFilterDelegate.SQ;
+                if (addPrefixWildcard) {
+                    filterString = filterString + NsiliFilterDelegate.WILDCARD;
+                }
+
+                filterString = filterString + value;
+
+                if (addPostfixWildcard) {
+                    filterString = filterString + NsiliFilterDelegate.WILDCARD;
+                }
+
+                filterString = filterString + NsiliFilterDelegate.SQ + RP;
+                filters.add(filterString);
             }
         }
         return buildOrFilter(filters);

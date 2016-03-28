@@ -108,10 +108,9 @@ public class NsiliClient {
 
     public String[] getManagerTypes() throws Exception {
         LibraryDescription libraryDescription = library.get_library_description();
-        System.out.println(
-                "NAME: " + libraryDescription.library_name + ", DESCRIPTION: "
-                        + libraryDescription.library_description + ", VERSION: "
-                        + libraryDescription.library_version_number);
+        System.out.println("NAME: " + libraryDescription.library_name + ", DESCRIPTION: "
+                + libraryDescription.library_description + ", VERSION: "
+                + libraryDescription.library_version_number);
         String[] types = library.get_manager_types();
         System.out.println("Got Manager Types from " + libraryDescription.library_name + " : ");
         for (String type : types) {
@@ -122,8 +121,8 @@ public class NsiliClient {
     }
 
     public void initManagers(String[] managers) throws Exception {
-        for (String managerType : managers){
-            System.out.println("Attempting to initialize manager type: "+managerType);
+        for (String managerType : managers) {
+            System.out.println("Attempting to initialize manager type: " + managerType);
 
             if (managerType.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
                 // Get Mandatory Managers
@@ -131,21 +130,18 @@ public class NsiliClient {
                 LibraryManager libraryManager = library.get_manager("CatalogMgr", accessCriteria);
                 catalogMgr = CatalogMgrHelper.narrow(libraryManager);
                 System.out.println("Source returned : " + catalogMgr.getClass() + "\n");
-            }
-            else if (managerType.equals(NsiliManagerType.ORDER_MGR.getSpecName())) {
+            } else if (managerType.equals(NsiliManagerType.ORDER_MGR.getSpecName())) {
 
                 System.out.println("Getting OrderMgr from source...");
                 LibraryManager libraryManager = library.get_manager("OrderMgr", accessCriteria);
                 orderMgr = OrderMgrHelper.narrow(libraryManager);
                 System.out.println("Source returned : " + orderMgr.getClass() + "\n");
-            }
-            else if (managerType.equals(NsiliManagerType.PRODUCT_MGR.getSpecName())) {
+            } else if (managerType.equals(NsiliManagerType.PRODUCT_MGR.getSpecName())) {
                 System.out.println("Getting ProductMgr from source...");
                 LibraryManager libraryManager = library.get_manager("ProductMgr", accessCriteria);
                 productMgr = ProductMgrHelper.narrow(libraryManager);
                 System.out.println("Source returned : " + productMgr.getClass() + "\n");
-            }
-            else if (managerType.equals(NsiliManagerType.DATA_MODEL_MGR.getSpecName())) {
+            } else if (managerType.equals(NsiliManagerType.DATA_MODEL_MGR.getSpecName())) {
                 System.out.println("Getting DataModelMgr from source...");
                 LibraryManager libraryManager = library.get_manager("DataModelMgr", accessCriteria);
                 dataModelMgr = DataModelMgrHelper.narrow(libraryManager);
@@ -162,8 +158,7 @@ public class NsiliClient {
             hitCountRequest.complete(intHolder);
             System.out.println("Server responded with " + intHolder.value + " hit(s).\n");
             return intHolder.value;
-        }
-        else {
+        } else {
             System.out.println("catalogMgr was not initialized, unable to find hit count");
             return -1;
         }
@@ -178,10 +173,10 @@ public class NsiliClient {
                     new SortAttribute[0],
                     new NameValue[0]);
             submitQueryRequest.complete_DAG_results(dagListHolder);
-            System.out.println("Server Responded with " + dagListHolder.value.length + " result(s).\n");
+            System.out.println(
+                    "Server Responded with " + dagListHolder.value.length + " result(s).\n");
             return dagListHolder.value;
-        }
-        else {
+        } else {
             System.out.println("catalogMgr is not iniitalized, unable to submit queries");
             return null;
         }
@@ -290,11 +285,10 @@ public class NsiliClient {
             ValidationResults validationResults = orderMgr.validate_order(order, properties);
 
             System.out.println("Validation Results: ");
-            System.out.println("\tValid : " + validationResults.valid + "\n\tWarning : " + validationResults.warning + "\n\tDetails : " + validationResults.details
+            System.out.println("\tValid : " + validationResults.valid + "\n\tWarning : "
+                    + validationResults.warning + "\n\tDetails : " + validationResults.details
                     + "\n");
-        }
-        else
-        {
+        } else {
             System.out.println("orderMgr is not initialized, unable to validate order request");
         }
     }
@@ -327,8 +321,7 @@ public class NsiliClient {
             }
             System.out.println();
             return elements;
-        }
-        else {
+        } else {
             System.out.println("orderMgr is not initialized, unable to submit order");
             return null;
         }
@@ -353,8 +346,7 @@ public class NsiliClient {
             System.out.println("Resulting Parameters From Server :");
             printDAGAttributes(dag);
             System.out.println();
-        }
-        else {
+        } else {
             System.out.println("productMgr is not initialized, unable to get parameters");
         }
     }
@@ -368,8 +360,7 @@ public class NsiliClient {
                 System.out.println(related_file_types[i]);
             }
             System.out.println();
-        }
-        else {
+        } else {
             System.out.println("productMgr is not initialized, unable to get related file types");
         }
     }
@@ -398,8 +389,7 @@ public class NsiliClient {
                 System.out.println(locationList[i]);
             }
             System.out.println();
-        }
-        else {
+        } else {
             System.out.println("productMgr is not initialized, unable to get related files");
         }
     }

@@ -393,7 +393,7 @@
                     <replacements>
                         <replacement>
                             <token>ddf.distribution</token>
-                            <value>Codice Alliance</value>
+                            <value>Alliance</value>
                         </replacement>
                         <replacement>
                             <token>version=${ddf.version}</token>

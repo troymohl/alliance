@@ -170,6 +170,8 @@ public class NsiliConstants {
 
     public static final String ARCHIVE_INFORMATION = "archiveInformation";
 
+    public static final String ARCHIVAL_INFORMATION = "archivalInformation";
+
     public static final String EXTENT = "extent";
 
     public static final String FORMAT = "format";

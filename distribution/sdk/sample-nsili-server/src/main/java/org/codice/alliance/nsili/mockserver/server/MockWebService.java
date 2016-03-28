@@ -43,7 +43,6 @@ public class MockWebService {
     public Response getIORFile() {
         File file = new File(System.getProperty("user.dir") + IOR_RELATIVE_PATH);
         Response.ResponseBuilder response = Response.ok(file);
-//        response.header("Content-Disposition", "attachment; filename=ior.txt");
         return response.build();
     }
 }

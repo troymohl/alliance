@@ -83,7 +83,6 @@ import ddf.catalog.operation.impl.SourceResponseImpl;
 import ddf.catalog.resource.ResourceNotFoundException;
 import ddf.catalog.resource.ResourceNotSupportedException;
 import ddf.catalog.resource.ResourceReader;
-import ddf.catalog.resource.impl.URLResourceReader;
 import ddf.catalog.service.ConfiguredService;
 import ddf.catalog.source.ConnectedSource;
 import ddf.catalog.source.FederatedSource;
@@ -606,7 +605,8 @@ public class NsiliSource extends MaskableImpl
 
         try {
             LOGGER.debug("{} : Submit query: " + query, id);
-            LOGGER.debug("{} : Requesting result attributes: " + Arrays.toString(resultAttributes), id);
+            LOGGER.debug("{} : Requesting result attributes: " + Arrays.toString(resultAttributes),
+                    id);
             LOGGER.debug("{} : Sort Attributes: " + Arrays.toString(sortAttributes), id);
             LOGGER.debug("{} : Properties: " + Arrays.toString(properties), id);
             SubmitQueryRequest submitQueryRequest = catalogMgr.submit_query(query,
@@ -875,7 +875,8 @@ public class NsiliSource extends MaskableImpl
     private SortAttribute[] getSortAttributes(SortBy sortBy) {
         if (sortBy == null || sortableAttributes == null) {
             //Default to sorting by Date/Time modified if no sorting provided
-            return new SortAttribute[] {new SortAttribute(NsiliConstants.NSIL_CARD+"."+NsiliConstants.DATE_TIME_MODIFIED,
+            return new SortAttribute[] {new SortAttribute(
+                    NsiliConstants.NSIL_CARD + "." + NsiliConstants.DATE_TIME_MODIFIED,
                     Polarity.DESCENDING)};
         }
 
