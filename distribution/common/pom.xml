@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright (c) Codice Foundation
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
+ * <http://www.gnu.org/licenses/lgpl.html>.
+ *
+ **/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.codice.alliance</groupId>
+        <artifactId>distribution</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.codice.alliance.distribution</groupId>
+    <artifactId>common</artifactId>
+    <name>Alliance :: Distribution :: Common</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <command.prompt.title>ALLIANCE-${project.version}</command.prompt.title>
+    </properties>
+
+    <build>
+        <resources>
+            <!-- Filter /bin files separately so that substitution of ${command.prompt.title} will occur -->
+            <resource>
+                <directory>src/main/resources/bin</directory>
+                <filtering>true</filtering>
+                <targetPath>bin</targetPath>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>bin/alliance></exclude>
+                    <exclude>bin/setenv</exclude>
+                    <exclude>bin/alliance.bat</exclude>
+                    <exclude>bin/setenv.bat</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <!-- Generates the resources from the /resources sub-directory into 
+            a JAR file and copies it into the maven repo so other distribution projects
+            can access it. -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>filter</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

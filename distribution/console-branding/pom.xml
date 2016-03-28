@@ -12,35 +12,35 @@
  *
  **/
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.codice.alliance</groupId>
         <artifactId>distribution</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sdk</artifactId>
-    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
     <groupId>org.codice.alliance.distribution</groupId>
-    <name>Alliance :: Distribution :: SDK</name>
-    <properties>
+    <artifactId>console-branding</artifactId>
+    <packaging>bundle</packaging>
+    <name>Alliance :: Distribution :: Console Branding</name>
 
-    </properties>
-
-    <modules>
-        <module>sample-nsili-server</module>
-    </modules>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
