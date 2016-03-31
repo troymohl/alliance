@@ -153,7 +153,7 @@ public class NsiliAttributeMap {
         nsiliToDdfMap.put(NsiliConstants.NSIL_SDS + "." + NsiliConstants.OPERATIONAL_STATUS,
                 "sdsOperationalStatus");
         nsiliToDdfMap.put(NsiliConstants.NSIL_STREAM + "." + NsiliConstants.ARCHIVED, "archived");
-        nsiliToDdfMap.put(NsiliConstants.NSIL_STREAM + "." + NsiliConstants.ARCHIVAL_INFORMATION,
+        nsiliToDdfMap.put(NsiliConstants.NSIL_STREAM + "." + NsiliConstants.ARCHIVE_INFORMATION,
                 "archivalInfo");
         nsiliToDdfMap.put(NsiliConstants.NSIL_STREAM + "." + NsiliConstants.CREATOR, "creator");
         nsiliToDdfMap.put(NsiliConstants.NSIL_STREAM + "." + NsiliConstants.DATE_TIME_DECLARED,

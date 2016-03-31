@@ -13,30 +13,112 @@
  */
 package org.codice.alliance.nsili.endpoint.managers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.codice.alliance.nsili.common.GIAS.Association;
 import org.codice.alliance.nsili.common.GIAS.AttributeInformation;
+import org.codice.alliance.nsili.common.GIAS.AttributeType;
 import org.codice.alliance.nsili.common.GIAS.ConceptualAttributeType;
+import org.codice.alliance.nsili.common.GIAS.DataModelMgr;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgrPOA;
+import org.codice.alliance.nsili.common.GIAS.DateRange;
+import org.codice.alliance.nsili.common.GIAS.Domain;
+import org.codice.alliance.nsili.common.GIAS.FloatingPointRange;
+import org.codice.alliance.nsili.common.GIAS.IntegerRange;
 import org.codice.alliance.nsili.common.GIAS.Library;
+import org.codice.alliance.nsili.common.GIAS.RequirementMode;
 import org.codice.alliance.nsili.common.GIAS.View;
+import org.codice.alliance.nsili.common.NsiliConstants;
 import org.codice.alliance.nsili.common.UCO.AbsTime;
+import org.codice.alliance.nsili.common.UCO.Coordinate2d;
 import org.codice.alliance.nsili.common.UCO.Date;
 import org.codice.alliance.nsili.common.UCO.EntityGraph;
 import org.codice.alliance.nsili.common.UCO.InvalidInputParameter;
 import org.codice.alliance.nsili.common.UCO.NameName;
 import org.codice.alliance.nsili.common.UCO.NameValue;
 import org.codice.alliance.nsili.common.UCO.ProcessingFault;
+import org.codice.alliance.nsili.common.UCO.Rectangle;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
 import org.codice.alliance.nsili.common.UCO.Time;
+import org.codice.alliance.nsili.common.datamodel.NsiliDataModel;
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.slf4j.LoggerFactory;
 
 public class DataModelMgrImpl extends DataModelMgrPOA {
+
+    private static final String[] VIEW_NAMES = new String[]{ NsiliConstants.NSIL_ALL_VIEW };
+
+    private static View[] VIEWS;
 
     private static final AbsTime LAST_UPDATED = new AbsTime(new Date((short) 2,
             (short) 9,
             (short) 16), new Time((short) 2, (short) 0, (short) 0));
 
+    private static final AbsTime EARLIEST = new AbsTime(new Date((short) 1,
+            (short) 1,
+            (short) 1970), new Time((short) 18, (short) 0, (short) 0));
+
+    private static final AbsTime LATEST = new AbsTime(new Date((short) 1, (short) 1, (short) 2020),
+            new Time((short) 18, (short) 0, (short) 0));
+
+    private static final DateRange DATE_RANGE = new DateRange(EARLIEST, LATEST);
+
+    private static final String[] IMAGERY_DOMAIN =
+            {"VIS", "SL", "TI", "FL", "RD", "EO", "OP", "HR", "HS", "CP", "BP", "SAR", "SARIQ",
+                    "IR", "MS", "FP", "MRI", "XRAY", "CAT", "VD", "BARO", "CURRENT", "DEPTH",
+                    "WIND", "MAP", "PAT", "LEG", "DTEM", "MATR", "LOCG"};
+
+    private static final String[] DECOMPRESSION_TECHNIQUE =
+            {"NC", "NM", "C1", "M1", "I1", "C3", "M3", "C4", "M4", "C5", "M5", "C8", "M8"};
+
+    private static final String[] CLASSIFICATION_DOMAIN =
+            {"COSMIC TOP SECRET", "SECRET", "CONFIDENTIAL", "RESTRICTED", "UNCLASSIFIED",
+                    "NO CLASSIFICATION"};
+
+    private static final String[] MESSAGE_TYPE = {"XMPP"};
+
+    private static final String[] ENCODING_SCHEMES = {"264ON2", "MPEG-2"};
+
+    private static final String[] VIDEO_CATEGORIES = {"VIS", "IR", "MS", "HS"};
+
+    private static final FloatingPointRange[] FLOATING_POINT_RANGE = {new FloatingPointRange(0.0,
+            4294967295.0)};
+
+    private static final Rectangle RECTANGLE_DOMAIN = new Rectangle(new Coordinate2d(0.0, 0.0),
+            new Coordinate2d(0.0, 0.0));
+
     private static final short MAX_VERTICES = 10;
+
+    private NsiliDataModel nsiliDataModel = new NsiliDataModel();
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DataModelMgr.class);
+
+    static {
+        VIEWS = new View[VIEW_NAMES.length];
+        for (int i = 0; i < VIEW_NAMES.length; i++) {
+            VIEWS[i] = new View(VIEW_NAMES[i], true, new String[0]);
+        }
+    }
+
+    private static AttributeInformation createAttributeInformation(String attributeName,
+            AttributeType attributeType, Domain domain, String units, String reference,
+            RequirementMode requirementMode, String description, boolean sortable,
+            boolean updateable) {
+        return new AttributeInformation(attributeName,
+                attributeType,
+                domain,
+                units,
+                reference,
+                requirementMode,
+                description,
+                sortable,
+                updateable);
+    }
 
     @Override
     public AbsTime get_data_model_date(NameValue[] properties)
@@ -47,12 +129,16 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public String[] get_alias_categories(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
+        //TODO
+        LOGGER.warn("Called get_alias_categories");
         return new String[0];
     }
 
     @Override
     public NameName[] get_logical_aliases(String category, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
+        //TODO
+        LOGGER.warn("Called get_logical_aliases for: "+category);
         return new NameName[0];
     }
 
@@ -60,42 +146,59 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     public String get_logical_attribute_name(String view_name,
             ConceptualAttributeType attribute_type, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
+        //TODO
+        LOGGER.warn("Called get_logical_attribute_name for: "+view_name);
         return "";
     }
 
     @Override
     public View[] get_view_names(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return null; //TODO AttributeInformationGenerator.generateViewNames();
+        return VIEWS;
     }
 
     @Override
     public AttributeInformation[] get_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return null; //TODO AttributeInformationGenerator.getAttributesForView(view_name);
+        //TODO TROY REMOVE
+        LOGGER.warn("Getting attributes for "+view_name);
+
+        AttributeInformation[] attributes = nsiliDataModel.getAttributesForView(view_name).toArray(new AttributeInformation[0]);
+        LOGGER.warn("Returning attributes: "+getValueString(attributes));
+
+        return attributes;
     }
 
     @Override
     public AttributeInformation[] get_queryable_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return null; //TODO AttributeInformationGenerator.getAttributesForView(view_name);
+        //TODO TROY REMOVE
+        LOGGER.warn("Getting queryable attributes for "+view_name);
+        return nsiliDataModel.getAttributesForView(view_name).toArray(new AttributeInformation[0]);
     }
 
     @Override
     public EntityGraph get_entities(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return new EntityGraph();
+        //TODO -- Real implementation of graph ?
+        LOGGER.warn("Called get_entities with view: "+view_name);
+
+        return nsiliDataModel.getEntityGraph(view_name);
     }
 
     @Override
     public AttributeInformation[] get_entity_attributes(String aEntity, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return new AttributeInformation[0];
+        //TODO
+        LOGGER.warn("Called: get_entity_attributes for: "+aEntity);
+        return nsiliDataModel.getAttributeInformation(aEntity).toArray(new AttributeInformation[0]);
     }
 
     @Override
     public Association[] get_associations(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
+        //TODO
+        LOGGER.warn("Called get_associations");
         return new Association[0];
     }
 
@@ -120,5 +223,16 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public Library[] get_libraries() throws ProcessingFault, SystemFault {
         throw new NO_IMPLEMENT();
+    }
+
+    private static String getValueString(AttributeInformation[] array) {
+        Collection<String> strColl = new ArrayList<>(array.length);
+        for (AttributeInformation attributeInformation : array) {
+            strColl.add(attributeInformation.attribute_name);
+        }
+        return strColl.stream()
+                .map(Object::toString)
+                .sorted()
+                .collect(Collectors.joining(", "));
     }
 }

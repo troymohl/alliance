@@ -13,19 +13,39 @@
  */
 package org.codice.alliance.nsili.endpoint;
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.ExecutionException;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.alliance.nsili.common.GIAS.LibraryDescription;
+import org.codice.alliance.nsili.common.NsiliCommonUtils;
+import org.codice.alliance.nsili.common.NsiliConstants;
 import org.codice.alliance.nsili.common.UCO.ProcessingFault;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestNsiliLibraryImpl {
+import ddf.security.Subject;
+import ddf.security.service.SecurityManager;
+import ddf.security.service.SecurityServiceException;
+
+public class TestNsiliLibraryImpl extends NsiliCommonTest {
 
     private static final int TEST_CORBA_PORT = 20012;
 
@@ -41,12 +61,15 @@ public class TestNsiliLibraryImpl {
 
     private NsiliEndpoint nsiliEndpoint = null;
 
+    private SecurityManager securityManager = mock(SecurityManager.class);
+
     @Before
-    public void setup() {
+    public void setup() throws SecurityServiceException {
         System.setProperty("org.codice.ddf.system.hostname", TEST_HOSTNAME);
         System.setProperty("user.country", TEST_COUNTRY);
         System.setProperty("org.codice.ddf.system.organization", TEST_ORGANIZATION);
 
+        setupCommonMocks();
         createNsiliEndpoint();
         library = nsiliEndpoint.getLibrary();
     }
@@ -57,7 +80,7 @@ public class TestNsiliLibraryImpl {
 
         //Right now no managers implemented, so we should have empty array
         assertThat(managerTypes, notNullValue());
-        assertThat(managerTypes.length, is(1));
+        assertThat(managerTypes.length, is(3));
     }
 
     @Test
@@ -77,6 +100,7 @@ public class TestNsiliLibraryImpl {
 
     private void createNsiliEndpoint() {
         nsiliEndpoint = new NsiliEndpoint();
+        nsiliEndpoint.setSecurityManager(securityManager);
         nsiliEndpoint.setCorbaPort(TEST_CORBA_PORT);
     }
 }

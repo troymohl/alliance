@@ -53,7 +53,6 @@ public class ResultDAGConverter {
         addCardNodeWithAttributes(graph, productNode, metacard, orb);
         addFileNodeWithAttributes(graph, productNode, metacard, orb);
 
-
         graph.addVertex(productNode);
 
         NsiliCommonUtils.setUCOEdgeIds(graph);
@@ -71,9 +70,22 @@ public class ResultDAGConverter {
         graph.addVertex(cardNode);
         graph.addEdge(productNode, cardNode);
 
-        addStringAttribute(graph, cardNode, NsiliConstants.IDENTIFIER, metacard.getId(), orb);
-        addDateAttribute(graph, cardNode, NsiliConstants.SOURCE_DATE_TIME_MODIFIED, metacard.getCreatedDate(), orb);
-        addDateAttribute(graph, cardNode, NsiliConstants.DATE_TIME_MODIFIED, metacard.getCreatedDate(), orb);
+        if (metacard.getId() != null) {
+            addStringAttribute(graph, cardNode, NsiliConstants.IDENTIFIER, metacard.getId(), orb);
+        }
+
+        if (metacard.getCreatedDate() != null) {
+            addDateAttribute(graph,
+                    cardNode,
+                    NsiliConstants.SOURCE_DATE_TIME_MODIFIED,
+                    metacard.getCreatedDate(),
+                    orb);
+            addDateAttribute(graph,
+                    cardNode,
+                    NsiliConstants.DATE_TIME_MODIFIED,
+                    metacard.getCreatedDate(),
+                    orb);
+        }
     }
 
     public static void addFileNodeWithAttributes(DirectedAcyclicGraph<Node, Edge> graph,
@@ -88,11 +100,9 @@ public class ResultDAGConverter {
         Attribute pocAttr = metacard.getAttribute(Metacard.POINT_OF_CONTACT);
         if (pocAttr != null) {
             String pocString = String.valueOf(pocAttr.getValue());
-            addStringAttribute(graph,
-                    fileNode,
-                    NsiliConstants.CREATOR,
-                    pocString,
-                    orb);
+            if (pocString != null) {
+                addStringAttribute(graph, fileNode, NsiliConstants.CREATOR, pocString, orb);
+            }
         }
 //        addTestDateAttribute(graph, fileNode, NsiliConstants.DATE_TIME_DECLARED, orb);
         if (metacard.getResourceSize() != null) {
@@ -108,8 +118,21 @@ public class ResultDAGConverter {
             }
         }
 
-        addStringAttribute(graph, fileNode, NsiliConstants.FORMAT, metacard.getContentTypeName(), orb);
-        addStringAttribute(graph, fileNode, NsiliConstants.FORMAT_VERSION, metacard.getContentTypeVersion(), orb);
+        if (metacard.getContentTypeName() != null) {
+            addStringAttribute(graph,
+                    fileNode,
+                    NsiliConstants.FORMAT,
+                    metacard.getContentTypeName(),
+                    orb);
+        }
+
+        if (metacard.getContentTypeVersion() != null) {
+            addStringAttribute(graph,
+                    fileNode,
+                    NsiliConstants.FORMAT_VERSION,
+                    metacard.getContentTypeVersion(),
+                    orb);
+        }
 
         if (metacard.getResourceURI() != null) {
             addStringAttribute(graph,
@@ -119,7 +142,9 @@ public class ResultDAGConverter {
                     orb);
         }
 
-        addStringAttribute(graph, fileNode, NsiliConstants.TITLE, metacard.getTitle(), orb);
+        if (metacard.getTitle() != null ) {
+            addStringAttribute(graph, fileNode, NsiliConstants.TITLE, metacard.getTitle(), orb);
+        }
     }
 
     public static Node createRootNode(ORB orb) {

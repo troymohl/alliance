@@ -180,6 +180,8 @@ public class NsiliConstants {
 
     public static final String TITLE = "title";
 
+    public static final String IS_PRODUCT_LOCAL = "isProductLocal";
+
     public static final String CLOUD_COVER_PCT = "cloudCoverPercentage";
 
     public static final String COMMENTS = "comments";
@@ -209,6 +211,8 @@ public class NsiliConstants {
     public static final String SCANNING_MODE = "scanningMode";
 
     public static final String STATUS = "status";
+
+    public static final String NUM_OF_PARTS = "numberOfParts";
 
     public static final String FOR_ACTION = "forAction";
 
@@ -241,5 +245,17 @@ public class NsiliConstants {
     public static final String ORIGINATORS_REQ_SERIAL_NUM = "originatorsRequestSerialNumber";
 
     public static final String PRIORITY = "priority";
+
+    public static final String FILE_TYPE = "fileType";
+
+    public static final String URL = "URL";
+
+    public static final String IS_FILE_LOCAL = "isFileLocal";
+
+    public static final String AMPLIFICATION = "amplification";
+
+    public static final String CONTRIBUTOR = "contributor";
+
+    public static final String RELATIONSHIP = "relationship";
 
 }

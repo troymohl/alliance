@@ -26,6 +26,8 @@ import org.codice.alliance.nsili.common.GIAS.AccessCriteria;
 import org.codice.alliance.nsili.common.GIAS.AlterationSpec;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgr;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrHelper;
+import org.codice.alliance.nsili.common.GIAS.CreationMgr;
+import org.codice.alliance.nsili.common.GIAS.CreationMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgr;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.DeliveryDetails;
@@ -55,6 +57,7 @@ import org.codice.alliance.nsili.common.GIAS.SortAttribute;
 import org.codice.alliance.nsili.common.GIAS.SubmitQueryRequest;
 import org.codice.alliance.nsili.common.GIAS.TailoringSpec;
 import org.codice.alliance.nsili.common.GIAS.ValidationResults;
+import org.codice.alliance.nsili.common.NsiliConstants;
 import org.codice.alliance.nsili.common.NsiliManagerType;
 import org.codice.alliance.nsili.common.UCO.AbsTime;
 import org.codice.alliance.nsili.common.UCO.AbsTimeHelper;
@@ -76,6 +79,8 @@ import org.codice.alliance.nsili.common.UID.Product;
 import org.codice.alliance.nsili.common.UID._ProductStub;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.TCKind;
+import org.omg.PortableServer.POA;
 
 public class NsiliClient {
 
@@ -89,7 +94,9 @@ public class NsiliClient {
 
     private static DataModelMgr dataModelMgr;
 
-    private static final AccessCriteria accessCriteria = new AccessCriteria("", "", "");
+    private static CreationMgr creationMgr;
+
+    private static final AccessCriteria accessCriteria = new AccessCriteria("test", "test", "");
 
     ORB orb;
 
@@ -97,11 +104,12 @@ public class NsiliClient {
         this.orb = orb;
     }
 
-    public void initLibrary(String iorFilePath) {
+    public void initLibrary(String iorFilePath) throws Exception {
         org.omg.CORBA.Object obj = orb.string_to_object(iorFilePath);
         if (obj == null) {
             System.err.println("Cannot read " + iorFilePath);
         }
+
         library = LibraryHelper.narrow(obj);
         System.out.println("Library Initialized");
     }
@@ -146,6 +154,10 @@ public class NsiliClient {
                 LibraryManager libraryManager = library.get_manager("DataModelMgr", accessCriteria);
                 dataModelMgr = DataModelMgrHelper.narrow(libraryManager);
                 System.out.println("Source returned : " + dataModelMgr.getClass() + "\n");
+            } else if (managerType.equals(NsiliManagerType.CREATION_MGR.getSpecName())) {
+                System.out.println("Getting CreationMgr from source...");
+                LibraryManager libraryManager = library.get_manager("CreationMgr", accessCriteria);
+                creationMgr = CreationMgrHelper.narrow(libraryManager);
             }
         }
     }
@@ -202,14 +214,14 @@ public class NsiliClient {
 
                 String result = null;
 
-                if (node.value.type()
-                        .toString()
-                        .contains("unbounded string")) {
+                if (node.value.type().kind() == TCKind.tk_wstring) {
+                    result = node.value.extract_wstring();
+                } else if (node.value.type().kind() == TCKind.tk_string) {
                     result = node.value.extract_string();
-                } else if (node.value.type()
-                        .toString()
-                        .contains("ulong")) {
-                    result = "" + node.value.extract_ulong();
+                } else if (node.value.type().kind() == TCKind.tk_long) {
+                    result = String.valueOf(node.value.extract_ulong());
+                } else if (node.value.type().kind() == TCKind.tk_ulong) {
+                    result = String.valueOf(node.value.extract_long());
                 } else if (node.value.type()
                         .toString()
                         .contains("AbsTime")) {
@@ -220,9 +232,7 @@ public class NsiliClient {
                     String absHour = absTime.aTime.hour + ":" + absTime.aTime.minute + ":"
                             + absTime.aTime.second;
                     result = absDate + absHour;
-                } else if (node.value.type()
-                        .toString()
-                        .contains("boolean")) {
+                } else if (node.value.type().kind() == TCKind.tk_boolean) {
                     result = "" + node.value.extract_boolean();
                 } else if (node.value.type()
                         .toString()
@@ -230,14 +240,10 @@ public class NsiliClient {
                     Rectangle rectangle = RectangleHelper.extract(node.value);
                     result = "" + rectangle.lower_right.x + "," + rectangle.lower_right.y + " "
                             + rectangle.upper_left.x + "," + rectangle.upper_left.y;
-                } else if (node.value.type()
-                        .toString()
-                        .contains("Short")) {
-                    result = "" + node.value.extract_short();
-                } else if (node.value.type()
-                        .toString()
-                        .contains("double")) {
-                    result = "" + node.value.extract_double();
+                } else if (node.value.type().kind() == TCKind.tk_short) {
+                    result = String.valueOf(node.value.extract_short());
+                } else if (node.value.type().kind() == TCKind.tk_double) {
+                    result = String.valueOf(node.value.extract_double());
                 }
                 System.out.printf("%25s : %s%n", node.attribute_name, result);
             }

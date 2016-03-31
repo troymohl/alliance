@@ -310,21 +310,11 @@ public class BqsConverter {
         }
 
         @Override
-        public void enterSimple_attribute_name(BqsParser.Simple_attribute_nameContext ctx) {
-            print(ctx.getText());
-        }
-
-        @Override
-        public void exitSimple_attribute_name(BqsParser.Simple_attribute_nameContext ctx) {
-            attribute = ctx.getText();
-        }
-
-        @Override
         public void enterComp_op(BqsParser.Comp_opContext ctx) {
             print(ctx.getText());
             if (ctx.EQUAL() != null) {
                 bqsOperatorStack.push(BqsOperator.EQUAL);
-            } else if (ctx.NOT() != null) {
+            } else if (ctx.NOTEQ() != null) {
                 bqsOperatorStack.push(BqsOperator.NOT);
             } else if (ctx.GT() != null) {
                 bqsOperatorStack.push(BqsOperator.GT);

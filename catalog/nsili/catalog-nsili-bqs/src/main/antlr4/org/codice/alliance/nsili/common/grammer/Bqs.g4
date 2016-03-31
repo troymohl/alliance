@@ -2,17 +2,16 @@ grammar Bqs;
 
 query : term (BLANK OR BLANK term)* ;
 term : factor (BLANK AND BLANK factor)* ;
-factor : primary (NOT BLANK primary)*;
+factor : (NOT BLANK)* primary;
 primary :
-    simple_attribute_name BLANK comp_op BLANK constant_expression
-    | simple_attribute_name BLANK geo_op BLANK geo_element
-    | simple_attribute_name BLANK rel_geo_op BLANK number BLANK dist_units BLANK OF BLANK geo_element
-    | simple_attribute_name BLANK LIKE BLANK quoted_string
+    attribute_name BLANK comp_op BLANK constant_expression
+    | attribute_name BLANK geo_op BLANK geo_element
+    | attribute_name BLANK rel_geo_op BLANK number BLANK dist_units BLANK OF BLANK geo_element
+    | attribute_name BLANK LIKE BLANK quoted_string
     | attribute_name BLANK EXISTS
     | LPAREN query RPAREN;
-attribute_name : CHARACTER | (CHARACTER COLON)* CHARACTER DOT simple_attribute_name;
-simple_attribute_name : CHARACTER;
-comp_op : EQUAL | LT | GT | NOT | LTE | GTE;
+attribute_name : ((CHARACTER)+ (UNDERSCORE) (CHARACTER)+ COLON)* (((CHARACTER)+ (UNDERSCORE))* (CHARACTER)+ DOT)*  (CHARACTER)+;
+comp_op : EQUAL | LT | GT | NOTEQ| LTE | GTE;
 constant_expression : number | quoted_string | date;
 date : SINGLEQT year SLASH month SLASH day (BLANK hour COLON minute COLON second)* SINGLEQT;
 year : DIGIT DIGIT DIGIT DIGIT;
@@ -28,7 +27,7 @@ geo_element : point | polygon | rectangle | circle | ellipse | line | polygon_se
 sign : PLUS | MINUS;
 number : (sign)* digit_seq ( DOT digit_seq )*;
 digit_seq : ( DIGIT )+;
-quoted_string : SINGLEQT CHARACTER SINGLEQT;
+quoted_string : SINGLEQT (MATCHING_VALID_CHAR)+ SINGLEQT;
 latitude : number;
 longitude : number;
 dms : ( DIGIT )* DIGIT DIGIT COLON DIGIT DIGIT COLON DIGIT DIGIT DOT DIGIT hemi;
@@ -49,14 +48,14 @@ minor_axis_len : number BLANK dist_units;
 north_angle : number;
 line : LINE LPAREN coordinate Del coordinate ( Del coordinate )* RPAREN;
 polygon_set : POLYGON_SET LPAREN polygon ( Del polygon )* RPAREN;
-OR : 'or';
-AND : 'and';
-NOT : 'not';
-OF : 'of';
-LIKE : 'like';
+OR : 'or' | 'OR';
+AND : 'and' | 'AND';
+NOT : 'not' | 'NOT';
+OF : 'of' | 'OF';
+LIKE : 'like' | 'LIKE';
 COLON : ':';
 DOT : '.';
-EXISTS : 'exists';
+EXISTS : 'exists' | 'EXISTS';
 DIGIT : '0'..'9';
 hemi : 'N' | 'S' | 'E' | 'W';
 LPAREN : '(';
@@ -92,4 +91,8 @@ FEET_UPPER : 'FEET';
 PLUS : '+';
 MINUS : '-';
 BLANK : ' ';
-CHARACTER : ('a'..'z' | 'A'..'Z')+;
+VALID_CHAR : 'a'..'z' | 'A'..'Z';
+MATCHING_VALID_CHAR : VALID_CHAR | '%';
+CHARACTER : (VALID_CHAR)+;
+UNDERSCORE : '_';
+MATCHING_CHARACTER : (MATCHING_VALID_CHAR)+;

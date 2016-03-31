@@ -16,6 +16,7 @@ package org.codice.alliance.nsili.endpoint;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,10 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-public class TestNsiliWebEndpoint {
+import ddf.security.service.SecurityManager;
+import ddf.security.service.SecurityServiceException;
+
+public class TestNsiliWebEndpoint extends NsiliCommonTest {
 
     private static final int TEST_CORBA_PORT = 20011;
 
@@ -32,7 +36,8 @@ public class TestNsiliWebEndpoint {
     private NsiliWebEndpoint nsiliWebEndpoint;
 
     @Before
-    public void setup() {
+    public void setup() throws SecurityServiceException {
+        setupCommonMocks();
         createNsiliEndpoint();
         createWebEndpoint();
     }
@@ -53,6 +58,7 @@ public class TestNsiliWebEndpoint {
 
     private void createNsiliEndpoint() {
         nsiliEndpoint = new NsiliEndpoint();
+        nsiliEndpoint.setSecurityManager(securityManager);
         nsiliEndpoint.setCorbaPort(TEST_CORBA_PORT);
     }
 

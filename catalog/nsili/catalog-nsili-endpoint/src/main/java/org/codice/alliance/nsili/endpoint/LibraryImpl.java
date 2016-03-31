@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.codice.alliance.nsili.common.GIAS.AccessCriteria;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrHelper;
+import org.codice.alliance.nsili.common.GIAS.CreationMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.LibraryDescription;
 import org.codice.alliance.nsili.common.GIAS.LibraryManager;
@@ -32,6 +33,7 @@ import org.codice.alliance.nsili.common.UCO.ProcessingFault;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
 import org.codice.alliance.nsili.common.UCO.exception_details;
 import org.codice.alliance.nsili.endpoint.managers.CatalogMgrImpl;
+import org.codice.alliance.nsili.endpoint.managers.CreationMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.DataModelMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.OrderMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.ProductMgrImpl;
@@ -52,14 +54,14 @@ public class LibraryImpl extends LibraryPOA {
     private static final String LIBRARY_VERSION = "NSILI|1.0";
 
         private List<String> managers = Arrays.asList(
-//                "OrderMgr",
-                NsiliManagerType.CATALOG_MGR.getSpecName()
-//                "ProductMgr",
-//                "DataModelMgr"
+//                NsiliManagerType.ORDER_MGR.getSpecName(),
+                NsiliManagerType.CATALOG_MGR.getSpecName(),
+                NsiliManagerType.CREATION_MGR.getSpecName(),
+//                NsiliManagerType.PRODUCT_MGR.getSpecName(),
+                NsiliManagerType.DATA_MODEL_MGR.getSpecName()
                 /* Optional :
                 "QueryOrderMgr",
                 "StandingQueryMgr",
-                "CreationMgr",
                 "UpdateMgr" */);
 
     private static final String ENCODING = "UTF-8";
@@ -96,7 +98,8 @@ public class LibraryImpl extends LibraryPOA {
 
         org.omg.CORBA.Object obj;
 
-
+        //TODO REMOVE
+        LOGGER.error("get_manager called on the library, wanting: "+manager_type);
 
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
             CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa);
@@ -106,7 +109,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error("Error activating CatalogMgr", e);
+                LOGGER.error(String.format("Error activating CatalogMgr: %s", e));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -117,7 +120,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         orderMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error("Error activating OrderMgr", e);
+                LOGGER.error(String.format("Error activating OrderMgr: %s", e));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -128,7 +131,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         productMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error("Error activating ProductMgr", e);
+                LOGGER.error(String.format("Error activating ProductMgr: %s", e));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -139,11 +142,22 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         dataModelMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error("Error activating DataModelMgr", e);
+                LOGGER.error(String.format("Error activating DataModelMgr: %s", e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                     DataModelMgrHelper.id());
+        } else if (manager_type.equals(NsiliManagerType.CREATION_MGR.getSpecName())){
+            CreationMgrImpl creationMgr = new CreationMgrImpl();
+            try {
+                poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
+                        creationMgr);
+            } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
+                LOGGER.error(String.format("Error activating CreationMgr: %s", e.getLocalizedMessage()));
+            }
+
+            obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
+                    CreationMgrHelper.id());
         } else {
             String[] bad_params = {manager_type};
             throw new InvalidInputParameter("UnknownMangerType",

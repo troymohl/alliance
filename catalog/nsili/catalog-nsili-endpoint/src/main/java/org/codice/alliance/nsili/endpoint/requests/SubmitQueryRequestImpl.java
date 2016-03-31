@@ -69,10 +69,10 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
                 }
             }
             if (!dags.isEmpty()) {
-                results.value = dags.toArray(results.value);
+                results.value = dags.toArray(new DAG[queryResults.size()]);
 
                 //TODO REMOVE
-                LOGGER.debug("{} : Number of results being returned: "+results.value.length);
+                LOGGER.debug("Number of results being returned: "+results.value.length+ " requested: "+maxNumReturnedHits);
             } else {
                 //TODO REMOVE
                 LOGGER.debug("{} : No results will be returned");
