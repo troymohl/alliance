@@ -118,6 +118,9 @@ public class BqsConverter {
     public Filter convertBQSToDDF(String query) {
         LOGGER.debug("ORIG Query: " + query);
 
+        //TODO REMOVE
+        System.out.println("ORIG Query: " + query);
+
         ANTLRInputStream inputStream = new ANTLRInputStream(query);
         BqsLexer lex = new BqsLexer(inputStream); // transforms characters into tokens
         CommonTokenStream tokens = new CommonTokenStream(lex); // a token stream
@@ -592,6 +595,7 @@ public class BqsConverter {
 
             } else if (!quotedStr.isEmpty()) {
                 Filter filter = null;
+                quotedStr = normalizeSearchString(quotedStr);
                 if (bqsOperator == BqsOperator.NOT) {
                     filter = filterBuilder.attribute(attribute)
                             .notEqualTo()
@@ -911,17 +915,18 @@ public class BqsConverter {
             }
             BqsOperator bqsOperator = bqsOperatorStack.peek();
 
+            String stringValue = normalizeSearchString(ctx.getText());
             if (bqsOperator == BqsOperator.LIKE || bqsOperator == BqsOperator.EQUAL) {
                 Filter filter = null;
 
                 if (twoOperatorsBack != null && twoOperatorsBack == BqsOperator.NOT) {
                     filter = filterBuilder.attribute(attribute)
                             .notEqualTo()
-                            .text(ctx.getText());
+                            .text(stringValue);
                 } else {
                     filter = filterBuilder.attribute(attribute)
                             .like()
-                            .text(ctx.getText());
+                            .text(stringValue);
                 }
 
                 if (!nestedOperatorStack.isEmpty()) {
@@ -1257,6 +1262,10 @@ public class BqsConverter {
 
         private Number getNumber(String numberStr) {
             return NumberUtils.createNumber(numberStr);
+        }
+
+        private String normalizeSearchString(String searchString) {
+            return searchString.replaceAll("%", "*");
         }
     }
 }
