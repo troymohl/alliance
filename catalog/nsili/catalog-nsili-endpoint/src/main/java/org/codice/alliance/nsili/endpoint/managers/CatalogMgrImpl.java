@@ -48,7 +48,6 @@ import ddf.catalog.CatalogFramework;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.filter.FilterBuilder;
-import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
@@ -72,9 +71,12 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
     private Subject guestSubject;
 
-    public CatalogMgrImpl(POA poa) {
+    private FilterBuilder filterBuilder;
+
+    public CatalogMgrImpl(POA poa, FilterBuilder filterBuilder) {
         this.poa_ = poa;
-        bqsConverter = new BqsConverter();
+        this.filterBuilder = filterBuilder;
+        bqsConverter = new BqsConverter(filterBuilder);
     }
 
     public void setCatalogFramework(CatalogFramework catalogFramework) {
@@ -191,15 +193,10 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
-        FilterBuilder filterBuilder = new GeotoolsFilterBuilder();
-        Filter queryFilter = filterBuilder.attribute(Metacard.ANY_TEXT)
-                .like()
-                .text("*");
-
         //TODO REMOVE
-        LOGGER.warn("Filter: "+queryFilter.toString());
+        LOGGER.warn("Filter: "+parsedFilter.toString());
 
-        QueryImpl catalogQuery = new QueryImpl(queryFilter);
+        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
 
         if (defaultTimeout > 0) {
             catalogQuery.setTimeoutMillis(defaultTimeout);
@@ -227,15 +224,14 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
-        FilterBuilder filterBuilder = new GeotoolsFilterBuilder();
         Filter queryFilter = filterBuilder.attribute(Metacard.ANY_TEXT)
                 .like()
                 .text("*");
 
         //TODO REMOVE
-        LOGGER.warn("Filter: "+queryFilter.toString());
+        LOGGER.warn("Filter: "+parsedFilter.toString());
 
-        QueryImpl catalogQuery = new QueryImpl(queryFilter);
+        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
 
         if (defaultTimeout > 0) {
             catalogQuery.setTimeoutMillis(defaultTimeout);

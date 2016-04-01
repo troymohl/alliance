@@ -25,10 +25,13 @@
 
     <reference id="securityManager" interface="ddf.security.service.SecurityManager"/>
 
+    <reference id="filterBuilder" interface="ddf.catalog.filter.FilterBuilder"/>
+
     <bean id="nsiliEndpoint" class="org.codice.alliance.nsili.endpoint.NsiliEndpoint" destroy-method="shutdown" >
         <cm:managed-properties persistent-id="org.codice.alliance.nsili.endpoint"
                                update-strategy="container-managed"/>
         <property name="framework" ref="framework" />
+        <property name="filterBuilder" ref="filterBuilder" />
         <property name="securityHandler" ref="securityHandler" />
         <property name="securityManager" ref="securityManager" />
     </bean>

@@ -105,9 +105,12 @@ public class BqsConverter {
 
     private static final String TEST_BQS_SAM1 = "NSIL_CARD.identifier like '%' AND (not NSIL_PRODUCT:NSIL_CARD.status = 'OBSOLETE')";
 
+    private FilterBuilder filterBuilder;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BqsConverter.class);
 
-    public BqsConverter() {
+    public BqsConverter(FilterBuilder filterBuilder) {
+        this.filterBuilder = filterBuilder;
     }
 
     public Filter convertBQSToDDF(Query query) {
@@ -125,7 +128,6 @@ public class BqsConverter {
         BqsLexer lex = new BqsLexer(inputStream); // transforms characters into tokens
         CommonTokenStream tokens = new CommonTokenStream(lex); // a token stream
         BqsParser parser = new BqsParser(tokens); // transforms tokens into parse trees
-        FilterBuilder filterBuilder = new GeotoolsFilterBuilder();
         BqsTreeWalkerListener bqsListener = new BqsTreeWalkerListener(filterBuilder);
 
         ParseTree tree = parser.query();
@@ -144,7 +146,7 @@ public class BqsConverter {
     }
 
     public static void main(String[] args) {
-        BqsConverter converter = new BqsConverter();
+        BqsConverter converter = new BqsConverter(new GeotoolsFilterBuilder());
         converter.convertBQSToDDF(TEST_BQS_SAM1);
     }
 
@@ -598,7 +600,7 @@ public class BqsConverter {
                 quotedStr = normalizeSearchString(quotedStr);
                 if (bqsOperator == BqsOperator.NOT) {
                     filter = filterBuilder.attribute(attribute)
-                            .notEqualTo()
+                             .notEqualTo()
                             .text(quotedStr);
                 } else if (bqsOperator == BqsOperator.EQUAL) {
                     filter = filterBuilder.attribute(attribute)

@@ -22,6 +22,8 @@ import org.opengis.filter.Filter;
 
 import com.sun.media.jfxmedia.logging.Logger;
 
+import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
+
 public class TestBqsConverter {
 
     private static final String BQS_SIMPLE_ID = "(identifierUUID like 'Test')";
@@ -65,7 +67,7 @@ public class TestBqsConverter {
     private static final String BQS_RELATIVE_BEYOND =
             "identifierMission like 'Test' and (spatialGeographicReferenceBox beyond 6 statute miles of CIRCLE(46.155441760892586,81.76504326406543,25.6 meters))";
 
-    private BqsConverter bqsConverter = new BqsConverter();
+    private BqsConverter bqsConverter = new BqsConverter(new GeotoolsFilterBuilder());
 
     @Before
     public void setup() {

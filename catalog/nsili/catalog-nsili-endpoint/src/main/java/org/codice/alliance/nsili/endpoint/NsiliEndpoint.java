@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddf.catalog.CatalogFramework;
+import ddf.catalog.filter.FilterBuilder;
 import ddf.security.Subject;
 import ddf.security.service.SecurityManager;
 import ddf.security.service.SecurityServiceException;
@@ -60,6 +61,8 @@ public class NsiliEndpoint {
     private AuthenticationHandler securityHandler;
 
     private SecurityManager securityManager;
+
+    private FilterBuilder filterBuilder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NsiliEndpoint.class);
 
@@ -119,6 +122,10 @@ public class NsiliEndpoint {
         this.framework = framework;
     }
 
+    public void setFilterBuilder(FilterBuilder filterBuilder) {
+        this.filterBuilder = filterBuilder;
+    }
+
     public void init() {
         try {
             orb = getOrbForServer(corbaPort);
@@ -156,6 +163,7 @@ public class NsiliEndpoint {
         library.setCatalogFramework(framework);
         Subject guestSubject = getGuestSubject();
         library.setGuestSubject(guestSubject);
+        library.setFilterBuilder(filterBuilder);
 
         org.omg.CORBA.Object objref = rootPOA.servant_to_reference(library);
 

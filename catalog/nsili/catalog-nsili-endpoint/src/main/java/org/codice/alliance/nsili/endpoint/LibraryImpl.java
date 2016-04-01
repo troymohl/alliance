@@ -47,6 +47,7 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 import org.slf4j.LoggerFactory;
 
 import ddf.catalog.CatalogFramework;
+import ddf.catalog.filter.FilterBuilder;
 import ddf.security.Subject;
 
 public class LibraryImpl extends LibraryPOA {
@@ -72,6 +73,8 @@ public class LibraryImpl extends LibraryPOA {
 
     private Subject guestSubject;
 
+    private FilterBuilder filterBuilder;
+
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LibraryImpl.class);
 
     public LibraryImpl(POA poa) {
@@ -84,6 +87,10 @@ public class LibraryImpl extends LibraryPOA {
 
     public void setGuestSubject(Subject guestSubject) {
         this.guestSubject = guestSubject;
+    }
+
+    public void setFilterBuilder(FilterBuilder filterBuilder) {
+        this.filterBuilder = filterBuilder;
     }
 
     @Override
@@ -102,7 +109,7 @@ public class LibraryImpl extends LibraryPOA {
         LOGGER.error("get_manager called on the library, wanting: "+manager_type);
 
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
-            CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa);
+            CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa, filterBuilder);
             catalogMgr.setCatalogFramework(catalogFramework);
             catalogMgr.setGuestSubject(guestSubject);
             try {
