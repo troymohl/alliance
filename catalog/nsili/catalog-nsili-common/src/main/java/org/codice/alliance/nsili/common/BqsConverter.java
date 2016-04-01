@@ -103,6 +103,8 @@ public class BqsConverter {
                     + "(releasability like 'Test') or (partIdentifier like 'Test') or (creator like 'Test') or "
                     + "(encodingScheme like 'Test')) and (dateTimeModified >= '2016/03/14 06:58:31')";
 
+    private static final String TEST_BQS_SAM1 = "NSIL_CARD.identifier like '%' AND (not NSIL_PRODUCT:NSIL_CARD.status = 'OBSOLETE')";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BqsConverter.class);
 
     public BqsConverter() {
@@ -140,7 +142,7 @@ public class BqsConverter {
 
     public static void main(String[] args) {
         BqsConverter converter = new BqsConverter();
-        converter.convertBQSToDDF(BASIC_BQS_5f);
+        converter.convertBQSToDDF(TEST_BQS_SAM1);
     }
 
     class BqsTreeWalkerListener implements BqsListener {
@@ -266,12 +268,17 @@ public class BqsConverter {
 
         @Override
         public void enterFactor(BqsParser.FactorContext ctx) {
-
+            if (ctx.NOT() != null) {
+                print("NOT");
+                bqsOperatorStack.push(BqsOperator.NOT);
+            }
         }
 
         @Override
         public void exitFactor(BqsParser.FactorContext ctx) {
-
+            if (ctx.NOT() != null && bqsOperatorStack.peek() == BqsOperator.NOT) {
+                bqsOperatorStack.pop();
+            }
         }
 
         @Override
@@ -340,11 +347,14 @@ public class BqsConverter {
         @Override
         public void exitConstant_expression(BqsParser.Constant_expressionContext ctx) {
             BqsOperator bqsOperator = bqsOperatorStack.pop();
+            boolean shouldNegate = false;
+            if (bqsOperatorStack.peek() == BqsOperator.NOT) {
+                shouldNegate = true;
+            }
 
             if (!dateStr.isEmpty()) {
                 Filter filter = null;
                 try {
-
                     Date date;
                     try {
                         SimpleDateFormat dateFormat = new SimpleDateFormat(BQS_FULL_DATE_FORMAT);
@@ -357,36 +367,70 @@ public class BqsConverter {
                     }
 
                     if (date != null) {
-                        if (bqsOperator == BqsOperator.GTE) {
-                            filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
-                                            .after()
-                                            .date(date),
-                                    filterBuilder.attribute(attribute)
-                                            .equalTo()
-                                            .date(date));
-                        } else if (bqsOperator == BqsOperator.GT) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .after()
-                                    .date(date);
-                        } else if (bqsOperator == BqsOperator.LT) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .before()
-                                    .date(date);
-                        } else if (bqsOperator == BqsOperator.LTE) {
-                            filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
-                                            .before()
-                                            .date(date),
-                                    filterBuilder.attribute(attribute)
-                                            .equalTo()
-                                            .date(date));
-                        } else if (bqsOperator == BqsOperator.NOT) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .notEqualTo()
-                                    .date(date);
-                        } else if (bqsOperator == BqsOperator.EQUAL) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .equalTo()
-                                    .date(date);
+                        if (shouldNegate) {
+                            if (bqsOperator == BqsOperator.GTE) {
+                                filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
+                                                .before()
+                                                .date(date),
+                                        filterBuilder.attribute(attribute)
+                                                .equalTo()
+                                                .date(date));
+                            } else if (bqsOperator == BqsOperator.GT) {
+                                filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
+                                                .before()
+                                                .date(date),
+                                        filterBuilder.attribute(attribute)
+                                                .equalTo()
+                                                .date(date));
+                            } else if (bqsOperator == BqsOperator.LT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .after()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.LTE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .after()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.NOT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .notEqualTo()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.EQUAL) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .notEqualTo()
+                                        .date(date);
+                            }
+                        } else {
+                            if (bqsOperator == BqsOperator.GTE) {
+                                filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
+                                                .after()
+                                                .date(date),
+                                        filterBuilder.attribute(attribute)
+                                                .equalTo()
+                                                .date(date));
+                            } else if (bqsOperator == BqsOperator.GT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .after()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.LT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .before()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.LTE) {
+                                filter = filterBuilder.anyOf(filterBuilder.attribute(attribute)
+                                                .before()
+                                                .date(date),
+                                        filterBuilder.attribute(attribute)
+                                                .equalTo()
+                                                .date(date));
+                            } else if (bqsOperator == BqsOperator.NOT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .notEqualTo()
+                                        .date(date);
+                            } else if (bqsOperator == BqsOperator.EQUAL) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .equalTo()
+                                        .date(date);
+                            }
                         }
 
                         if (filter != null) {
@@ -710,6 +754,11 @@ public class BqsConverter {
         @Override
         public void exitGeo_element(BqsParser.Geo_elementContext ctx) {
             BqsOperator operator = bqsOperatorStack.pop();
+            boolean shouldNegate = false;
+            //Peek and if it's negated pop that one off too
+            if (bqsOperatorStack.peek() == BqsOperator.NOT) {
+                shouldNegate = true;
+            }
 
             Filter filter = null;
 
@@ -718,45 +767,89 @@ public class BqsConverter {
                 if (operator == BqsOperator.INSIDE ||
                         operator == BqsOperator.INTERSECT ||
                         operator == BqsOperator.OUTSIDE) {
-                    if (buildingShape == BqsShape.CIRCLE) {
-                        if (operator == BqsOperator.INSIDE) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .withinBuffer()
-                                    .wkt(builtWkt, radiusInMeters);
-                        } else if (operator == BqsOperator.INTERSECT) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .withinBuffer()
-                                    .wkt(builtWkt, radiusInMeters);
-                        } else if (operator == BqsOperator.OUTSIDE) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .beyond()
-                                    .wkt(builtWkt, radiusInMeters);
+                    if (shouldNegate) {
+                        if (buildingShape == BqsShape.CIRCLE) {
+                            if (operator == BqsOperator.INSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .beyond()
+                                        .wkt(builtWkt, radiusInMeters);
+                            } else if (operator == BqsOperator.INTERSECT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .beyond()
+                                        .wkt(builtWkt, radiusInMeters);
+                            } else if (operator == BqsOperator.OUTSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .withinBuffer()
+                                        .wkt(builtWkt, radiusInMeters);
+                            }
+                        } else {
+                            if (operator == BqsOperator.INSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .within()
+                                        .wkt(builtWkt);
+                            } else if (operator == BqsOperator.INTERSECT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .intersecting()
+                                        .wkt(builtWkt);
+                            } else if (operator == BqsOperator.OUTSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .beyond()
+                                        .wkt(builtWkt);
+                            }
                         }
                     } else {
-                        if (operator == BqsOperator.INSIDE) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .within()
-                                    .wkt(builtWkt);
-                        } else if (operator == BqsOperator.INTERSECT) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .intersecting()
-                                    .wkt(builtWkt);
-                        } else if (operator == BqsOperator.OUTSIDE) {
-                            filter = filterBuilder.attribute(attribute)
-                                    .beyond()
-                                    .wkt(builtWkt);
+                        if (buildingShape == BqsShape.CIRCLE) {
+                            if (operator == BqsOperator.INSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .withinBuffer()
+                                        .wkt(builtWkt, radiusInMeters);
+                            } else if (operator == BqsOperator.INTERSECT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .withinBuffer()
+                                        .wkt(builtWkt, radiusInMeters);
+                            } else if (operator == BqsOperator.OUTSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .beyond()
+                                        .wkt(builtWkt, radiusInMeters);
+                            }
+                        } else {
+                            if (operator == BqsOperator.INSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .within()
+                                        .wkt(builtWkt);
+                            } else if (operator == BqsOperator.INTERSECT) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .intersecting()
+                                        .wkt(builtWkt);
+                            } else if (operator == BqsOperator.OUTSIDE) {
+                                filter = filterBuilder.attribute(attribute)
+                                        .beyond()
+                                        .wkt(builtWkt);
+                            }
                         }
                     }
                 } else if (operator == BqsOperator.WITHIN || operator == BqsOperator.BEYOND) {
                     //Relative Geo Operators
-                    if (operator == BqsOperator.WITHIN) {
-                        filter = filterBuilder.attribute(attribute)
-                                .withinBuffer()
-                                .wkt(builtWkt, relativeDistInMeters);
-                    } else if (operator == BqsOperator.BEYOND) {
-                        filter = filterBuilder.attribute(attribute)
-                                .beyond()
-                                .wkt(builtWkt, relativeDistInMeters);
+                    if (shouldNegate) {
+                        if (operator == BqsOperator.WITHIN) {
+                            filter = filterBuilder.attribute(attribute)
+                                    .beyond()
+                                    .wkt(builtWkt, relativeDistInMeters);
+                        } else if (operator == BqsOperator.BEYOND) {
+                            filter = filterBuilder.attribute(attribute)
+                                    .withinBuffer()
+                                    .wkt(builtWkt, relativeDistInMeters);
+                        }
+                    } else {
+                        if (operator == BqsOperator.WITHIN) {
+                            filter = filterBuilder.attribute(attribute)
+                                    .withinBuffer()
+                                    .wkt(builtWkt, relativeDistInMeters);
+                        } else if (operator == BqsOperator.BEYOND) {
+                            filter = filterBuilder.attribute(attribute)
+                                    .beyond()
+                                    .wkt(builtWkt, relativeDistInMeters);
+                        }
                     }
                 }
 
@@ -812,12 +905,24 @@ public class BqsConverter {
 
         @Override
         public void exitQuoted_string(BqsParser.Quoted_stringContext ctx) {
+            BqsOperator twoOperatorsBack = null;
+            if (bqsOperatorStack.size() >= 2) {
+                twoOperatorsBack = bqsOperatorStack.get(bqsOperatorStack.size() - 2);
+            }
             BqsOperator bqsOperator = bqsOperatorStack.peek();
 
-            if (bqsOperator == BqsOperator.LIKE) {
-                Filter filter = filterBuilder.attribute(attribute)
-                        .like()
-                        .text(ctx.getText());
+            if (bqsOperator == BqsOperator.LIKE || bqsOperator == BqsOperator.EQUAL) {
+                Filter filter = null;
+
+                if (twoOperatorsBack != null && twoOperatorsBack == BqsOperator.NOT) {
+                    filter = filterBuilder.attribute(attribute)
+                            .notEqualTo()
+                            .text(ctx.getText());
+                } else {
+                    filter = filterBuilder.attribute(attribute)
+                            .like()
+                            .text(ctx.getText());
+                }
 
                 if (!nestedOperatorStack.isEmpty()) {
                     List<Filter> filters = filterBy.get(nestedOperatorStack.peek());
@@ -1095,6 +1200,26 @@ public class BqsConverter {
         }
 
         @Override
+        public void enterStart_term(BqsParser.Start_termContext ctx) {
+            //No-Op
+        }
+
+        @Override
+        public void exitStart_term(BqsParser.Start_termContext ctx) {
+            //No-Op
+        }
+
+        @Override
+        public void enterSearch_character(BqsParser.Search_characterContext ctx) {
+            //No-Op
+        }
+
+        @Override
+        public void exitSearch_character(BqsParser.Search_characterContext ctx) {
+            //No-Op
+        }
+
+        @Override
         public void visitTerminal(TerminalNode terminalNode) {
             //No-Op
         }
@@ -1115,7 +1240,8 @@ public class BqsConverter {
         }
 
         private void print(String text) {
-            if (LOGGER.isTraceEnabled()) {
+            //TODO remove the true
+            if (LOGGER.isTraceEnabled() || true) {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < bqsOperatorStack.size(); i++) {
                     sb.append("   ");

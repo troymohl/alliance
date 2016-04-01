@@ -1,5 +1,6 @@
 grammar Bqs;
 
+start_term : query;
 query : term (BLANK OR BLANK term)* ;
 term : factor (BLANK AND BLANK factor)* ;
 factor : (NOT BLANK)* primary;
@@ -10,8 +11,8 @@ primary :
     | attribute_name BLANK LIKE BLANK quoted_string
     | attribute_name BLANK EXISTS
     | LPAREN query RPAREN;
-attribute_name : ((CHARACTER)+ (UNDERSCORE) (CHARACTER)+ COLON)* (((CHARACTER)+ (UNDERSCORE))* (CHARACTER)+ DOT)*  (CHARACTER)+;
-comp_op : EQUAL | LT | GT | NOTEQ| LTE | GTE;
+attribute_name : CHARACTER | (CHARACTER UNDERSCORE CHARACTER COLON)* CHARACTER UNDERSCORE CHARACTER DOT CHARACTER ;
+comp_op : EQUAL | LT | GT | NOTEQ | LTE | GTE;
 constant_expression : number | quoted_string | date;
 date : SINGLEQT year SLASH month SLASH day (BLANK hour COLON minute COLON second)* SINGLEQT;
 year : DIGIT DIGIT DIGIT DIGIT;
@@ -27,7 +28,7 @@ geo_element : point | polygon | rectangle | circle | ellipse | line | polygon_se
 sign : PLUS | MINUS;
 number : (sign)* digit_seq ( DOT digit_seq )*;
 digit_seq : ( DIGIT )+;
-quoted_string : SINGLEQT (MATCHING_VALID_CHAR)+ SINGLEQT;
+quoted_string : SINGLEQT search_character SINGLEQT;
 latitude : number;
 longitude : number;
 dms : ( DIGIT )* DIGIT DIGIT COLON DIGIT DIGIT COLON DIGIT DIGIT DOT DIGIT hemi;
@@ -48,6 +49,7 @@ minor_axis_len : number BLANK dist_units;
 north_angle : number;
 line : LINE LPAREN coordinate Del coordinate ( Del coordinate )* RPAREN;
 polygon_set : POLYGON_SET LPAREN polygon ( Del polygon )* RPAREN;
+search_character : (CHARACTER | PERCENT)*;
 OR : 'or' | 'OR';
 AND : 'and' | 'AND';
 NOT : 'not' | 'NOT';
@@ -91,8 +93,6 @@ FEET_UPPER : 'FEET';
 PLUS : '+';
 MINUS : '-';
 BLANK : ' ';
-VALID_CHAR : 'a'..'z' | 'A'..'Z';
-MATCHING_VALID_CHAR : VALID_CHAR | '%';
-CHARACTER : (VALID_CHAR)+;
+CHARACTER : ('a'..'z' | 'A'..'Z')+;
 UNDERSCORE : '_';
-MATCHING_CHARACTER : (MATCHING_VALID_CHAR)+;
+PERCENT : '%';

@@ -44,6 +44,7 @@ public class NsiliAttributeMap {
                 Metacard.EFFECTIVE);
         nsiliToDdfMap.put(NsiliConstants.NSIL_CARD + "." + NsiliConstants.DATE_TIME_MODIFIED,
                 Metacard.MODIFIED);
+        nsiliToDdfMap.put(NsiliConstants.NSIL_CARD + "." + NsiliConstants.STATUS, "status");
         nsiliToDdfMap.put(NsiliConstants.NSIL_COMMON + "." + NsiliConstants.IDENTIFIER_MISSION,
                 "identifierMission");
         nsiliToDdfMap.put(NsiliConstants.NSIL_COMMON + "." + NsiliConstants.IDENTIFIER_UUID,
@@ -200,7 +201,11 @@ public class NsiliAttributeMap {
     }
 
     public static String getDdfAttributeForNsili(String nsiliAttribute) {
-        return nsiliToDdfMap.get(nsiliAttribute);
+        String attribute = nsiliAttribute;
+        if (attribute.contains(".")) {
+            attribute = attribute.substring(attribute.lastIndexOf(":")+1);
+        }
+        return nsiliToDdfMap.get(attribute);
     }
 
     public static List<String> getNsiliAttributeForDdf(String ddfAttribute) {
