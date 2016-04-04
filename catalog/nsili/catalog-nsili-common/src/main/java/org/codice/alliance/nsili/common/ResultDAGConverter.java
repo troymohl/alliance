@@ -50,6 +50,7 @@ public class ResultDAGConverter {
 
         addCardNodeWithAttributes(graph, productNode, metacard, orb);
         addFileNodeWithAttributes(graph, productNode, metacard, orb);
+        addParts(graph, productNode, metacard, orb);
 
         graph.addVertex(productNode);
 
@@ -102,7 +103,7 @@ public class ResultDAGConverter {
                 addStringAttribute(graph, fileNode, NsiliConstants.CREATOR, pocString, orb);
             }
         }
-//        addTestDateAttribute(graph, fileNode, NsiliConstants.DATE_TIME_DECLARED, orb);
+
         if (metacard.getResourceSize() != null) {
             try {
                 Double resSize = Double.valueOf(metacard.getResourceSize());
@@ -143,6 +144,60 @@ public class ResultDAGConverter {
         if (metacard.getTitle() != null ) {
             addStringAttribute(graph, fileNode, NsiliConstants.TITLE, metacard.getTitle(), orb);
         }
+    }
+
+    public static void addParts(DirectedAcyclicGraph<Node, Edge> graph,
+            Node productNode, Metacard metacard, ORB orb) {
+        Any any = orb.create_any();
+
+        //Determine if more than one part specific view is associated with data in this metacard
+        boolean partAdded = false;
+
+        if (metacardContainsImageryData(metacard)) {
+
+        }
+
+        if (metacardContainsGmtiData(metacard)) {
+            if (partAdded) {
+
+            } else {
+
+            }
+        }
+
+        if (metacardContainsMessageData(metacard)) {
+            if (partAdded) {
+
+            } else {
+
+            }
+        }
+
+        if (metacardContainsReportData(metacard)) {
+            if (partAdded) {
+
+            } else {
+
+            }
+        }
+
+        if (metacardContainsTdlData(metacard)) {
+            if (partAdded) {
+
+            } else {
+
+            }
+        }
+
+        if (metacardContainsVideoData(metacard)) {
+            if (partAdded) {
+
+            } else {
+
+            }
+        }
+
+
     }
 
     public static Node createRootNode(ORB orb) {
@@ -218,5 +273,35 @@ public class ResultDAGConverter {
         Node node = new Node(0, NodeType.ATTRIBUTE_NODE, key, any);
         graph.addVertex(node);
         graph.addEdge(parentNode, node);
+    }
+
+    private static boolean metacardContainsImageryData(Metacard metacard) {
+        //TODO Implement
+        return false;
+    }
+
+    private static boolean metacardContainsGmtiData(Metacard metacard) {
+        //TODO implement
+        return false;
+    }
+
+    private static boolean metacardContainsMessageData(Metacard metacard) {
+        //TODO implement
+        return false;
+    }
+
+    private static boolean metacardContainsReportData(Metacard metacard) {
+        //TODO implement
+        return false;
+    }
+
+    private static boolean metacardContainsTdlData(Metacard metacard) {
+        //TODO implement
+        return false;
+    }
+
+    private static boolean metacardContainsVideoData(Metacard metacard) {
+        //TODO implement
+        return false;
     }
 }

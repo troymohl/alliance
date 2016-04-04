@@ -59,39 +59,6 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
             (short) 9,
             (short) 16), new Time((short) 2, (short) 0, (short) 0));
 
-    private static final AbsTime EARLIEST = new AbsTime(new Date((short) 1,
-            (short) 1,
-            (short) 1970), new Time((short) 18, (short) 0, (short) 0));
-
-    private static final AbsTime LATEST = new AbsTime(new Date((short) 1, (short) 1, (short) 2020),
-            new Time((short) 18, (short) 0, (short) 0));
-
-    private static final DateRange DATE_RANGE = new DateRange(EARLIEST, LATEST);
-
-    private static final String[] IMAGERY_DOMAIN =
-            {"VIS", "SL", "TI", "FL", "RD", "EO", "OP", "HR", "HS", "CP", "BP", "SAR", "SARIQ",
-                    "IR", "MS", "FP", "MRI", "XRAY", "CAT", "VD", "BARO", "CURRENT", "DEPTH",
-                    "WIND", "MAP", "PAT", "LEG", "DTEM", "MATR", "LOCG"};
-
-    private static final String[] DECOMPRESSION_TECHNIQUE =
-            {"NC", "NM", "C1", "M1", "I1", "C3", "M3", "C4", "M4", "C5", "M5", "C8", "M8"};
-
-    private static final String[] CLASSIFICATION_DOMAIN =
-            {"COSMIC TOP SECRET", "SECRET", "CONFIDENTIAL", "RESTRICTED", "UNCLASSIFIED",
-                    "NO CLASSIFICATION"};
-
-    private static final String[] MESSAGE_TYPE = {"XMPP"};
-
-    private static final String[] ENCODING_SCHEMES = {"264ON2", "MPEG-2"};
-
-    private static final String[] VIDEO_CATEGORIES = {"VIS", "IR", "MS", "HS"};
-
-    private static final FloatingPointRange[] FLOATING_POINT_RANGE = {new FloatingPointRange(0.0,
-            4294967295.0)};
-
-    private static final Rectangle RECTANGLE_DOMAIN = new Rectangle(new Coordinate2d(0.0, 0.0),
-            new Coordinate2d(0.0, 0.0));
-
     private static final short MAX_VERTICES = 10;
 
     private NsiliDataModel nsiliDataModel = new NsiliDataModel();
@@ -105,21 +72,6 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
         }
     }
 
-    private static AttributeInformation createAttributeInformation(String attributeName,
-            AttributeType attributeType, Domain domain, String units, String reference,
-            RequirementMode requirementMode, String description, boolean sortable,
-            boolean updateable) {
-        return new AttributeInformation(attributeName,
-                attributeType,
-                domain,
-                units,
-                reference,
-                requirementMode,
-                description,
-                sortable,
-                updateable);
-    }
-
     @Override
     public AbsTime get_data_model_date(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
@@ -130,7 +82,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     public String[] get_alias_categories(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO
-        LOGGER.warn("Called get_alias_categories");
+        LOGGER.error("Called get_alias_categories");
         return new String[0];
     }
 
@@ -138,7 +90,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     public NameName[] get_logical_aliases(String category, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO
-        LOGGER.warn("Called get_logical_aliases for: "+category);
+        LOGGER.error("Called get_logical_aliases for: "+category);
         return new NameName[0];
     }
 
@@ -147,7 +99,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
             ConceptualAttributeType attribute_type, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO
-        LOGGER.warn("Called get_logical_attribute_name for: "+view_name);
+        LOGGER.error("Called get_logical_attribute_name for: "+view_name);
         return "";
     }
 
@@ -172,25 +124,18 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public AttributeInformation[] get_queryable_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO TROY REMOVE
-        LOGGER.warn("Getting queryable attributes for "+view_name);
         return nsiliDataModel.getAttributesForView(view_name).toArray(new AttributeInformation[0]);
     }
 
     @Override
     public EntityGraph get_entities(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO -- Real implementation of graph ?
-        LOGGER.warn("Called get_entities with view: "+view_name);
-
         return nsiliDataModel.getEntityGraph(view_name);
     }
 
     @Override
     public AttributeInformation[] get_entity_attributes(String aEntity, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO
-        LOGGER.warn("Called: get_entity_attributes for: "+aEntity);
         return nsiliDataModel.getAttributeInformation(aEntity).toArray(new AttributeInformation[0]);
     }
 
