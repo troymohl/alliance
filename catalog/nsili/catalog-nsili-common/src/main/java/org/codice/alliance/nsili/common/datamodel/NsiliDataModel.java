@@ -74,7 +74,7 @@ public class NsiliDataModel {
         EntityRelationship productPartRln = new EntityRelationship(productNode.id, partNode.id, Cardinality.ONE_TO_ZERO_OR_MORE, Cardinality.ONE_TO_ONE);
         EntityRelationship partCommonRln = new EntityRelationship(partNode.id, commonNode.id, Cardinality.ONE_TO_ONE, Cardinality.ONE_TO_ONE);
         EntityRelationship partCoverageRln = new EntityRelationship(partNode.id, coverageNode.id, Cardinality.ONE_TO_ZERO_OR_ONE, Cardinality.ONE_TO_ONE);
-        EntityRelationship partSecurityRln = new EntityRelationship(partNode.id, coverageNode.id, Cardinality.ONE_TO_ONE, Cardinality.ONE_TO_ZERO_OR_ONE);
+        EntityRelationship partSecurityRln = new EntityRelationship(partNode.id, securityNode.id, Cardinality.ONE_TO_ONE, Cardinality.ONE_TO_ZERO_OR_ONE);
         EntityRelationship partExploitationRln = new EntityRelationship(partNode.id, exploitationNode.id, Cardinality.ONE_TO_ZERO_OR_ONE, Cardinality.ONE_TO_ONE);
         EntityRelationship partCxpRln = new EntityRelationship(partNode.id, cxpNode.id, Cardinality.ONE_TO_ZERO_OR_ONE, Cardinality.ONE_TO_ONE);
         EntityRelationship partGmtiRln = new EntityRelationship(partNode.id, gmtiNode.id, Cardinality.ONE_TO_ZERO_OR_ONE, Cardinality.ONE_TO_ONE);

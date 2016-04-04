@@ -13,8 +13,6 @@
  */
 package org.codice.alliance.nsili.common;
 
-import static org.codice.alliance.nsili.common.NsiliMetacardType.FILE_FORMAT;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -221,5 +219,4 @@ public class ResultDAGConverter {
         graph.addVertex(node);
         graph.addEdge(parentNode, node);
     }
-
 }

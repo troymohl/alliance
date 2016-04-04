@@ -73,10 +73,17 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
     private FilterBuilder filterBuilder;
 
+    private Filter allFilterTest;
+
     public CatalogMgrImpl(POA poa, FilterBuilder filterBuilder) {
         this.poa_ = poa;
         this.filterBuilder = filterBuilder;
         bqsConverter = new BqsConverter(filterBuilder);
+
+        //TODO TROY REMOVE
+        allFilterTest = filterBuilder.attribute(Metacard.ANY_TEXT)
+                .like()
+                .text("*");
     }
 
     public void setCatalogFramework(CatalogFramework catalogFramework) {
@@ -135,7 +142,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             poa_.activate_object_with_id(queryId.getBytes(Charset.forName(ENCODING)),
                     submitQueryRequest);
         } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-            System.out.println("submit_query : Unable to activate submitQueryRequest object.");
+            LOGGER.error("submit_query : Unable to activate submitQueryRequest object.");
         }
 
         org.omg.CORBA.Object obj =
@@ -158,7 +165,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             poa_.activate_object_with_id("hit_count".getBytes(Charset.forName(ENCODING)),
                     hitCountRequest);
         } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-            System.out.println("hit_count : Unable to activate hitCountRequest object.");
+            LOGGER.error("hit_count : Unable to activate hitCountRequest object.", e);
         }
 
         org.omg.CORBA.Object obj =
@@ -194,9 +201,9 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
         //TODO REMOVE
-        LOGGER.warn("Filter: "+parsedFilter.toString());
+        LOGGER.warn("Filter: "+allFilterTest);
 
-        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
+        QueryImpl catalogQuery = new QueryImpl(allFilterTest);
 
         if (defaultTimeout > 0) {
             catalogQuery.setTimeoutMillis(defaultTimeout);
@@ -224,14 +231,10 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
-        Filter queryFilter = filterBuilder.attribute(Metacard.ANY_TEXT)
-                .like()
-                .text("*");
-
         //TODO REMOVE
-        LOGGER.warn("Filter: "+parsedFilter.toString());
+        LOGGER.warn("Filter: "+allFilterTest);
 
-        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
+        QueryImpl catalogQuery = new QueryImpl(allFilterTest);
 
         if (defaultTimeout > 0) {
             catalogQuery.setTimeoutMillis(defaultTimeout);
