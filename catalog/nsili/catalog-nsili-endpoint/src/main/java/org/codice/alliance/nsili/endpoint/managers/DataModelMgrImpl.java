@@ -15,34 +15,23 @@ package org.codice.alliance.nsili.endpoint.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.codice.alliance.nsili.common.GIAS.Association;
 import org.codice.alliance.nsili.common.GIAS.AttributeInformation;
-import org.codice.alliance.nsili.common.GIAS.AttributeType;
 import org.codice.alliance.nsili.common.GIAS.ConceptualAttributeType;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgr;
 import org.codice.alliance.nsili.common.GIAS.DataModelMgrPOA;
-import org.codice.alliance.nsili.common.GIAS.DateRange;
-import org.codice.alliance.nsili.common.GIAS.Domain;
-import org.codice.alliance.nsili.common.GIAS.FloatingPointRange;
-import org.codice.alliance.nsili.common.GIAS.IntegerRange;
 import org.codice.alliance.nsili.common.GIAS.Library;
-import org.codice.alliance.nsili.common.GIAS.RequirementMode;
 import org.codice.alliance.nsili.common.GIAS.View;
 import org.codice.alliance.nsili.common.NsiliConstants;
 import org.codice.alliance.nsili.common.UCO.AbsTime;
-import org.codice.alliance.nsili.common.UCO.Coordinate2d;
 import org.codice.alliance.nsili.common.UCO.Date;
 import org.codice.alliance.nsili.common.UCO.EntityGraph;
 import org.codice.alliance.nsili.common.UCO.InvalidInputParameter;
 import org.codice.alliance.nsili.common.UCO.NameName;
 import org.codice.alliance.nsili.common.UCO.NameValue;
 import org.codice.alliance.nsili.common.UCO.ProcessingFault;
-import org.codice.alliance.nsili.common.UCO.Rectangle;
 import org.codice.alliance.nsili.common.UCO.SystemFault;
 import org.codice.alliance.nsili.common.UCO.Time;
 import org.codice.alliance.nsili.common.datamodel.NsiliDataModel;
@@ -51,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 public class DataModelMgrImpl extends DataModelMgrPOA {
 
-    private static final String[] VIEW_NAMES = new String[]{ NsiliConstants.NSIL_ALL_VIEW };
+    private static final String[] VIEW_NAMES = new String[] {NsiliConstants.NSIL_ALL_VIEW};
 
     private static View[] VIEWS;
 
@@ -90,7 +79,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     public NameName[] get_logical_aliases(String category, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO
-        LOGGER.error("Called get_logical_aliases for: "+category);
+        LOGGER.error("Called get_logical_aliases for: " + category);
         return new NameName[0];
     }
 
@@ -99,7 +88,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
             ConceptualAttributeType attribute_type, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO
-        LOGGER.error("Called get_logical_attribute_name for: "+view_name);
+        LOGGER.error("Called get_logical_attribute_name for: " + view_name);
         return "";
     }
 
@@ -113,10 +102,11 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     public AttributeInformation[] get_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
         //TODO TROY REMOVE
-        LOGGER.warn("Getting attributes for "+view_name);
+        LOGGER.warn("Getting attributes for " + view_name);
 
-        AttributeInformation[] attributes = nsiliDataModel.getAttributesForView(view_name).toArray(new AttributeInformation[0]);
-        LOGGER.warn("Returning attributes: "+getValueString(attributes));
+        AttributeInformation[] attributes = nsiliDataModel.getAttributesForView(view_name)
+                .toArray(new AttributeInformation[0]);
+        LOGGER.warn("Returning attributes: " + getValueString(attributes));
 
         return attributes;
     }
@@ -124,7 +114,8 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public AttributeInformation[] get_queryable_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return nsiliDataModel.getAttributesForView(view_name).toArray(new AttributeInformation[0]);
+        return nsiliDataModel.getAttributesForView(view_name)
+                .toArray(new AttributeInformation[0]);
     }
 
     @Override
@@ -136,7 +127,8 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public AttributeInformation[] get_entity_attributes(String aEntity, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return nsiliDataModel.getAttributeInformation(aEntity).toArray(new AttributeInformation[0]);
+        return nsiliDataModel.getAttributeInformation(aEntity)
+                .toArray(new AttributeInformation[0]);
     }
 
     @Override

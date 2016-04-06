@@ -37,8 +37,6 @@ import org.codice.alliance.nsili.endpoint.managers.CreationMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.DataModelMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.OrderMgrImpl;
 import org.codice.alliance.nsili.endpoint.managers.ProductMgrImpl;
-import org.codice.ddf.security.handler.api.AuthenticationHandler;
-import org.codice.ddf.security.handler.api.GuestAuthenticationToken;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
@@ -54,12 +52,12 @@ public class LibraryImpl extends LibraryPOA {
 
     private static final String LIBRARY_VERSION = "NSILI|1.0";
 
-        private List<String> managers = Arrays.asList(
-//                NsiliManagerType.ORDER_MGR.getSpecName(),
-                NsiliManagerType.CATALOG_MGR.getSpecName(),
-                NsiliManagerType.CREATION_MGR.getSpecName(),
-//                NsiliManagerType.PRODUCT_MGR.getSpecName(),
-                NsiliManagerType.DATA_MODEL_MGR.getSpecName()
+    private List<String> managers = Arrays.asList(
+            //                NsiliManagerType.ORDER_MGR.getSpecName(),
+            NsiliManagerType.CATALOG_MGR.getSpecName(),
+            NsiliManagerType.CREATION_MGR.getSpecName(),
+            NsiliManagerType.PRODUCT_MGR.getSpecName(),
+            NsiliManagerType.DATA_MODEL_MGR.getSpecName()
                 /* Optional :
                 "QueryOrderMgr",
                 "StandingQueryMgr",
@@ -96,7 +94,7 @@ public class LibraryImpl extends LibraryPOA {
     @Override
     public String[] get_manager_types() throws ProcessingFault, SystemFault {
         String[] managerArr = new String[managers.size()];
-         return managers.toArray(managerArr);
+        return managers.toArray(managerArr);
     }
 
     @Override
@@ -106,7 +104,7 @@ public class LibraryImpl extends LibraryPOA {
         org.omg.CORBA.Object obj;
 
         //TODO REMOVE
-        LOGGER.error("get_manager called on the library, wanting: "+manager_type);
+        LOGGER.error("get_manager called on the library, wanting: " + manager_type);
 
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
             CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa, filterBuilder);
@@ -116,7 +114,8 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating CatalogMgr: %s", e));
+                LOGGER.error(String.format("Error activating CatalogMgr: %s",
+                        e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -127,7 +126,8 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         orderMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating OrderMgr: %s", e));
+                LOGGER.error(String.format("Error activating OrderMgr: %s",
+                        e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -138,7 +138,8 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         productMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating ProductMgr: %s", e));
+                LOGGER.error(String.format("Error activating ProductMgr: %s",
+                        e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
@@ -149,18 +150,20 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         dataModelMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating DataModelMgr: %s", e.getLocalizedMessage()));
+                LOGGER.error(String.format("Error activating DataModelMgr: %s",
+                        e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                     DataModelMgrHelper.id());
-        } else if (manager_type.equals(NsiliManagerType.CREATION_MGR.getSpecName())){
+        } else if (manager_type.equals(NsiliManagerType.CREATION_MGR.getSpecName())) {
             CreationMgrImpl creationMgr = new CreationMgrImpl();
             try {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         creationMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating CreationMgr: %s", e.getLocalizedMessage()));
+                LOGGER.error(String.format("Error activating CreationMgr: %s",
+                        e.getLocalizedMessage()));
             }
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),

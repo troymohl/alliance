@@ -13,6 +13,7 @@
  */
 package org.codice.alliance.nsili.common;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,12 +24,24 @@ import org.codice.alliance.nsili.common.UCO.DAG;
 import org.codice.alliance.nsili.common.UCO.Edge;
 import org.codice.alliance.nsili.common.UCO.Node;
 import org.codice.alliance.nsili.common.UCO.NodeType;
+import org.codice.alliance.nsili.common.UCO.Rectangle;
+import org.codice.alliance.nsili.common.UCO.RectangleHelper;
 import org.codice.alliance.nsili.common.UCO.Time;
+import org.codice.alliance.nsili.common.UID.Product;
+import org.codice.alliance.nsili.common.UID.ProductHelper;
+import org.codice.ddf.configuration.SystemInfo;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
+import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
@@ -37,7 +50,9 @@ import ddf.catalog.data.Result;
 public class ResultDAGConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResultDAGConverter.class);
 
-    public static DAG convertResult(Result result, ORB orb) {
+    private static final String ENCODING = "UTF-8";
+
+    public static DAG convertResult(Result result, ORB orb, POA poa) {
         Double distanceInMeters = result.getDistanceInMeters();
         Double resultScore = result.getRelevanceScore();
         Metacard metacard = result.getMetacard();
@@ -45,7 +60,29 @@ public class ResultDAGConverter {
         DAG dag = new DAG();
         DirectedAcyclicGraph<Node, Edge> graph = new DirectedAcyclicGraph<>(Edge.class);
 
+        ProductImpl productImpl = new ProductImpl();
+
+        try {
+            poa.activate_object_with_id(result.getMetacard()
+                    .getId()
+                    .getBytes(Charset.forName(ENCODING)), productImpl);
+        } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
+            LOGGER.info("Convert DAG : Unable to activate product impl object."
+                    + e.getLocalizedMessage());
+            LOGGER.debug("Error activating CORBA object for ProductImpl", e);
+        }
+
+        org.omg.CORBA.Object obj = poa.create_reference_with_id(result.getMetacard()
+                .getId()
+                .getBytes(Charset.forName(ENCODING)), ProductHelper.id());
+        Product product = ProductHelper.narrow(obj);
+
         Node productNode = createRootNode(orb);
+
+        Any productAny = orb.create_any();
+        ProductHelper.insert(productAny, product);
+        productNode.value = productAny;
+
         graph.addVertex(productNode);
 
         addCardNodeWithAttributes(graph, productNode, metacard, orb);
@@ -107,13 +144,11 @@ public class ResultDAGConverter {
         if (metacard.getResourceSize() != null) {
             try {
                 Double resSize = Double.valueOf(metacard.getResourceSize());
-                addDoubleAttribute(graph,
-                        fileNode,
-                        NsiliConstants.EXTENT,
-                        resSize,
-                        orb);
+                Double resSizeMB = convertToMegabytes(resSize);
+                addDoubleAttribute(graph, fileNode, NsiliConstants.EXTENT, resSizeMB, orb);
             } catch (NumberFormatException nfe) {
-                LOGGER.warn("Couldn't convert the resource size to double: "+metacard.getResourceSize());
+                LOGGER.warn("Couldn't convert the resource size to double: "
+                        + metacard.getResourceSize());
             }
         }
 
@@ -133,31 +168,47 @@ public class ResultDAGConverter {
                     orb);
         }
 
-        if (metacard.getResourceURI() != null) {
-            addStringAttribute(graph,
-                    fileNode,
-                    NsiliConstants.PRODUCT_URL,
-                    metacard.getResourceURI().toASCIIString(),
-                    orb);
+        Attribute downloadUrlAttr = metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL);
+        if (downloadUrlAttr != null) {
+            String downloadUrl = String.valueOf(downloadUrlAttr.getValue());
+            if (downloadUrl != null) {
+                addStringAttribute(graph, fileNode, NsiliConstants.PRODUCT_URL, downloadUrl, orb);
+            }
         }
 
-        if (metacard.getTitle() != null ) {
+        if (metacard.getTitle() != null) {
             addStringAttribute(graph, fileNode, NsiliConstants.TITLE, metacard.getTitle(), orb);
         }
+
+        String siteName = SystemInfo.getSiteName();
+
+        boolean productLocal = true;
+        if (siteName != null && metacard.getSourceId() != null
+                && !siteName.equals(metacard.getSourceId())) {
+            productLocal = false;
+        }
+        addBooleanAttribute(graph, fileNode, NsiliConstants.IS_PRODUCT_LOCAL, productLocal, orb);
     }
 
-    public static void addParts(DirectedAcyclicGraph<Node, Edge> graph,
-            Node productNode, Metacard metacard, ORB orb) {
+    public static void addParts(DirectedAcyclicGraph<Node, Edge> graph, Node productNode,
+            Metacard metacard, ORB orb) {
         Any any = orb.create_any();
+        Node partNode = new Node(0, NodeType.ENTITY_NODE, NsiliConstants.NSIL_PART, any);
+        graph.addVertex(partNode);
+        graph.addEdge(productNode, partNode);
 
         //Determine if more than one part specific view is associated with data in this metacard
         boolean partAdded = false;
+        String type = null;
+
+        addCoverageNodeWithAttributes(graph, partNode, metacard, orb);
 
         if (metacardContainsImageryData(metacard)) {
-
+            type = NsiliProductType.IMAGERY.getSpecName();
         }
 
         if (metacardContainsGmtiData(metacard)) {
+            type = NsiliProductType.GMTI.getSpecName();
             if (partAdded) {
 
             } else {
@@ -166,6 +217,7 @@ public class ResultDAGConverter {
         }
 
         if (metacardContainsMessageData(metacard)) {
+            type = NsiliProductType.MESSAGE.getSpecName();
             if (partAdded) {
 
             } else {
@@ -174,6 +226,7 @@ public class ResultDAGConverter {
         }
 
         if (metacardContainsReportData(metacard)) {
+            type = NsiliProductType.REPORT.getSpecName();
             if (partAdded) {
 
             } else {
@@ -182,6 +235,7 @@ public class ResultDAGConverter {
         }
 
         if (metacardContainsTdlData(metacard)) {
+            type = NsiliProductType.TDL_DATA.getSpecName();
             if (partAdded) {
 
             } else {
@@ -190,6 +244,7 @@ public class ResultDAGConverter {
         }
 
         if (metacardContainsVideoData(metacard)) {
+            type = NsiliProductType.VIDEO.getSpecName();
             if (partAdded) {
 
             } else {
@@ -197,7 +252,69 @@ public class ResultDAGConverter {
             }
         }
 
+        addCommonNodeWithAttributes(graph, partNode, metacard, type, orb);
+    }
 
+    public static void addCommonNodeWithAttributes(DirectedAcyclicGraph<Node, Edge> graph,
+            Node partNode, Metacard metacard, String type, ORB orb) {
+        Any any = orb.create_any();
+        Node commonNode = new Node(0, NodeType.ENTITY_NODE, NsiliConstants.NSIL_COMMON, any);
+        graph.addVertex(commonNode);
+        graph.addEdge(partNode, commonNode);
+
+        Attribute descAttr = metacard.getAttribute(Metacard.DESCRIPTION);
+        if (descAttr != null) {
+            String descString = String.valueOf(descAttr.getValue());
+            if (descString != null) {
+                addStringAttribute(graph,
+                        commonNode,
+                        NsiliConstants.DESCRIPTION_ABSTRACT,
+                        descString,
+                        orb);
+            }
+        }
+
+        if (metacard.getId() != null) {
+            addStringAttribute(graph,
+                    commonNode,
+                    NsiliConstants.IDENTIFIER_UUID,
+                    metacard.getId(),
+                    orb);
+        }
+
+        if (type != null) {
+            addStringAttribute(graph, commonNode, NsiliConstants.TYPE, type, orb);
+        }
+    }
+
+    public static void addCoverageNodeWithAttributes(DirectedAcyclicGraph<Node, Edge> graph,
+            Node partNode, Metacard metacard, ORB orb) {
+        Any any = orb.create_any();
+
+        if (metacardContainsGeoInfo(metacard)) {
+            Node coverageNode = new Node(0,
+                    NodeType.ENTITY_NODE,
+                    NsiliConstants.NSIL_COVERAGE,
+                    any);
+            graph.addVertex(coverageNode);
+            graph.addEdge(partNode, coverageNode);
+
+            Attribute geoAttr = metacard.getAttribute(Metacard.GEOGRAPHY);
+            if (geoAttr != null) {
+                String wktGeo = String.valueOf(geoAttr.getValue());
+                try {
+                    Geometry boundingGeo = WKTUtil.getWKTBoundingRectangle(wktGeo);
+                    Rectangle rect = NsiliGeomUtil.getRectangle(boundingGeo);
+                    addGeomAttribute(graph,
+                            coverageNode,
+                            NsiliConstants.SPATIAL_GEOGRAPHIC_REF_BOX,
+                            rect,
+                            orb);
+                } catch (ParseException pe) {
+                    LOGGER.info("Unable to parse WKT for bounding box: " + wktGeo, pe);
+                }
+            }
+        }
     }
 
     public static Node createRootNode(ORB orb) {
@@ -275,9 +392,26 @@ public class ResultDAGConverter {
         graph.addEdge(parentNode, node);
     }
 
+    public static void addGeomAttribute(DirectedAcyclicGraph<Node, Edge> graph, Node parentNode,
+            String key, Rectangle rectangle, ORB orb) {
+        Any any = orb.create_any();
+        RectangleHelper.insert(any, rectangle);
+        Node node = new Node(0, NodeType.ATTRIBUTE_NODE, key, any);
+        graph.addVertex(node);
+        graph.addEdge(parentNode, node);
+    }
+
+    public static Double convertToMegabytes(Double resSizeBytes) {
+        if (resSizeBytes != null) {
+            return resSizeBytes / (1024 * 1024);
+        } else {
+            return null;
+        }
+    }
+
     private static boolean metacardContainsImageryData(Metacard metacard) {
         //TODO Implement
-        return false;
+        return true;
     }
 
     private static boolean metacardContainsGmtiData(Metacard metacard) {
@@ -303,5 +437,15 @@ public class ResultDAGConverter {
     private static boolean metacardContainsVideoData(Metacard metacard) {
         //TODO implement
         return false;
+    }
+
+    private static boolean metacardContainsGeoInfo(Metacard metacard) {
+        boolean foundGeoInfo = false;
+
+        if (metacard.getAttribute(Metacard.GEOGRAPHY) != null) {
+            foundGeoInfo = true;
+        }
+
+        return foundGeoInfo;
     }
 }

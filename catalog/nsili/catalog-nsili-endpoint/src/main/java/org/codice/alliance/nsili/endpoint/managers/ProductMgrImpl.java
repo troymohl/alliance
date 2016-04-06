@@ -54,6 +54,10 @@ public class ProductMgrImpl extends ProductMgrPOA {
     @Override
     public GetParametersRequest get_parameters(Product prod, String[] desired_parameters,
             NameValue[] properties) throws ProcessingFault, InvalidInputParameter, SystemFault {
+
+        //TODO REMOVE
+        LOGGER.warn("get_parameters called");
+
         GetParametersRequestImpl getParametersRequest = new GetParametersRequestImpl();
 
         try {
@@ -74,6 +78,8 @@ public class ProductMgrImpl extends ProductMgrPOA {
     @Override
     public String[] get_related_file_types(Product prod)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_related_file_types called");
         return new String[0];
     }
 
@@ -81,6 +87,9 @@ public class ProductMgrImpl extends ProductMgrPOA {
     public GetRelatedFilesRequest get_related_files(Product[] products, FileLocation location,
             String type, NameValue[] properties)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_related_files called");
+
         GetRelatedFilesRequestImpl getRelatedFilesRequest = new GetRelatedFilesRequestImpl();
 
         try {
@@ -101,12 +110,16 @@ public class ProductMgrImpl extends ProductMgrPOA {
     // Access Mgr
     @Override
     public String[] get_use_modes() throws ProcessingFault, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_use_modes called");
         return new String[0];
     }
 
     @Override
     public boolean is_available(Product prod, String use_mode)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("is_available called");
         return true;
     }
 
@@ -114,11 +127,15 @@ public class ProductMgrImpl extends ProductMgrPOA {
     public int query_availability_delay(Product prod,
             AvailabilityRequirement availability_requirement, String use_mode)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("query_availability_delay called");
         return QUERY_AVAILABILITY_DELAY;
     }
 
     @Override
     public short get_number_of_priorities() throws ProcessingFault, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_number_of_priorities called");
         return NUM_PRIORITIES;
     }
 
@@ -126,42 +143,53 @@ public class ProductMgrImpl extends ProductMgrPOA {
     public SetAvailabilityRequest set_availability(Product[] products,
             AvailabilityRequirement availability_requirement, String use_mode, short priority)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("set_availability called");
         return new _SetAvailabilityRequestStub();
     }
 
     // Request
     @Override
     public Request[] get_active_requests() throws ProcessingFault, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_active_requests called");
         return new Request[0];
     }
 
     @Override
     public int get_default_timeout() throws ProcessingFault, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_default_timeout called");
         return TIMEOUT;
     }
 
     @Override
     public void set_default_timeout(int new_default)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-        return;
+        //TODO REMOVE
+        LOGGER.warn("set_default_timeout called");
     }
 
     @Override
     public int get_timeout(Request aRequest)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
+        //TODO REMOVE
+        LOGGER.warn("get_timeout called");
         return TIMEOUT;
     }
 
     @Override
     public void set_timeout(Request aRequest, int new_lifetime)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-        return;
+        //TODO REMOVE
+        LOGGER.warn("set_timeout called");
     }
 
     @Override
     public void delete_request(Request aRequest)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-        return;
+        //TODO REMOVE
+        LOGGER.warn("delete_request called");
     }
 
     // LibraryMgr

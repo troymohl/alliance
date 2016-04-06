@@ -75,7 +75,7 @@ public class NsiliAttributesGenerator {
             new Coordinate2d(180.0, -90.0));
 
     public static List<AttributeInformation> getNsilCardAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_CARD+".";
+        String prefix = NsiliConstants.NSIL_CARD + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -168,7 +168,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilCommonAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_COMMON+".";
+        String prefix = NsiliConstants.NSIL_COMMON + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -285,7 +285,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilCoverageAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_COVERAGE+".";
+        String prefix = NsiliConstants.NSIL_COVERAGE + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -342,7 +342,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilFileAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_FILE+".";
+        String prefix = NsiliConstants.NSIL_FILE + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -475,7 +475,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilGmtiAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_GMTI+".";
+        String prefix = NsiliConstants.NSIL_GMTI + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -508,7 +508,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilImageryAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_IMAGERY+".";
+        String prefix = NsiliConstants.NSIL_IMAGERY + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -637,7 +637,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilMessageAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_MESSAGE+".";
+        String prefix = NsiliConstants.NSIL_MESSAGE + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -694,7 +694,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilMetadataSecurityAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_METADATA_SECURITY+".";
+        String prefix = NsiliConstants.NSIL_METADATA_SECURITY + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -739,7 +739,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilPartAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_PART+".";
+        String prefix = NsiliConstants.NSIL_PART + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -760,7 +760,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilRelatedFileAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_RELATED_FILE+".";
+        String prefix = NsiliConstants.NSIL_RELATED_FILE + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -841,7 +841,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilRelationAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_RELATION+".";
+        String prefix = NsiliConstants.NSIL_RELATION + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -910,7 +910,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilSecurityAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_SECURITY+".";
+        String prefix = NsiliConstants.NSIL_SECURITY + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -955,7 +955,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilStreamAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_STREAM+".";
+        String prefix = NsiliConstants.NSIL_STREAM + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1060,7 +1060,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilVideoAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_VIDEO+".";
+        String prefix = NsiliConstants.NSIL_VIDEO + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1177,7 +1177,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilApprovalAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_APPROVAL+".";
+        String prefix = NsiliConstants.NSIL_APPROVAL + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1222,7 +1222,8 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilExploitationInfoAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_EXPLOITATION_INFO+".";
+        String prefix =
+                NsiliConstants.NSIL_EXPLOITATION_INFO + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1279,7 +1280,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilSdsAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_SDS+".";
+        String prefix = NsiliConstants.NSIL_SDS + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1300,7 +1301,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilTdlAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+ NsiliConstants.NSIL_TDL+".";
+        String prefix = NsiliConstants.NSIL_TDL + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1357,7 +1358,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilRfiAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_RFI+".";
+        String prefix = NsiliConstants.NSIL_RFI + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1426,7 +1427,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilCxpAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_CXP+".";
+        String prefix = NsiliConstants.NSIL_CXP + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1447,7 +1448,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilReportAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_REPORT+".";
+        String prefix = NsiliConstants.NSIL_REPORT + ".";
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();
@@ -1492,7 +1493,7 @@ public class NsiliAttributesGenerator {
     }
 
     public static List<AttributeInformation> getNsilTaskAttributes() {
-        String prefix = NsiliConstants.NSIL_PRODUCT+":"+NsiliConstants.NSIL_TASK;
+        String prefix = NsiliConstants.NSIL_TASK;
         Domain domain;
 
         List<AttributeInformation> attributes = new ArrayList<>();

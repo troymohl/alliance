@@ -804,9 +804,7 @@ public class DAGConverter {
         //If file data available use that
         Attribute fileProductURLAttr = metacard.getAttribute(NsiliMetacardType.FILE_URL);
         if (fileProductURLAttr != null) {
-            metacard.setResourceURI(convertURI(fileProductURLAttr.getValue()
-                    .toString()));
-
+            metacard.setResourceURI(convertURI(fileProductURLAttr.getValue().toString()));
             Attribute fileFormatVerAttr = metacard.getAttribute(NsiliMetacardType.FILE_FORMAT_VER);
             if (fileFormatVerAttr != null) {
                 metacard.setContentTypeVersion(fileFormatVerAttr.getValue()
@@ -816,9 +814,7 @@ public class DAGConverter {
             //Else use stream info
             Attribute streamURLAttr = metacard.getAttribute(NsiliMetacardType.STREAM_SOURCE_URL);
             if (streamURLAttr != null) {
-                metacard.setResourceURI(convertURI(streamURLAttr.getValue()
-                        .toString()));
-
+                metacard.setResourceURI(convertURI(fileProductURLAttr.getValue().toString()));
                 Attribute streamFormatVerAttr =
                         metacard.getAttribute(NsiliMetacardType.STREAM_STANDARD_VER);
                 if (streamFormatVerAttr != null) {
@@ -1154,9 +1150,12 @@ public class DAGConverter {
         LOGGER.debug("{} :  Location : " + metacard.getLocation(), id);
         LOGGER.debug("{} :  SourceID : " + metacard.getSourceId(), id);
         LOGGER.debug("{} :  Modified Date : " + metacard.getModifiedDate(), id);
-        if (metacard.getResourceURI() != null) {
-            LOGGER.debug("{} :  Resource URI : " + metacard.getResourceURI()
-                    .toString(), id);
+        Attribute resourceDownloadUrlAttr = metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL);
+        if (resourceDownloadUrlAttr != null) {
+            String downloadUrl = String.valueOf(resourceDownloadUrlAttr.getValue());
+            if (downloadUrl != null) {
+                LOGGER.debug("{} :  Resource URI : " + downloadUrl, id);
+            }
         }
 
         Set<AttributeDescriptor> descriptors = metacardType.getAttributeDescriptors();
@@ -1182,7 +1181,7 @@ public class DAGConverter {
                 .collect(Collectors.joining(", "));
     }
 
-    private static void printNode(Node node) {
+    public static void printNode(Node node) {
         String attrName = node.attribute_name;
         String value = "NOT PARSED";
         if (node.value != null && node.value.type() != null) {

@@ -48,6 +48,7 @@ import ddf.catalog.CatalogFramework;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.filter.FilterBuilder;
+import ddf.catalog.operation.ProcessingDetails;
 import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
@@ -101,7 +102,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
     @Override
     public int get_default_timeout() throws ProcessingFault, SystemFault {
-        return (int)defaultTimeout;
+        return (int) defaultTimeout;
     }
 
     @Override
@@ -133,11 +134,12 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             SortAttribute[] sort_attributes, NameValue[] properties)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
 
-            LOGGER.warn("Query submitted");
+        LOGGER.warn("Query submitted");
 
         SubmitQueryRequestImpl submitQueryRequest = new SubmitQueryRequestImpl();
 
-        String queryId = UUID.randomUUID().toString();
+        String queryId = UUID.randomUUID()
+                .toString();
         try {
             poa_.activate_object_with_id(queryId.getBytes(Charset.forName(ENCODING)),
                     submitQueryRequest);
@@ -145,9 +147,8 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             LOGGER.error("submit_query : Unable to activate submitQueryRequest object.");
         }
 
-        org.omg.CORBA.Object obj =
-                poa_.create_reference_with_id(queryId.getBytes(Charset.forName(ENCODING)),
-                        SubmitQueryRequestHelper.id());
+        org.omg.CORBA.Object obj = poa_.create_reference_with_id(queryId.getBytes(Charset.forName(
+                ENCODING)), SubmitQueryRequestHelper.id());
         SubmitQueryRequest queryRequest = SubmitQueryRequestHelper.narrow(obj);
         submitQueryRequest.setQueryResults(getResults(aQuery));
         return queryRequest;
@@ -157,7 +158,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
     public HitCountRequest hit_count(Query aQuery, NameValue[] properties)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
         //Force this to be an int per the NSILI API
-        int numResults = (int)getResultCount(aQuery);
+        int numResults = (int) getResultCount(aQuery);
 
         HitCountRequestImpl hitCountRequest = new HitCountRequestImpl(numResults);
 
@@ -201,7 +202,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
         //TODO REMOVE
-        LOGGER.warn("Filter: "+allFilterTest);
+        LOGGER.warn("Filter: " + allFilterTest);
 
         QueryImpl catalogQuery = new QueryImpl(allFilterTest);
 
@@ -222,7 +223,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         }
 
         //TODO REMOVE
-        LOGGER.warn("Total result count: "+resultCount);
+        LOGGER.warn("Total result count: " + resultCount);
         return resultCount;
     }
 
@@ -232,7 +233,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
         //TODO REMOVE
-        LOGGER.warn("Filter: "+allFilterTest);
+        LOGGER.warn("Filter: " + allFilterTest);
 
         QueryImpl catalogQuery = new QueryImpl(allFilterTest);
 
@@ -251,7 +252,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         }
 
         //TODO REMOVE
-        LOGGER.warn("Return results: "+results.size());
+        LOGGER.warn("Return results: " + results.size());
         return results;
     }
 
@@ -265,12 +266,13 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
         @Override
         public List<Result> call() throws Exception {
             List<Result> results = new ArrayList<>();
+
             QueryResponse queryResponse = catalogFramework.query(catalogQueryRequest);
             queryResponse.getHits();
             if (queryResponse.getResults() != null) {
-
                 //TODO REMOVE
-                LOGGER.warn("Number of results: "+queryResponse.getResults().size());
+                LOGGER.warn("Number of results: " + queryResponse.getResults()
+                        .size());
                 results.addAll(queryResponse.getResults());
             } else {
                 //TODO REMOVE

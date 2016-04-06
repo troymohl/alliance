@@ -13,6 +13,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -24,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.codice.alliance.nsili.common.GIAS.AccessCriteria;
 import org.codice.alliance.nsili.common.GIAS.AlterationSpec;
+import org.codice.alliance.nsili.common.GIAS.AttributeInformation;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgr;
 import org.codice.alliance.nsili.common.GIAS.CatalogMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.CreationMgr;
@@ -49,6 +52,7 @@ import org.codice.alliance.nsili.common.GIAS.OrderMgrHelper;
 import org.codice.alliance.nsili.common.GIAS.OrderRequest;
 import org.codice.alliance.nsili.common.GIAS.PackageElement;
 import org.codice.alliance.nsili.common.GIAS.PackagingSpec;
+import org.codice.alliance.nsili.common.GIAS.Polarity;
 import org.codice.alliance.nsili.common.GIAS.ProductDetails;
 import org.codice.alliance.nsili.common.GIAS.ProductMgr;
 import org.codice.alliance.nsili.common.GIAS.ProductMgrHelper;
@@ -77,6 +81,7 @@ import org.codice.alliance.nsili.common.UCO.RectangleHelper;
 import org.codice.alliance.nsili.common.UCO.Time;
 import org.codice.alliance.nsili.common.UID.Product;
 import org.codice.alliance.nsili.common.UID._ProductStub;
+import org.omg.CORBA.Any;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.TCKind;
@@ -96,6 +101,10 @@ public class NsiliClient {
 
     private static CreationMgr creationMgr;
 
+    private static final String WGS84 = "WGS84";
+
+    private static final String GEOGRAPHIC_DATUM = "GeographicDatum";
+
     private static final AccessCriteria accessCriteria = new AccessCriteria("test", "test", "");
 
     ORB orb;
@@ -105,6 +114,7 @@ public class NsiliClient {
     }
 
     public void initLibrary(String iorFilePath) throws Exception {
+        iorFilePath = iorFilePath.trim();
         org.omg.CORBA.Object obj = orb.string_to_object(iorFilePath);
         if (obj == null) {
             System.err.println("Cannot read " + iorFilePath);
@@ -156,8 +166,13 @@ public class NsiliClient {
                 System.out.println("Source returned : " + dataModelMgr.getClass() + "\n");
             } else if (managerType.equals(NsiliManagerType.CREATION_MGR.getSpecName())) {
                 System.out.println("Getting CreationMgr from source...");
-                LibraryManager libraryManager = library.get_manager("CreationMgr", accessCriteria);
-                creationMgr = CreationMgrHelper.narrow(libraryManager);
+                try {
+                    LibraryManager libraryManager = library.get_manager("CreationMgr",
+                            accessCriteria);
+                    creationMgr = CreationMgrHelper.narrow(libraryManager);
+                } catch (Exception e) {
+                    System.err.println("Unable to initialize CreationMgr: "+e.getLocalizedMessage());
+                }
             }
         }
     }
@@ -180,10 +195,23 @@ public class NsiliClient {
         if (catalogMgr != null) {
             System.out.println("Submitting Query To Server...");
             DAGListHolder dagListHolder = new DAGListHolder();
+            AttributeInformation[] attributeInformationArray =
+                    dataModelMgr.get_attributes(NsiliConstants.NSIL_ALL_VIEW, new NameValue[0]);
+            String[] resultAttributes = new String[attributeInformationArray.length];
+            for (int c = 0; c < attributeInformationArray.length; c++) {
+                AttributeInformation attributeInformation = attributeInformationArray[c];
+                resultAttributes[c] = attributeInformation.attribute_name;
+            }
+
+            SortAttribute sortAttr = new SortAttribute("NSIL_CARD.identifier", Polarity.ASCENDING);
+
             SubmitQueryRequest submitQueryRequest = catalogMgr.submit_query(query,
-                    new String[0],
-                    new SortAttribute[0],
-                    new NameValue[0]);
+                    resultAttributes,
+                    new SortAttribute[]{sortAttr},
+                    getDefaultPropertyList());
+
+            System.out.println("Query has been submitted");
+
             submitQueryRequest.complete_DAG_results(dagListHolder);
             System.out.println(
                     "Server Responded with " + dagListHolder.value.length + " result(s).\n");
@@ -484,5 +512,17 @@ public class NsiliClient {
         HostnameVerifier hostnameVerifier =
                 (s, sslSession) -> s.equalsIgnoreCase(sslSession.getPeerHost());
         HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+    }
+
+    /**
+     * Returns the Default Property List defined in the STANAG 4559 specification.
+     *
+     * @return - default WGS84 Geographic Datum.
+     */
+    private NameValue[] getDefaultPropertyList() {
+        Any defaultAnyProperty = orb.create_any();
+        defaultAnyProperty.insert_string(WGS84);
+        NameValue[] result = {new NameValue(GEOGRAPHIC_DATUM, defaultAnyProperty)};
+        return result;
     }
 }

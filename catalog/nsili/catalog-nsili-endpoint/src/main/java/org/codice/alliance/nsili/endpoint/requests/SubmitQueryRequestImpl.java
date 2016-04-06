@@ -13,6 +13,7 @@
  */
 package org.codice.alliance.nsili.endpoint.requests;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,9 @@ import ddf.catalog.data.Result;
 
 public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
 
+    //TODO TROY
+    private static final String ENCODING = "UTF-8";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SubmitQueryRequestImpl.class);
 
     private int maxNumReturnedHits = -1;
@@ -63,7 +67,7 @@ public class SubmitQueryRequestImpl extends SubmitQueryRequestPOA {
         } else {
             List<DAG> dags = new ArrayList<>();
             for (Result result : queryResults) {
-                DAG dag = ResultDAGConverter.convertResult(result, _orb());
+                DAG dag = ResultDAGConverter.convertResult(result, _orb(), _poa());
                 if (dag != null) {
                     dags.add(dag);
                 }
