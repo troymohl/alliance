@@ -42,6 +42,9 @@
         <cxf.version>3.1.4</cxf.version>
         <karaf.version>4.0.4</karaf.version>
         <commons-lang.version>2.6</commons-lang.version>
+        <commons-io.version>2.1</commons-io.version>
+        <guava.version>18.0</guava.version>
+        <slf4j.version>1.7.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <joda-time.version>2.2</joda-time.version>
         <jts.version>1.12</jts.version>
@@ -89,19 +92,19 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
-            <version>1.1</version>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -452,5 +455,6 @@
     <modules>
         <module>catalog</module>
         <module>distribution</module>
+        <module>libs</module>
     </modules>
 </project>
