@@ -119,6 +119,8 @@ public class BqsConverter {
     }
 
     public Filter convertBQSToDDF(String query) {
+        query = query.trim();
+
         LOGGER.debug("ORIG Query: " + query);
 
         //TODO REMOVE

@@ -1,7 +1,7 @@
 grammar Bqs;
 
 start_term : query;
-query : term (BLANK OR BLANK term)* ;
+query : term (BLANK OR BLANK term)*;
 term : factor (BLANK AND BLANK factor)* ;
 factor : NOT BLANK primary | primary;
 primary :

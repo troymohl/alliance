@@ -267,7 +267,7 @@ public class DAGConverter {
      * @param end   - Child node to check
      * @return true if the end node is a child of the start node in the provided graph.
      */
-    public static boolean isNodeChildOfStart(DirectedAcyclicGraph<Node, Edge> graph, Node start,
+    protected static boolean isNodeChildOfStart(DirectedAcyclicGraph<Node, Edge> graph, Node start,
             Node end) {
         boolean endNodeInTree = false;
         DepthFirstIterator<Node, Edge> depthFirstIterator = new DepthFirstIterator<>(graph, start);
@@ -280,7 +280,7 @@ public class DAGConverter {
         return endNodeInTree;
     }
 
-    public static void addNsilApprovalAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilApprovalAttribute(MetacardImpl metacard, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.APPROVED_BY:
             metacard.setAttribute(new AttributeImpl(NsiliMetacardType.APPROVAL_BY,
@@ -299,7 +299,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilCardAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilCardAttribute(MetacardImpl metacard, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.IDENTIFIER:
             metacard.setId(getString(node.value));
@@ -324,7 +324,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilCommonAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilCommonAttribute(MetacardImpl metacard, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.DESCRIPTION_ABSTRACT:
             metacard.setDescription(getString(node.value));
@@ -365,7 +365,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilCoverageAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilCoverageAttribute(MetacardImpl metacard, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.SPATIAL_COUNTRY_CODE:
             metacard.setAttribute(new AttributeImpl(NsiliMetacardType.COUNTRY_CODE,
@@ -388,7 +388,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilCxpAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilCxpAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliCxpMetacardType());
         metacard.setContentTypeName(NsiliProductType.COLLECTION_EXPLOITATION_PLAN.toString());
 
@@ -402,11 +402,11 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilIRAttribute(MetacardImpl metacard) {
+    protected static void addNsilIRAttribute(MetacardImpl metacard) {
         metacard.setType(new NsiliIRMetacardType());
     }
 
-    public static void addNsilExploitationInfoAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilExploitationInfoAttribute(MetacardImpl metacard, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.DESCRIPTION:
             metacard.setAttribute(new AttributeImpl(NsiliMetacardType.EXPLOITATION_DESCRIPTION,
@@ -429,7 +429,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilFileAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilFileAttribute(MetacardImpl metacard, Node node) {
 
         switch (node.attribute_name) {
         case NsiliConstants.ARCHIVED:
@@ -470,7 +470,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilGmtiAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilGmtiAttribute(MetacardImpl metacard, Node node) {
         //If any GMTI node is added, then we will set the MetacardType
         metacard.setType(new NsiliGmtiMetacardType());
         metacard.setContentTypeName(NsiliProductType.GMTI.toString());
@@ -489,7 +489,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilImageryAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilImageryAttribute(MetacardImpl metacard, Node node) {
         //If any Imagery attribute is added, set the card type
         metacard.setType(new NsiliImageryMetacardType());
         metacard.setContentTypeName(NsiliProductType.IMAGERY.toString());
@@ -539,7 +539,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilMessageAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilMessageAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliMessageMetacardType());
         metacard.setContentTypeName(NsiliProductType.MESSAGE.toString());
 
@@ -565,7 +565,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilReportAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilReportAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliReportMetacardType());
         metacard.setContentTypeName(NsiliProductType.REPORT.toString());
         switch (node.attribute_name) {
@@ -586,7 +586,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilRfiAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilRfiAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliRfiMetacardType());
         metacard.setContentTypeName(NsiliProductType.RFI.toString());
 
@@ -616,7 +616,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilSdsAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilSdsAttribute(MetacardImpl metacard, Node node) {
         metacard.setContentTypeName(NsiliProductType.SYSTEM_DEPLOYMENT_STATUS.toString());
 
         switch (node.attribute_name) {
@@ -629,7 +629,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilSecurityAttribute(NsiliSecurity security, Node node) {
+    protected static void addNsilSecurityAttribute(NsiliSecurity security, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.POLICY:
             String mergedPolicy = mergeSecurityPolicyString(security.getPolicy(),
@@ -651,7 +651,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilStreamAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilStreamAttribute(MetacardImpl metacard, Node node) {
 
         switch (node.attribute_name) {
         case NsiliConstants.ARCHIVED:
@@ -691,7 +691,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilTaskAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilTaskAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliTaskMetacardType());
         metacard.setContentTypeName(NsiliProductType.TASK.toString());
         switch (node.attribute_name) {
@@ -708,7 +708,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilTdlAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilTdlAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliTdlMetacardType());
         metacard.setContentTypeName(NsiliProductType.TDL_DATA.toString());
 
@@ -735,7 +735,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilVideoAttribute(MetacardImpl metacard, Node node) {
+    protected static void addNsilVideoAttribute(MetacardImpl metacard, Node node) {
         metacard.setType(new NsiliVideoMetacardType());
         metacard.setContentTypeName(NsiliProductType.VIDEO.toString());
 
@@ -781,7 +781,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addNsilAssociation(List<Serializable> associations, Node node) {
+    protected static void addNsilAssociation(List<Serializable> associations, Node node) {
         switch (node.attribute_name) {
         case NsiliConstants.IDENTIFIER:
             associations.add(getString(node.value));
@@ -791,7 +791,7 @@ public class DAGConverter {
         }
     }
 
-    public static void addMergedSecurityDescriptor(MetacardImpl metacard, NsiliSecurity security) {
+    protected static void addMergedSecurityDescriptor(MetacardImpl metacard, NsiliSecurity security) {
         metacard.setAttribute(new AttributeImpl(NsiliMetacardType.SECURITY_CLASSIFICATION,
                 security.getClassification()));
         metacard.setAttribute(new AttributeImpl(NsiliMetacardType.SECURITY_POLICY,
@@ -800,7 +800,7 @@ public class DAGConverter {
                 security.getReleasability()));
     }
 
-    public static void setTopLevelMetacardAttributes(MetacardImpl metacard) {
+    protected static void setTopLevelMetacardAttributes(MetacardImpl metacard) {
         //If file data available use that
         Attribute fileProductURLAttr = metacard.getAttribute(NsiliMetacardType.FILE_URL);
         if (fileProductURLAttr != null) {
@@ -813,8 +813,8 @@ public class DAGConverter {
         } else {
             //Else use stream info
             Attribute streamURLAttr = metacard.getAttribute(NsiliMetacardType.STREAM_SOURCE_URL);
-            if (streamURLAttr != null) {
-                metacard.setResourceURI(convertURI(fileProductURLAttr.getValue().toString()));
+            if (streamURLAttr != null && streamURLAttr.getValue() != null) {
+                metacard.setResourceURI(convertURI(streamURLAttr.getValue().toString()));
                 Attribute streamFormatVerAttr =
                         metacard.getAttribute(NsiliMetacardType.STREAM_STANDARD_VER);
                 if (streamFormatVerAttr != null) {
@@ -863,7 +863,7 @@ public class DAGConverter {
         }
     }
 
-    public static Date convertDate(Any any) {
+    protected static Date convertDate(Any any) {
         AbsTime absTime = AbsTimeHelper.extract(any);
         org.codice.alliance.nsili.common.UCO.Date ucoDate = absTime.aDate;
         org.codice.alliance.nsili.common.UCO.Time ucoTime = absTime.aTime;
@@ -878,12 +878,12 @@ public class DAGConverter {
         return dateTime.toDate();
     }
 
-    public static NsiliProductType convertProductType(Any any) {
+    protected static NsiliProductType convertProductType(Any any) {
         String productTypeStr = getString(any);
         return NsiliProductType.fromSpecName(productTypeStr);
     }
 
-    public static String convertShape(Any any) {
+    protected static String convertShape(Any any) {
         org.codice.alliance.nsili.common.UCO.Rectangle rectangle = RectangleHelper.extract(any);
         org.codice.alliance.nsili.common.UCO.Coordinate2d upperLeft = rectangle.upper_left;
         org.codice.alliance.nsili.common.UCO.Coordinate2d lowerRight = rectangle.lower_right;
@@ -920,7 +920,7 @@ public class DAGConverter {
         return WKT_WRITER.write(geom);
     }
 
-    public static int convertMegabytesToBytes(Double megabytes) {
+    protected static int convertMegabytesToBytes(Double megabytes) {
         int bytes = 0;
 
         if (megabytes != null) {
@@ -930,7 +930,7 @@ public class DAGConverter {
         return bytes;
     }
 
-    public static final URI convertURI(String uriStr) {
+    protected static final URI convertURI(String uriStr) {
         URI uri = null;
 
         try {
@@ -942,77 +942,77 @@ public class DAGConverter {
         return uri;
     }
 
-    public static NsiliImageryType convertImageCategory(Any any) {
+    protected static NsiliImageryType convertImageCategory(Any any) {
         String imageryTypeStr = getString(any);
         return NsiliImageryType.valueOf(imageryTypeStr);
     }
 
-    public static NsiliImageryDecompressionTech convertDecompressionTechnique(Any any) {
+    protected static NsiliImageryDecompressionTech convertDecompressionTechnique(Any any) {
         String decompressionTechStr = getString(any);
         return NsiliImageryDecompressionTech.valueOf(decompressionTechStr);
     }
 
-    public static NsiliVideoCategoryType convertVideoCategory(Any any) {
+    protected static NsiliVideoCategoryType convertVideoCategory(Any any) {
         String videoCategoryType = getString(any);
         return NsiliVideoCategoryType.valueOf(videoCategoryType);
     }
 
-    public static NsiliVideoEncodingScheme convertVideoEncodingScheme(Any any) {
+    protected static NsiliVideoEncodingScheme convertVideoEncodingScheme(Any any) {
         String videoEncSchemeStr = getString(any);
         return NsiliVideoEncodingScheme.fromSpecName(videoEncSchemeStr);
     }
 
-    public static NsiliMetadataEncodingScheme convertMetadataEncScheme(Any any) {
+    protected static NsiliMetadataEncodingScheme convertMetadataEncScheme(Any any) {
         String metadataEncSchemeStr = getString(any);
         return NsiliMetadataEncodingScheme.valueOf(metadataEncSchemeStr);
     }
 
-    public static NsiliCxpStatusType convertCxpStatus(Any any) {
+    protected static NsiliCxpStatusType convertCxpStatus(Any any) {
         String cxpStatusStr = getString(any);
         return NsiliCxpStatusType.valueOf(cxpStatusStr);
     }
 
-    public static NsiliRfiStatus convertRfiStatus(Any any) {
+    protected static NsiliRfiStatus convertRfiStatus(Any any) {
         String rfiStatusStr = getString(any);
         return NsiliRfiStatus.valueOf(rfiStatusStr);
     }
 
-    public static NsiliRfiWorkflowStatus convertRfiWorkflowStatus(Any any) {
+    protected static NsiliRfiWorkflowStatus convertRfiWorkflowStatus(Any any) {
         String rfiWorkflowStatusStr = getString(any);
         return NsiliRfiWorkflowStatus.valueOf(rfiWorkflowStatusStr);
     }
 
-    public static NsiliTaskStatus convertTaskStatus(Any any) {
+    protected static NsiliTaskStatus convertTaskStatus(Any any) {
         String taskStatusStr = getString(any);
         return NsiliTaskStatus.valueOf(taskStatusStr);
     }
 
-    public static NsiliExploitationSubQualCode convertExplSubQualCd(Any any) {
+    protected static NsiliExploitationSubQualCode convertExplSubQualCd(Any any) {
         String explSubQualCodeStr = getString(any);
         return NsiliExploitationSubQualCode.valueOf(explSubQualCodeStr);
     }
 
-    public static NsiliSdsOpStatus convertSdsOpStatus(Any any) {
+    protected static NsiliSdsOpStatus convertSdsOpStatus(Any any) {
         String sdsOpStatusStr = getString(any);
         return NsiliSdsOpStatus.fromSpecName(sdsOpStatusStr);
     }
 
-    public static NsiliApprovalStatus convertApprovalStatus(Any any) {
+    protected static NsiliApprovalStatus convertApprovalStatus(Any any) {
         String approvalStr = getString(any);
         return NsiliApprovalStatus.fromSpecName(approvalStr);
     }
 
-    public static NsiliReportPriority convertReportPriority(Any any) {
+    protected static NsiliReportPriority convertReportPriority(Any any) {
         String reportPriorityStr = getString(any);
         return NsiliReportPriority.valueOf(reportPriorityStr);
     }
 
-    public static NsiliReportType convertReportType(Any any) {
+    protected static NsiliReportType convertReportType(Any any) {
         String reportTypeStr = getString(any);
         return NsiliReportType.valueOf(reportTypeStr);
     }
 
-    public static String getString(Any any) {
+    protected static String getString(Any any) {
         if (any.type()
                 .kind() == TCKind.tk_wstring) {
             return any.extract_wstring();
@@ -1023,7 +1023,7 @@ public class DAGConverter {
         return null;
     }
 
-    public static Integer getLong(Any any) {
+    protected static Integer getLong(Any any) {
         if (any.type()
                 .kind() == TCKind.tk_long) {
             return any.extract_long();
@@ -1034,7 +1034,7 @@ public class DAGConverter {
         return null;
     }
 
-    public static Short getShort(Any any) {
+    protected static Short getShort(Any any) {
         if (any.type()
                 .kind() == TCKind.tk_short) {
             return any.extract_short();
@@ -1052,7 +1052,7 @@ public class DAGConverter {
      * @param policy2 - Additional policies to add.
      * @return Non-duplicated policies space separated.
      */
-    public static String mergeSecurityPolicyString(String policy1, String policy2) {
+    protected static String mergeSecurityPolicyString(String policy1, String policy2) {
         if (policy1 == null && policy2 == null) {
             return null;
         } else if (policy1 != null && policy2 == null) {
@@ -1083,7 +1083,7 @@ public class DAGConverter {
      * @param releasability2 - Releasabilities to merge.
      * @return - Non-duplicated releasabilities space separated.
      */
-    public static String mergeReleasabilityString(String releasability1, String releasability2) {
+    protected static String mergeReleasabilityString(String releasability1, String releasability2) {
         if (releasability1 == null) {
             return releasability2;
         } else if (releasability2 == null) {
@@ -1116,7 +1116,7 @@ public class DAGConverter {
      * @param classification2 - Classification to check
      * @return Most restrictive classification
      */
-    public static String mergeClassificationString(String classification1, String classification2) {
+    protected static String mergeClassificationString(String classification1, String classification2) {
         NsiliClassification class1 = NsiliClassification.fromSpecName(classification1);
         NsiliClassification class2 = NsiliClassification.fromSpecName(classification2);
         NsiliClassificationComparator classificationComparator =
@@ -1181,7 +1181,7 @@ public class DAGConverter {
                 .collect(Collectors.joining(", "));
     }
 
-    public static void printNode(Node node) {
+    protected static void printNode(Node node) {
         String attrName = node.attribute_name;
         String value = "NOT PARSED";
         if (node.value != null && node.value.type() != null) {

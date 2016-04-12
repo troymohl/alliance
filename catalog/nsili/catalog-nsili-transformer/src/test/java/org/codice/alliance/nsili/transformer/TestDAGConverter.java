@@ -353,7 +353,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -665,7 +665,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(STREAM_SOURCE_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -763,7 +763,7 @@ public class TestDAGConverter {
         assertThat(MESSAGE_BODY, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -863,7 +863,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1154,7 +1154,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1262,7 +1262,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1356,7 +1356,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1446,7 +1446,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1564,7 +1564,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
@@ -1665,7 +1665,7 @@ public class TestDAGConverter {
         assertThat(COM_DESCRIPTION_ABSTRACT, is(metacard.getDescription()));
         assertThat(metacard.getLocation(), is(WKT_LOCATION));
         assertThat(FILE_PRODUCT_URL,
-                is(metacard.getAttribute(Metacard.RESOURCE_DOWNLOAD_URL)
+                is(metacard.getAttribute(Metacard.RESOURCE_URI)
                         .getValue()
                         .toString()));
 
