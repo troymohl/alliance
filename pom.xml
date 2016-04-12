@@ -14,16 +14,16 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.codice</groupId>
+    <groupId>com.connexta</groupId>
     <artifactId>alliance</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Alliance</name>
-    <description>Codice Alliance</description>
+    <description>Connexta Alliance</description>
     <inceptionYear>2016</inceptionYear>
     <organization>
-        <name>Codice Foundation</name>
-        <url>http://codice.org</url>
+        <name>Connexta, LLC</name>
+        <url>http://www.connexta.com</url>
     </organization>
     <licenses>
         <license>
@@ -145,69 +145,6 @@
                         <maxmem>512M</maxmem>
                         <fork>${compiler.fork}</fork>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.17</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>ddf.support</groupId>
-                            <artifactId>support-checkstyle</artifactId>
-                            <version>${ddf.support.version}</version>
-                            <optional>true</optional>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>checkstyle-check</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <configuration>
-                                <!-- This configures the plugin for mvn install -->
-                                <configLocation>checkstyle-enforced.xml</configLocation>
-                                <headerLocation>lpgl-header-check.txt</headerLocation>
-                                <sourceDirectory>${basedir}</sourceDirectory>
-                                <includes>src/**/*.java</includes>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                                <linkXRef>false</linkXRef>
-                                <aggregate>true</aggregate>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>checkstyle-check-xml</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <configuration>
-                                <!-- This configures the plugin for mvn install -->
-                                <configLocation>checkstyle-enforced-xml.xml</configLocation>
-                                <headerLocation>lpgl-header-check-xml.txt</headerLocation>
-                                <sourceDirectory>${basedir}</sourceDirectory>
-                                <includes>src/**/*.xml, pom.xml</includes>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                                <linkXRef>false</linkXRef>
-                                <aggregate>true</aggregate>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <!-- This configures the plugin for mvn checkstyle:checkstyle  -->
-                        <configLocation>checkstyle-enforced.xml</configLocation>
-                        <headerLocation>lpgl-header-check.txt</headerLocation>
-                        <sourceDirectory>${basedir}</sourceDirectory>
-                        <includes>src/**/*.java</includes>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                        <linkXRef>false</linkXRef>
-                        <aggregate>true</aggregate>
                     </configuration>
                 </plugin>
 
@@ -453,6 +390,7 @@
         </pluginRepository>
     </pluginRepositories>
     <modules>
+        <module>support</module>
         <module>catalog</module>
         <module>distribution</module>
         <module>libs</module>

@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright (c) Codice Foundation
+ * Copyright (c) Connexta, LLC
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version. 
@@ -10,14 +10,21 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
 -->
-<img src="https://tools.codice.org/wiki/download/attachments/1179800/ddf.jpg"/>
-# Codice Alliance
-[![Join the chat at https://gitter.im/codice/ddf](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codice/ddf?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/3703/badge.svg)](https://scan.coverity.com/projects/3703)
 
-Codice Alliance is an open source, modular integration framework building on DDF with the addition of DoD/IC and NATO support capabilities.
+# Connexta Alliance
 
-## Features
+
+Connexta Alliance is an open source, modular integration framework building on DDF with the addition of DoD/IC and NATO support capabilities.
+
+## Alliance Features
+ * STANAG 4559 Interoperabilty
+    - Federated Source and Endpoint implementations of STANAG 4559 allow interoperability with other systems implementing the spec
+ * NITF/NSIF (STANG 4554) Ingest and Parsing
+    - Ingest and catalog NITF 2.1 imagery and build data-rich metacards for discovery and retrieval
+ * STANAG 4609 KLV support
+    - Ingest FMV clips and extract KLV metadata for metacard creation
+
+## Inherited DDF Features
  * Standardization
     - Building on established Free and Open Source Software (FOSS) and open standards avoids vendor lock-in
  * Extensibility
@@ -88,15 +95,15 @@ Codice Alliance is an open source, modular integration framework building on DDF
 * Make sure that your JAVA\_HOME environment variable is set to the newly installed JDK location, and that your PATH includes %JAVA\_HOME%\bin (Windows) or $JAVA\_HOME$/bin (\*NIX).
 * [Install Maven 3.1.0 \(or later\)](http://maven.apache.org/download.html). Make sure that your PATH includes the MVN\_HOME/bin directory.
 * Set the MAVEN_OPTS variable with the appropriate memory settings
-* The DDF Eclipse Code Formatter - [ddf-eclipse-code-formatter.xml](https://github.com/codice/ddf-support/blob/master/support-checkstyle/src/main/resources/ddf-eclipse-code-formatter.xml)
+* The Alliance Eclipse Code Formatter - [alliance-eclipse-code-formatter.xml](https://github.com/connexta/alliance-support/blob/master/support-checkstyle/src/main/resources/alliance-eclipse-code-formatter.xml)
+
 
 
 ### How to build ###
 In order to run through a full build, be sure to have a clone for the ddf repository and optionally the ddf-support repository (NOTE: daily snapshots are deployed so downloading and building each repo may not be necessary since those artifacts will be retrieved.):
 
 ```
-git clone git://github.com/codice/alliance.git
-git clone git://github.com/codice/ddf-support.git (Optional)
+git clone git://github.com/connexta/alliance.git
 ```
 Change to the root directory of the cloned ddf repository. Run the following command:
 
@@ -104,18 +111,18 @@ Change to the root directory of the cloned ddf repository. Run the following com
 mvn install
 ```
 
-This will compile DDF and run all of the tests in the DDF source distribution. It usually takes some time for maven to download required dependencies in the first build.
-The distribution will be available under "distribution/ddf/target" directory.
+This will compile Alliance and run all of the tests in the Alliance source distribution. It usually takes some time for maven to download required dependencies in the first build.
+The distribution will be available under "distribution/alliance/target" directory.
 
 ### How to build using multiple threads ###
 
-To build DDF using the [parallel builds feature of maven](https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3), Run the following command:
+To build Alliance using the [parallel builds feature of maven](https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3), Run the following command:
 
 ```
 mvn install -T 8 -P\!documentation
 ```
 
-Which tells maven to use 8 threads when building DDF. You can manually adjust the thread count to suit your machine, or use a relative thread count to the number of cores present on your machine by running the following command:
+Which tells maven to use 8 threads when building Alliance. You can manually adjust the thread count to suit your machine, or use a relative thread count to the number of cores present on your machine by running the following command:
 
 ```
 mvn install -T 1.5C -P\!documentation
@@ -127,27 +134,17 @@ NOTE: documentation must be disabled because it currently cannot be consistently
 
 ## How to Run
 * Unzip the distribution. 
-* Run the executable at <distribution_home>/bin/ddf.bat or <distribution_home>/bin/ddf
+* Run the executable at <distribution_home>/bin/alliance.bat or <distribution_home>/bin/alliance
 
 ## Additional information
-The [wiki](https://tools.codice.org/wiki/display/DDF) is the right place to find any documentation about DDF.
+Please submit issues at (https://github.com/connexta/alliance/issues)
 
-Discussions can be found on the [Announcements forum](http://groups.google.com/group/ddf-announcements),  [Users forum](http://groups.google.com/group/ddf-users), and  [Developers forum](http://groups.google.com/group/ddf-developers).
+Many thanks for using Alliance.
 
-For a DDF binary distribution, please read  the release notes on the wiki for a list of supported and unsupported features.
-
-If you find any issues with DDF, please submit reports with [JIRA](https://tools.codice.org/jira/browse/DDF).
-
-For information on contributing to DDF see [Contributing to Codice](http://www.codice.org/contributing).
-
-The DDF Website also contains additional information at [http://ddf.codice.org](http://ddf.codice.org).
-
-Many thanks for using DDF.
-
--- The Codice DDF Development Team
+-- The Connexta Alliance Development Team
 
 ## Copyright / License
-Copyright (c) Codice Foundation
+Copyright (c) Connexta, LLC
  
 This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License 
 as published by the Free Software Foundation, either version 3 of the License, or any later version. 

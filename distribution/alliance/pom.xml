@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright (c) Codice Foundation
+ * Copyright (c) Connexta, LLC
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version.
@@ -17,12 +17,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.codice.alliance</groupId>
+        <groupId>com.connexta.alliance</groupId>
         <artifactId>distribution</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.codice.alliance.distribution</groupId>
+    <groupId>com.connexta.alliance.distribution</groupId>
     <artifactId>alliance</artifactId>
     <name>Alliance :: Distribution :: Alliance</name>
     <packaging>pom</packaging>
@@ -106,44 +106,44 @@
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.nsili</groupId>
+            <groupId>com.connexta.alliance.nsili</groupId>
             <artifactId>nsili-app</artifactId>
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.distribution</groupId>
+            <groupId>com.connexta.alliance.distribution</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.distribution</groupId>
+            <groupId>com.connexta.alliance.distribution</groupId>
             <artifactId>console-branding</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.distribution</groupId>
+            <groupId>com.connexta.alliance.distribution</groupId>
             <artifactId>install-profiles</artifactId>
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.imaging</groupId>
+            <groupId>com.connexta.alliance.imaging</groupId>
             <artifactId>alliance-imaging-app</artifactId>
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.distribution</groupId>
+            <groupId>com.connexta.alliance.distribution</groupId>
             <artifactId>webconsole-branding-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.codice.alliance.distribution</groupId>
+            <groupId>com.connexta.alliance.distribution</groupId>
             <artifactId>webconsole-branding</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -223,13 +223,13 @@
 
                                 <!-- Alliance Apps -->
                                 <descriptor>
-                                    mvn:org.codice.alliance.nsili/nsili-app/${project.version}/xml/features
+                                    mvn:com.connexta.alliance.nsili/nsili-app/${project.version}/xml/features
                                 </descriptor>
                                 <descriptor>
-                                    mvn:org.codice.alliance.distribution/install-profiles/${project.version}/xml/features
+                                    mvn:com.connexta.alliance.distribution/install-profiles/${project.version}/xml/features
                                 </descriptor>
                                 <descriptor>
-                                    mvn:org.codice.alliance.imaging/alliance-imaging-app/${project.version}/xml/features
+                                    mvn:com.connexta.alliance.imaging/alliance-imaging-app/${project.version}/xml/features
                                 </descriptor>
                                 <descriptor>file:${basedir}/target/classes/alliance-features.xml
                                 </descriptor>
@@ -252,7 +252,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.codice.alliance.distribution</groupId>
+                                    <groupId>com.connexta.alliance.distribution</groupId>
                                     <artifactId>console-branding</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>${setup.folder}</outputDirectory>
@@ -277,7 +277,7 @@
                                     <outputDirectory>${setup.folder}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.codice.alliance.distribution</groupId>
+                                    <groupId>com.connexta.alliance.distribution</groupId>
                                     <artifactId>common</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
@@ -301,70 +301,7 @@
                                     <version>${ddf.version}</version>
                                     <outputDirectory>${setup.folder}/documentation/ddf
                                     </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.admin</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/admin
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.catalog</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/catalog
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.catalog.solr</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/solr
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.platform</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/platform
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.platform.security</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/security
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.codice.ddf.spatial</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/spatial
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>ddf.ui</groupId>
-                                    <artifactId>docs</artifactId>
-                                    <version>${ddf.version}</version>
-                                    <outputDirectory>${setup.folder}/documentation/ui
-                                    </outputDirectory>
-                                    <classifier>export</classifier>
+                                    <classifier>docs-export</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -399,58 +336,12 @@
                             <token>version=${ddf.version}</token>
                             <value>version=${project.version}</value>
                         </replacement>
+                        <replacement>
+                            <token>Codice Foundation</token>
+                            <value>${organization.name}</value>
+                        </replacement>
                     </replacements>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <id>simplify-directory</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <copy todir="${setup.folder}/documentation/ddf">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/ddf/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/admin">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/admin/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/catalog">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/catalog/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/solr">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/solr/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/platform">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/platform/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/security">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/security/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/spatial">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/spatial/docs-${ddf.version}"/>
-                                </copy>
-                                <copy todir="${setup.folder}/documentation/ui">
-                                    <fileset
-                                            dir="${setup.folder}/documentation/ui/docs-${ddf.version}"/>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

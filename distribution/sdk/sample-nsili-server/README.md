@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright (c) Codice Foundation
+ * Copyright (c) Connexta, LLC
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version.
@@ -11,11 +11,11 @@
  */
 -->
 <img src="https://tools.codice.org/wiki/download/attachments/1179800/ddf.jpg"/>
-# [Distributed Data Framework \(DDF\) : Alliance](http://ddf.codice.org/)
+# [Connexta Alliance](http://github.com/connexta/alliance/)
 
 ## Mock NSILI Server
 
-DDF Alliance contains a sample NSILI complaint server and client to be used for testing purposes.  These utilities can be run from the command-line within the sample-nsili-server directory by using maven and specifying a web and corba port.
+Connexta Alliance contains a sample NSILI complaint server and client to be used for testing purposes.  These utilities can be run from the command-line within the sample-nsili-server directory by using maven and specifying a web and corba port.
 
 ```
 mvn -Pcorba.server -Dexec.args=WEBPORT,CORBAPORT

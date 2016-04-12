@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright (c) Codice Foundation
+ * Copyright (c) Connexta, LLC
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version. 
@@ -20,7 +20,7 @@
         <AD description="The ID of the NSILI Source" name="NSILI Source ID" id="id"
             required="true" type="String" default="NSILI Federated Source"/>
 
-        <AD description="The URL of the IOR File to use for the NSILI CORBA Server"
+        <AD description="The URL of the IOR File to use for the NSILI CORBA Server.  For local files, use 'file://'"
             name="Ior File URL" id="iorUrl" required="true" type="String"/>
 
         <AD description="The Username to be used for authentication with HTTP server."
@@ -44,7 +44,7 @@
         <AD description="The ID of the NSILI Source" name="NSILI Source ID" id="id"
             required="true" type="String" default="NSILI Connected Source"/>
 
-        <AD description="The URL of the IOR File to use for the NSILI CORBA Server"
+        <AD description="The URL of the IOR File to use for the NSILI CORBA Server.  For local files, use 'file://'"
             name="Ior File URL" id="iorUrl" required="true" type="String"/>
 
         <AD description="The Username to be used for authentication with HTTP server."

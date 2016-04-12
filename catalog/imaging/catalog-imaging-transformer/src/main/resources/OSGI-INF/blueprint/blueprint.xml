@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright (c) Codice Foundation
+ * Copyright (c) Connexta, LLC
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version.
@@ -14,9 +14,9 @@
  -->
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-    <bean id="metacardType" class="ddf.catalog.transformer.nitf.NitfMetacardType"/>
+    <bean id="metacardType" class="com.connexta.alliance.transformer.nitf.NitfMetacardType"/>
 
-    <bean id="transformer" class="ddf.catalog.transformer.nitf.NitfInputTransformer">
+    <bean id="transformer" class="com.connexta.alliance.transformer.nitf.NitfInputTransformer">
         <property name="nitfMetacardType" ref="metacardType"/>
     </bean>
 
