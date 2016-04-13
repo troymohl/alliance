@@ -19,6 +19,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
+import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
+import org.opengis.filter.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.connexta.alliance.nsili.common.BqsConverter;
 import com.connexta.alliance.nsili.common.GIAS.CatalogMgrPOA;
 import com.connexta.alliance.nsili.common.GIAS.HitCountRequest;
@@ -35,20 +44,11 @@ import com.connexta.alliance.nsili.common.UCO.ProcessingFault;
 import com.connexta.alliance.nsili.common.UCO.SystemFault;
 import com.connexta.alliance.nsili.endpoint.requests.HitCountRequestImpl;
 import com.connexta.alliance.nsili.endpoint.requests.SubmitQueryRequestImpl;
-import org.omg.CORBA.NO_IMPLEMENT;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
-import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
-import org.omg.PortableServer.POAPackage.WrongPolicy;
-import org.opengis.filter.Filter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ddf.catalog.CatalogFramework;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.filter.FilterBuilder;
-import ddf.catalog.operation.ProcessingDetails;
 import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
@@ -162,15 +162,17 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         HitCountRequestImpl hitCountRequest = new HitCountRequestImpl(numResults);
 
+        String id = UUID.randomUUID().toString();
+
         try {
-            poa_.activate_object_with_id("hit_count".getBytes(Charset.forName(ENCODING)),
+            poa_.activate_object_with_id(id.getBytes(Charset.forName(ENCODING)),
                     hitCountRequest);
         } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-            LOGGER.error("hit_count : Unable to activate hitCountRequest object.", e);
+            LOGGER.error("hit_count : Unable to activate hitCountRequest object: {}", id, e);
         }
 
         org.omg.CORBA.Object obj =
-                poa_.create_reference_with_id("hit_count".getBytes(Charset.forName(ENCODING)),
+                poa_.create_reference_with_id(id.getBytes(Charset.forName(ENCODING)),
                         HitCountRequestHelper.id());
         HitCountRequest queryRequest = HitCountRequestHelper.narrow(obj);
 

@@ -49,7 +49,6 @@ public class GetParametersRequestImpl extends GetParametersRequestPOA {
     @Override
     public void set_user_info(String message)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return;
     }
 
     @Override
@@ -64,7 +63,6 @@ public class GetParametersRequestImpl extends GetParametersRequestPOA {
 
     @Override
     public void cancel() throws ProcessingFault, SystemFault {
-        return;
     }
 
     @Override
@@ -76,7 +74,6 @@ public class GetParametersRequestImpl extends GetParametersRequestPOA {
     @Override
     public void free_callback(String id)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        return;
     }
 
     @Override

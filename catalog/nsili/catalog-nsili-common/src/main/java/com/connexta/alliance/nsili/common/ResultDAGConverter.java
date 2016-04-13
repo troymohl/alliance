@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 import com.connexta.alliance.nsili.common.UCO.AbsTime;
 import com.connexta.alliance.nsili.common.UCO.AbsTimeHelper;
@@ -62,14 +63,14 @@ public class ResultDAGConverter {
 
         ProductImpl productImpl = new ProductImpl();
 
+        String id = result.getMetacard().getId() + UUID.randomUUID().toString();
+
         try {
-            poa.activate_object_with_id(result.getMetacard()
-                    .getId()
-                    .getBytes(Charset.forName(ENCODING)), productImpl);
+            poa.activate_object_with_id(id.getBytes(Charset.forName(ENCODING)), productImpl);
         } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-            LOGGER.info("Convert DAG : Unable to activate product impl object."
-                    + e.getLocalizedMessage());
-            LOGGER.debug("Error activating CORBA object for ProductImpl", e);
+
+            LOGGER.info("Convert DAG : Unable to activate product impl object ({}): {}", result.getMetacard().getId(),
+                    e.getLocalizedMessage());
         }
 
         org.omg.CORBA.Object obj = poa.create_reference_with_id(result.getMetacard()

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.joda.time.DateTime;
@@ -1181,32 +1182,77 @@ public class DAGConverter {
                 .collect(Collectors.joining(", "));
     }
 
-    protected static void printNode(Node node) {
-        String attrName = node.attribute_name;
-        String value = "NOT PARSED";
-        if (node.value != null && node.value.type() != null) {
-            if (node.value.type()
-                    .kind() == TCKind.tk_wstring) {
-                value = node.value.extract_wstring();
-            } else if (node.value.type()
-                    .kind() == TCKind.tk_string) {
-                value = node.value.extract_string();
-            } else if (node.value.type()
-                    .kind() == TCKind.tk_long) {
-                value = String.valueOf(node.value.extract_long());
-            } else if (node.value.type()
-                    .kind() == TCKind.tk_ulong) {
-                value = String.valueOf(node.value.extract_ulong());
-            } else if (node.value.type()
-                    .kind() == TCKind.tk_short) {
-                value = String.valueOf(node.value.extract_short());
-            } else if (node.value.type()
-                    .kind() == TCKind.tk_ushort) {
-                value = String.valueOf(node.value.extract_ushort());
+    public static void printDAG(DAG dag) {
+        if (dag.nodes != null && dag.edges != null) {
+            Map<Integer, Node> nodeMap = createNodeMap(dag.nodes);
+            DirectedAcyclicGraph<Node, Edge> graph = new DirectedAcyclicGraph<>(Edge.class);
+
+            for (Node node : dag.nodes) {
+                graph.addVertex(node);
             }
 
-            LOGGER.debug("{} : **** NODE: " + attrName + "=" + value);
+            for (Edge edge : dag.edges) {
+                Node node1 = nodeMap.get(edge.start_node);
+                Node node2 = nodeMap.get(edge.end_node);
+                if (node1 != null && node2 != null) {
+                    graph.addEdge(node1, node2);
+                }
+            }
+
+            DepthFirstIterator<Node, Edge> depthFirstIterator = new DepthFirstIterator<>(graph);
+            while (depthFirstIterator.hasNext()) {
+                Node node = depthFirstIterator.next();
+                DijkstraShortestPath<Node, Edge> path = new DijkstraShortestPath<Node, Edge>(graph, dag.nodes[0], node);
+
+                if (node.node_type == NodeType.ATTRIBUTE_NODE) {
+                    printNode(node, (int)Math.round(path.getPathLength()));
+                } else {
+                    printNode(node, (int)Math.round(path.getPathLength()));
+                }
+            }
         }
+    }
+
+    protected static void printNode(Node node, int offset) {
+        String attrName = node.attribute_name;
+        String value = "NOT PARSED";
+
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<offset; i++) {
+            sb.append("\t");
+        }
+
+        if (node.node_type == NodeType.ATTRIBUTE_NODE) {
+            if (node.value != null && node.value.type() != null) {
+                if (node.value.type()
+                        .kind() == TCKind.tk_wstring) {
+                    value = node.value.extract_wstring();
+                } else if (node.value.type()
+                        .kind() == TCKind.tk_string) {
+                    value = node.value.extract_string();
+                } else if (node.value.type()
+                        .kind() == TCKind.tk_long) {
+                    value = String.valueOf(node.value.extract_long());
+                } else if (node.value.type()
+                        .kind() == TCKind.tk_ulong) {
+                    value = String.valueOf(node.value.extract_ulong());
+                } else if (node.value.type()
+                        .kind() == TCKind.tk_short) {
+                    value = String.valueOf(node.value.extract_short());
+                } else if (node.value.type()
+                        .kind() == TCKind.tk_ushort) {
+                    value = String.valueOf(node.value.extract_ushort());
+                }
+
+                sb.append(attrName);
+                sb.append("=");
+                sb.append(value);
+            }
+        } else {
+            sb.append(attrName);
+        }
+
+        System.out.println(sb.toString());
     }
 
 }

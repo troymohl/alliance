@@ -81,6 +81,7 @@ import com.connexta.alliance.nsili.common.UCO.RectangleHelper;
 import com.connexta.alliance.nsili.common.UCO.Time;
 import com.connexta.alliance.nsili.common.UID.Product;
 import com.connexta.alliance.nsili.common.UID._ProductStub;
+import com.connexta.alliance.nsili.transformer.DAGConverter;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.IntHolder;
@@ -89,6 +90,8 @@ import org.omg.CORBA.TCKind;
 import org.omg.PortableServer.POA;
 
 public class NsiliClient {
+
+    private static final String DEFAULT_USER_INFO = "Alliance";
 
     private static Library library;
 
@@ -108,7 +111,11 @@ public class NsiliClient {
 
     private static final AccessCriteria accessCriteria = new AccessCriteria("test", "test", "");
 
-    ORB orb;
+    private String ddfOrgName = DEFAULT_USER_INFO;
+
+    private Integer maxHitCount = 200;
+
+    private ORB orb;
 
     public NsiliClient(ORB orb) {
         this.orb = orb;
@@ -212,7 +219,8 @@ public class NsiliClient {
                     getDefaultPropertyList());
 
             System.out.println("Query has been submitted");
-
+            submitQueryRequest.set_user_info(ddfOrgName);
+            submitQueryRequest.set_number_of_hits(maxHitCount);
             submitQueryRequest.complete_DAG_results(dagListHolder);
             System.out.println(
                     "Server Responded with " + dagListHolder.value.length + " result(s).\n");
@@ -226,7 +234,7 @@ public class NsiliClient {
     public void processAndPrintResults(DAG[] results) {
         System.out.println("Printing DAG Attribute Results...");
         for (int i = 0; i < results.length; i++) {
-            printDAGAttributes(results[i]);
+            DAGConverter.printDAG(results[i]);
             try {
                 retrieveProductFromDAG(results[i]);
             } catch (MalformedURLException e) {

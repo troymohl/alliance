@@ -55,6 +55,11 @@
             <artifactId>catalog-nsili-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.connexta.alliance.nsili</groupId>
+            <artifactId>catalog-nsili-transformer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

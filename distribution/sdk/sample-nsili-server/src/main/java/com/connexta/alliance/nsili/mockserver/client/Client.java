@@ -56,6 +56,8 @@ public class Client {
         }
 
         // OrderMgr
+        //TODO Re-enable
+        /*
         nsiliClient.validate_order(orb);
         PackageElement[] packageElements = nsiliClient.order(orb);
 
@@ -73,6 +75,7 @@ public class Client {
         else {
             System.out.println("Order does not have any package elements");
         }
+*/
 
         orb.shutdown(true);
         System.out.println("Done. ");
