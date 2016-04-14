@@ -42,18 +42,21 @@ public class Client {
         String[] managers = nsiliClient.getManagerTypes();
         nsiliClient.initManagers(managers);
 
+        //DataModelMgr
+        nsiliClient.testDataModelMgr();
+
         // CatalogMgr
-        Query query = new Query("NSIL_ALL_VIEW", "NSIL_CARD.identifier like '%'");
-        int hitCount = nsiliClient.getHitCount(query);
-        if (hitCount > 0) {
-            DAG[] results = nsiliClient.submit_query(query);
-            if (results != null) {
-                nsiliClient.processAndPrintResults(results);
-            }
-            else {
-                System.out.println("No results from query");
-            }
-        }
+//        Query query = new Query("NSIL_ALL_VIEW", "NSIL_CARD.identifier like '%'");
+//        int hitCount = nsiliClient.getHitCount(query);
+//        if (hitCount > 0) {
+//            DAG[] results = nsiliClient.submit_query(query);
+//            if (results != null) {
+//                nsiliClient.processAndPrintResults(results);
+//            }
+//            else {
+//                System.out.println("No results from query");
+//            }
+//        }
 
         // OrderMgr
         //TODO Re-enable

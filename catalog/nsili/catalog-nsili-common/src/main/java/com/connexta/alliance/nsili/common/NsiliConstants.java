@@ -38,10 +38,39 @@ public class NsiliConstants {
                 return new ContentTypeImpl(type.getSpecName(), STANAG_VERSION);
             }));
 
+    //Categories
+    public static final String NSIL_CORE = "NSIL_CORE";
+
+    public static final String STANAG_4607 = "STANAG4607";
+
+    public static final String STANAG_4609 = "STANAG4609";
+
+    public static final String STANAG_4545 = "STANAG4545";
+
+    public static final String STANAG_5516 = "STANAG5516";
+
+    public static final String NACT_L16 = "NACT_L16";
+
     // Entity Fields
     public static final String NSIL_PRODUCT = "NSIL_PRODUCT";
 
     public static final String NSIL_ALL_VIEW = "NSIL_ALL_VIEW";
+
+    public static final String NSIL_IMAGERY_VIEW = "NSIL_IMAGERY_VIEW";
+
+    public static final String NSIL_GMTI_VIEW = "NSIL_GMTI_VIEW";
+
+    public static final String NSIL_MESSAGE_VIEW = "NSIL_MESSAGE_VIEW";
+
+    public static final String NSIL_VIDEO_VIEW = "NSIL_VIDEO_VIEW";
+
+    public static final String NSIL_ASSOCIATION_VIEW = "NSIL_ASSOCIATION_VIEW";
+
+    public static final String NSIL_REPORT_VIEW = "NSIL_REPORT_VIEW";
+
+    public static final String NSIL_CCIRM_VIEW = "NSIL_CCIRM_VIEW";
+
+    public static final String NSIL_TDL_VIEW = "NSIL_TDL_VIEW";
 
     public static final String NSIL_DESTINATION = "NSIL_DESTINATION";
 
@@ -257,5 +286,18 @@ public class NsiliConstants {
     public static final String CONTRIBUTOR = "contributor";
 
     public static final String RELATIONSHIP = "relationship";
+
+    //Association Constants
+    public static final String HAS_PART = "HAS PART";
+
+    public static final String IS_VERSION_OF = "IS VERSION OF";
+
+    public static final String REPLACES = "REPLACES";
+
+    public static final String IS_SUPPORT_DATA_TO = "IS SUPPORT DATA TO";
+
+    public static final String ORIGINATING_FROM = "ORIGINATING FROM";
+
+    public static final String FOLLOWS = "FOLLOWS";
 
 }

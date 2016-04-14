@@ -15,17 +15,21 @@ package com.connexta.alliance.nsili.endpoint.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import com.connexta.alliance.nsili.common.GIAS.DataModelMgr;
-import com.connexta.alliance.nsili.common.NsiliConstants;
-import com.connexta.alliance.nsili.common.datamodel.NsiliDataModel;
+import org.apache.commons.lang3.tuple.Pair;
+import org.omg.CORBA.NO_IMPLEMENT;
+import org.slf4j.LoggerFactory;
+
 import com.connexta.alliance.nsili.common.GIAS.Association;
 import com.connexta.alliance.nsili.common.GIAS.AttributeInformation;
 import com.connexta.alliance.nsili.common.GIAS.ConceptualAttributeType;
+import com.connexta.alliance.nsili.common.GIAS.DataModelMgr;
 import com.connexta.alliance.nsili.common.GIAS.DataModelMgrPOA;
 import com.connexta.alliance.nsili.common.GIAS.Library;
 import com.connexta.alliance.nsili.common.GIAS.View;
+import com.connexta.alliance.nsili.common.NsiliConstants;
 import com.connexta.alliance.nsili.common.UCO.AbsTime;
 import com.connexta.alliance.nsili.common.UCO.Date;
 import com.connexta.alliance.nsili.common.UCO.EntityGraph;
@@ -35,12 +39,16 @@ import com.connexta.alliance.nsili.common.UCO.NameValue;
 import com.connexta.alliance.nsili.common.UCO.ProcessingFault;
 import com.connexta.alliance.nsili.common.UCO.SystemFault;
 import com.connexta.alliance.nsili.common.UCO.Time;
-import org.omg.CORBA.NO_IMPLEMENT;
-import org.slf4j.LoggerFactory;
+import com.connexta.alliance.nsili.common.datamodel.NsiliDataModel;
 
 public class DataModelMgrImpl extends DataModelMgrPOA {
 
-    private static final String[] VIEW_NAMES = new String[] {NsiliConstants.NSIL_ALL_VIEW};
+    private static final String[] VIEW_NAMES =
+            new String[] {NsiliConstants.NSIL_ALL_VIEW, NsiliConstants.NSIL_IMAGERY_VIEW,
+                    NsiliConstants.NSIL_GMTI_VIEW, NsiliConstants.NSIL_MESSAGE_VIEW,
+                    NsiliConstants.NSIL_VIDEO_VIEW, NsiliConstants.NSIL_ASSOCIATION_VIEW,
+                    NsiliConstants.NSIL_REPORT_VIEW, NsiliConstants.NSIL_TDL_VIEW,
+                    NsiliConstants.NSIL_CCIRM_VIEW};
 
     private static View[] VIEWS;
 
@@ -70,26 +78,39 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public String[] get_alias_categories(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO
-        LOGGER.error("Called get_alias_categories");
-        return new String[0];
+
+        return nsiliDataModel.getAliasCategories().toArray(new String[0]);
     }
 
     @Override
     public NameName[] get_logical_aliases(String category, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO
-        LOGGER.error("Called get_logical_aliases for: " + category);
-        return new NameName[0];
+        NameName[] logicalAliases = new NameName[0];
+        List<Pair<String, String>> aliases = nsiliDataModel.getAliasesForCategory(category);
+        if (aliases != null && !aliases.isEmpty()) {
+            logicalAliases = aliases.stream()
+                    .map(alias -> new NameName(alias.getLeft(), alias.getRight()))
+                    .collect(Collectors.toList())
+                    .toArray(new NameName[0]);
+        }
+        return logicalAliases;
     }
 
     @Override
     public String get_logical_attribute_name(String view_name,
             ConceptualAttributeType attribute_type, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO
-        LOGGER.error("Called get_logical_attribute_name for: " + view_name);
-        return "";
+        String logicalAttrName = "";
+
+        List<Pair<ConceptualAttributeType, String>> pairs = nsiliDataModel.getConceptualAttrsForView(view_name);
+        for (Pair<ConceptualAttributeType, String> pair : pairs) {
+            if (pair.getLeft() == attribute_type) {
+                logicalAttrName = pair.getRight();
+                break;
+            }
+        }
+
+        return logicalAttrName;
     }
 
     @Override
@@ -101,13 +122,8 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public AttributeInformation[] get_attributes(String view_name, NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO TROY REMOVE
-        LOGGER.warn("Getting attributes for " + view_name);
-
         AttributeInformation[] attributes = nsiliDataModel.getAttributesForView(view_name)
                 .toArray(new AttributeInformation[0]);
-        LOGGER.warn("Returning attributes: " + getValueString(attributes));
-
         return attributes;
     }
 
@@ -134,9 +150,7 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public Association[] get_associations(NameValue[] properties)
             throws InvalidInputParameter, ProcessingFault, SystemFault {
-        //TODO
-        LOGGER.warn("Called get_associations");
-        return new Association[0];
+        return nsiliDataModel.getAssociations().toArray(new Association[0]);
     }
 
     @Override

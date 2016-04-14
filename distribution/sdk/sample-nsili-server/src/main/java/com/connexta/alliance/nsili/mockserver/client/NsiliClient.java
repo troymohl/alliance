@@ -14,7 +14,10 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -22,13 +25,16 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
 import com.connexta.alliance.nsili.common.GIAS.AccessCriteria;
 import com.connexta.alliance.nsili.common.GIAS.AlterationSpec;
+import com.connexta.alliance.nsili.common.GIAS.Association;
 import com.connexta.alliance.nsili.common.GIAS.AttributeInformation;
 import com.connexta.alliance.nsili.common.GIAS.CatalogMgr;
 import com.connexta.alliance.nsili.common.GIAS.CatalogMgrHelper;
+import com.connexta.alliance.nsili.common.GIAS.ConceptualAttributeType;
 import com.connexta.alliance.nsili.common.GIAS.CreationMgr;
 import com.connexta.alliance.nsili.common.GIAS.CreationMgrHelper;
 import com.connexta.alliance.nsili.common.GIAS.DataModelMgr;
@@ -65,6 +71,7 @@ import com.connexta.alliance.nsili.common.NsiliConstants;
 import com.connexta.alliance.nsili.common.NsiliManagerType;
 import com.connexta.alliance.nsili.common.UCO.AbsTime;
 import com.connexta.alliance.nsili.common.UCO.AbsTimeHelper;
+import com.connexta.alliance.nsili.common.UCO.Cardinality;
 import com.connexta.alliance.nsili.common.UCO.Coordinate2d;
 import com.connexta.alliance.nsili.common.UCO.DAG;
 import com.connexta.alliance.nsili.common.UCO.DAGHolder;
@@ -81,6 +88,7 @@ import com.connexta.alliance.nsili.common.UCO.RectangleHelper;
 import com.connexta.alliance.nsili.common.UCO.Time;
 import com.connexta.alliance.nsili.common.UID.Product;
 import com.connexta.alliance.nsili.common.UID._ProductStub;
+import com.connexta.alliance.nsili.common.datamodel.NsiliDataModel;
 import com.connexta.alliance.nsili.transformer.DAGConverter;
 
 import org.omg.CORBA.Any;
@@ -90,6 +98,13 @@ import org.omg.CORBA.TCKind;
 import org.omg.PortableServer.POA;
 
 public class NsiliClient {
+
+    public static final String[] VIEW_NAMES =
+            new String[] {NsiliConstants.NSIL_ALL_VIEW, NsiliConstants.NSIL_IMAGERY_VIEW,
+                    NsiliConstants.NSIL_GMTI_VIEW, NsiliConstants.NSIL_MESSAGE_VIEW,
+                    NsiliConstants.NSIL_VIDEO_VIEW, NsiliConstants.NSIL_ASSOCIATION_VIEW,
+                    NsiliConstants.NSIL_REPORT_VIEW, NsiliConstants.NSIL_TDL_VIEW,
+                    NsiliConstants.NSIL_CCIRM_VIEW};
 
     private static final String DEFAULT_USER_INFO = "Alliance";
 
@@ -183,6 +198,84 @@ public class NsiliClient {
                 }
             }
         }
+    }
+
+    public void testDataModelMgr() throws Exception {
+        System.out.println("Getting Alias Categories");
+        String[] aliasCategories = dataModelMgr.get_alias_categories(new NameValue[0]);
+        if (aliasCategories != null) {
+            System.out.println("Number of Alias Categories: "+aliasCategories.length);
+            for (String category : aliasCategories) {
+                System.out.println("\tCategory: "+category);
+
+                NameName[] logicalAliases = dataModelMgr.get_logical_aliases(category, new NameValue[0]);
+                if (logicalAliases != null) {
+                    System.out.println("\t\tNumber Logical Aliases: "+logicalAliases.length);
+                    for (NameName aliasPair : logicalAliases) {
+                        System.out.println("\t\t\t"+aliasPair.name1+"="+aliasPair.name2);
+                    }
+                } else {
+                    System.out.println("\t\tNo Logical Aliases for: "+category);
+                }
+            }
+        } else {
+            System.out.println("No Alias Categories defined");
+        }
+
+
+        System.out.println("Getting DataModel Associations");
+        Map<Cardinality, String> cardNameMap = new HashMap<>();
+        cardNameMap.put(Cardinality.MANY_TO_MANY, "MANY TO MANY");
+        cardNameMap.put(Cardinality.MANY_TO_ONE, "MANY TO ONE");
+        cardNameMap.put(Cardinality.ONE_TO_MANY, "ONE TO MANY");
+        cardNameMap.put(Cardinality.ONE_TO_ONE, "ONE TO ONE");
+        cardNameMap.put(Cardinality.ONE_TO_ONE_OR_MORE, "ONE TO ZERO OR MORE");
+        cardNameMap.put(Cardinality.ONE_TO_ZERO_OR_ONE, "ONE TO ZERO OR ONE");
+        cardNameMap.put(Cardinality.ONE_TO_ZERO_OR_ONE, "ONE TO ZERO OR ONE");
+
+        Association[] associations = dataModelMgr.get_associations(new NameValue[0]);
+        if (associations != null) {
+            System.out.println("Number of associations: " + associations.length);
+            for (Association association : associations) {
+                System.out.println("\t"+association.name+" "+association.view_a+","+association.view_b+","+association.description+", "+cardNameMap.get(association.card)+", "+association.attribute_info.length);
+            }
+        } else {
+            System.out.println("No associations returned");
+        }
+
+        System.out.println("Getting Logical Attribute Names");
+
+        Map<ConceptualAttributeType, String> conceptualAttrNameMap = new HashMap<>();
+        conceptualAttrNameMap.put(ConceptualAttributeType.CLASSIFICATION, "CLASSIFICATION");
+        conceptualAttrNameMap.put(ConceptualAttributeType.DATASETTYPE, "DATASETTYPE");
+        conceptualAttrNameMap.put(ConceptualAttributeType.DATASIZE, "DATASIZE");
+        conceptualAttrNameMap.put(ConceptualAttributeType.DIRECTACCESS, "DIRECTACCESS");
+        conceptualAttrNameMap.put(ConceptualAttributeType.DIRECTACCESSPROTOCOL, "DIRECTACCESSPROTOCOL");
+        conceptualAttrNameMap.put(ConceptualAttributeType.FOOTPRINT, "FOOTPRINT");
+        conceptualAttrNameMap.put(ConceptualAttributeType.MODIFICATIONDATE, "MODIFICATIONDATE");
+        conceptualAttrNameMap.put(ConceptualAttributeType.OVERVIEW, "OVERVIEW");
+        conceptualAttrNameMap.put(ConceptualAttributeType.PRODUCTTITLE, "PRODUCTTITLE");
+        conceptualAttrNameMap.put(ConceptualAttributeType.THUMBNAIL, "THUMBNAIL");
+        conceptualAttrNameMap.put(ConceptualAttributeType.UNIQUEIDENTIFIER, "UNIQUEIDENTIFIER");
+
+        for (String viewName : VIEW_NAMES) {
+            System.out.println("\tView: "+viewName);
+            for (ConceptualAttributeType conceptualAttr : conceptualAttrNameMap.keySet()) {
+                String logicalName = dataModelMgr.get_logical_attribute_name(viewName, conceptualAttr, new NameValue[0]);
+                System.out.println("\t\t"+conceptualAttrNameMap.get(conceptualAttr) +" : " + logicalName);
+            }
+        }
+    }
+
+    private String getAttrNameStr(AttributeInformation[] attributeInformations) {
+        List<String> attrNames = new ArrayList<>();
+        for (AttributeInformation attributeInformation : attributeInformations) {
+            attrNames.add(attributeInformation.attribute_name);
+        }
+
+        return attrNames.stream()
+                .sorted()
+                .collect(Collectors.joining(", "));
     }
 
     public int getHitCount(Query query) throws Exception {
