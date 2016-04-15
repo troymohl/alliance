@@ -34,6 +34,7 @@ import com.connexta.alliance.nsili.common.GIAS.LibraryManagerHelper;
 import com.connexta.alliance.nsili.common.GIAS.LibraryPOA;
 import com.connexta.alliance.nsili.common.GIAS.OrderMgrHelper;
 import com.connexta.alliance.nsili.common.GIAS.ProductMgrHelper;
+import com.connexta.alliance.nsili.common.GIAS.StandingQueryMgrHelper;
 import com.connexta.alliance.nsili.common.NsiliManagerType;
 import com.connexta.alliance.nsili.common.UCO.InvalidInputParameter;
 import com.connexta.alliance.nsili.common.UCO.ProcessingFault;
@@ -44,6 +45,7 @@ import com.connexta.alliance.nsili.endpoint.managers.CreationMgrImpl;
 import com.connexta.alliance.nsili.endpoint.managers.DataModelMgrImpl;
 import com.connexta.alliance.nsili.endpoint.managers.OrderMgrImpl;
 import com.connexta.alliance.nsili.endpoint.managers.ProductMgrImpl;
+import com.connexta.alliance.nsili.endpoint.managers.StandingQueryMgrImpl;
 
 import ddf.catalog.CatalogFramework;
 import ddf.catalog.filter.FilterBuilder;
@@ -58,7 +60,8 @@ public class LibraryImpl extends LibraryPOA {
             NsiliManagerType.CATALOG_MGR.getSpecName(),
             NsiliManagerType.CREATION_MGR.getSpecName(),
             NsiliManagerType.PRODUCT_MGR.getSpecName(),
-            NsiliManagerType.DATA_MODEL_MGR.getSpecName()
+            NsiliManagerType.DATA_MODEL_MGR.getSpecName(),
+            NsiliManagerType.STANDING_QUERY_MGR.getSpecName()
                 /* Optional :
                 "QueryOrderMgr",
                 "StandingQueryMgr",
@@ -166,6 +169,18 @@ public class LibraryImpl extends LibraryPOA {
 
             obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                     CreationMgrHelper.id());
+        } else if (manager_type.equals(NsiliManagerType.STANDING_QUERY_MGR.getSpecName())) {
+            StandingQueryMgrImpl standingQueryMgr = new StandingQueryMgrImpl();
+            try {
+                poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
+                        standingQueryMgr);
+            } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
+                LOGGER.info(String.format("Error activating StandingQueryMgr: %s",
+                        e.getLocalizedMessage()));
+            }
+
+            obj = poa.create_reference_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
+                    StandingQueryMgrHelper.id());
         } else {
             String[] bad_params = {manager_type};
             throw new InvalidInputParameter("UnknownMangerType",

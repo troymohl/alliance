@@ -173,6 +173,7 @@ public class ResultDAGConverter {
         if (downloadUrlAttr != null) {
             String downloadUrl = String.valueOf(downloadUrlAttr.getValue());
             if (downloadUrl != null) {
+                downloadUrl = modifyUrl(downloadUrl, metacard.getTitle());
                 addStringAttribute(graph, fileNode, NsiliConstants.PRODUCT_URL, downloadUrl, orb);
             }
         }
@@ -448,5 +449,9 @@ public class ResultDAGConverter {
         }
 
         return foundGeoInfo;
+    }
+
+    private static String modifyUrl(String url, String name) {
+        return url+"&nsiliFilename="+name;
     }
 }

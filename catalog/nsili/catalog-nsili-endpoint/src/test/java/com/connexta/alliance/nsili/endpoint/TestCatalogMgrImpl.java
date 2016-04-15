@@ -185,7 +185,7 @@ public class TestCatalogMgrImpl extends NsiliCommonTest {
     }
 
     @After
-    public void shutdown() {
+    public void tearDown() {
         if (orb != null) {
             orb.destroy();
         }
