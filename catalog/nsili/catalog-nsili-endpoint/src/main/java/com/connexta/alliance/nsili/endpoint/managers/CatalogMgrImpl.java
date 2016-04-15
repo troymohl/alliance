@@ -74,17 +74,10 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
     private FilterBuilder filterBuilder;
 
-    private Filter allFilterTest;
-
     public CatalogMgrImpl(POA poa, FilterBuilder filterBuilder) {
         this.poa_ = poa;
         this.filterBuilder = filterBuilder;
         bqsConverter = new BqsConverter(filterBuilder);
-
-        //TODO TROY REMOVE
-        allFilterTest = filterBuilder.attribute(Metacard.ANY_TEXT)
-                .like()
-                .text("*");
     }
 
     public void setCatalogFramework(CatalogFramework catalogFramework) {
@@ -114,7 +107,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
     @Override
     public int get_timeout(Request aRequest)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-        return DEFAULT_TIMEOUT;
+        return (int)defaultTimeout;
     }
 
     @Override
@@ -133,9 +126,6 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
     public SubmitQueryRequest submit_query(Query aQuery, String[] result_attributes,
             SortAttribute[] sort_attributes, NameValue[] properties)
             throws ProcessingFault, InvalidInputParameter, SystemFault {
-
-        LOGGER.warn("Query submitted");
-
         SubmitQueryRequestImpl submitQueryRequest = new SubmitQueryRequestImpl();
 
         String queryId = UUID.randomUUID()
@@ -203,13 +193,10 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
-        //TODO REMOVE
-        LOGGER.warn("Filter: " + allFilterTest);
-
-        QueryImpl catalogQuery = new QueryImpl(allFilterTest);
+        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
 
         if (defaultTimeout > 0) {
-            catalogQuery.setTimeoutMillis(defaultTimeout);
+            catalogQuery.setTimeoutMillis(defaultTimeout*1000);
         }
 
         catalogQuery.setPageSize(1);
@@ -224,8 +211,6 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             LOGGER.warn("Unable to query catalog", e);
         }
 
-        //TODO REMOVE
-        LOGGER.warn("Total result count: " + resultCount);
         return resultCount;
     }
 
@@ -234,13 +219,10 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
 
         Filter parsedFilter = bqsConverter.convertBQSToDDF(aQuery);
 
-        //TODO REMOVE
-        LOGGER.warn("Filter: " + allFilterTest);
-
-        QueryImpl catalogQuery = new QueryImpl(allFilterTest);
+        QueryImpl catalogQuery = new QueryImpl(parsedFilter);
 
         if (defaultTimeout > 0) {
-            catalogQuery.setTimeoutMillis(defaultTimeout);
+            catalogQuery.setTimeoutMillis(defaultTimeout*1000);
         }
 
         QueryRequestImpl catalogQueryRequest = new QueryRequestImpl(catalogQuery);
@@ -253,8 +235,6 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             LOGGER.warn("Unable to query catalog", e);
         }
 
-        //TODO REMOVE
-        LOGGER.warn("Return results: " + results.size());
         return results;
     }
 
@@ -272,13 +252,7 @@ public class CatalogMgrImpl extends CatalogMgrPOA {
             QueryResponse queryResponse = catalogFramework.query(catalogQueryRequest);
             queryResponse.getHits();
             if (queryResponse.getResults() != null) {
-                //TODO REMOVE
-                LOGGER.warn("Number of results: " + queryResponse.getResults()
-                        .size());
                 results.addAll(queryResponse.getResults());
-            } else {
-                //TODO REMOVE
-                LOGGER.warn("No results returned");
             }
             return results;
         }

@@ -104,9 +104,6 @@ public class LibraryImpl extends LibraryPOA {
 
         org.omg.CORBA.Object obj;
 
-        //TODO REMOVE
-        LOGGER.error("get_manager called on the library, wanting: " + manager_type);
-
         if (manager_type.equals(NsiliManagerType.CATALOG_MGR.getSpecName())) {
             CatalogMgrImpl catalogMgr = new CatalogMgrImpl(poa, filterBuilder);
             catalogMgr.setCatalogFramework(catalogFramework);
@@ -115,7 +112,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         catalogMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating CatalogMgr: %s",
+                LOGGER.info(String.format("Error activating CatalogMgr: %s",
                         e.getLocalizedMessage()));
             }
 
@@ -127,7 +124,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         orderMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating OrderMgr: %s",
+                LOGGER.info(String.format("Error activating OrderMgr: %s",
                         e.getLocalizedMessage()));
             }
 
@@ -139,7 +136,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         productMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating ProductMgr: %s",
+                LOGGER.info(String.format("Error activating ProductMgr: %s",
                         e.getLocalizedMessage()));
             }
 
@@ -151,7 +148,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         dataModelMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating DataModelMgr: %s",
+                LOGGER.info(String.format("Error activating DataModelMgr: %s",
                         e.getLocalizedMessage()));
             }
 
@@ -163,7 +160,7 @@ public class LibraryImpl extends LibraryPOA {
                 poa.activate_object_with_id(manager_type.getBytes(Charset.forName(ENCODING)),
                         creationMgr);
             } catch (ServantAlreadyActive | ObjectAlreadyActive | WrongPolicy e) {
-                LOGGER.error(String.format("Error activating CreationMgr: %s",
+                LOGGER.info(String.format("Error activating CreationMgr: %s",
                         e.getLocalizedMessage()));
             }
 

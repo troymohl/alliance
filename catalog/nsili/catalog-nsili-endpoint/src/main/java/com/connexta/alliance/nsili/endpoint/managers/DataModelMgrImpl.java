@@ -13,8 +13,6 @@
  */
 package com.connexta.alliance.nsili.endpoint.managers;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,16 +172,5 @@ public class DataModelMgrImpl extends DataModelMgrPOA {
     @Override
     public Library[] get_libraries() throws ProcessingFault, SystemFault {
         throw new NO_IMPLEMENT();
-    }
-
-    private static String getValueString(AttributeInformation[] array) {
-        Collection<String> strColl = new ArrayList<>(array.length);
-        for (AttributeInformation attributeInformation : array) {
-            strColl.add(attributeInformation.attribute_name);
-        }
-        return strColl.stream()
-                .map(Object::toString)
-                .sorted()
-                .collect(Collectors.joining(", "));
     }
 }

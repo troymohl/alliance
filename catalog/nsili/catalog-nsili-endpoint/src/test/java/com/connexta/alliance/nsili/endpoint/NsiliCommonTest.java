@@ -37,8 +37,10 @@ public class NsiliCommonTest {
 
     protected SecurityManager securityManager = mock(SecurityManager.class);
 
+    protected Subject mockSubject;
+
     protected void setupCommonMocks() throws SecurityServiceException {
-        Subject mockSubject = new Subject() {
+        mockSubject = new Subject() {
             @Override
             public boolean isGuest() {
                 return true;
@@ -168,12 +170,17 @@ public class NsiliCommonTest {
 
             @Override
             public <V> V execute(Callable<V> callable) throws ExecutionException {
-                return null;
+                try {
+                    System.out.println("Running callable: "+callable.getClass());
+                    return callable.call();
+                } catch (Exception e) {
+                    throw new ExecutionException(e);
+                }
             }
 
             @Override
             public void execute(Runnable runnable) {
-
+                runnable.run();
             }
 
             @Override
