@@ -60,8 +60,8 @@ public class LibraryImpl extends LibraryPOA {
             NsiliManagerType.CATALOG_MGR.getSpecName(),
             NsiliManagerType.CREATION_MGR.getSpecName(),
             NsiliManagerType.PRODUCT_MGR.getSpecName(),
-            NsiliManagerType.DATA_MODEL_MGR.getSpecName(),
-            NsiliManagerType.STANDING_QUERY_MGR.getSpecName()
+            NsiliManagerType.DATA_MODEL_MGR.getSpecName()
+//            NsiliManagerType.STANDING_QUERY_MGR.getSpecName()
                 /* Optional :
                 "QueryOrderMgr",
                 "StandingQueryMgr",
