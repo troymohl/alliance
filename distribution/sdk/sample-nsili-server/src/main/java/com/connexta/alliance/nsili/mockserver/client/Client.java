@@ -43,7 +43,7 @@ public class Client {
         nsiliClient.initManagers(managers);
 
         // CatalogMgr
-        Query query = new Query("NSIL_ALL_VIEW", "");
+        Query query = new Query("NSIL_ALL_VIEW", "NSIL_FILE.title like '%'");
         int hitCount = nsiliClient.getHitCount(query);
         if (hitCount > 0) {
             DAG[] results = nsiliClient.submit_query(query);
