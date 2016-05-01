@@ -110,6 +110,12 @@ public class NsiliSource extends MaskableImpl
 
     public static final String MAX_HIT_COUNT = "maxHitCount";
 
+    public static final String ACCESS_USERID = "accessUserId";
+
+    public static final String ACCESS_PASSWORD = "accessPassword";
+
+    public static final String ACCESS_LICENSE_KEY = "accessLicenseKey";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NsiliSource.class);
 
     private static final String DESCRIBABLE_PROPERTIES_FILE = "/describable.properties";
@@ -180,9 +186,7 @@ public class NsiliSource extends MaskableImpl
 
     private org.omg.CORBA.ORB orb;
 
-    private AccessCriteria accessCriteria = new AccessCriteria(NsiliFilterDelegate.EMPTY_STRING,
-            NsiliFilterDelegate.EMPTY_STRING,
-            NsiliFilterDelegate.EMPTY_STRING);
+    private AccessCriteria accessCriteria;
 
     private Set<SourceMonitor> sourceMonitors = new HashSet<>();
 
@@ -213,6 +217,12 @@ public class NsiliSource extends MaskableImpl
     private String ddfOrgName = DEFAULT_USER_INFO;
 
     private ResourceReader resourceReader;
+
+    private String accessUserId = "";
+
+    private String accessPassword = "";
+
+    private String accessLicenseKey = "";
 
     static {
         try (InputStream properties = NsiliSource.class.getResourceAsStream(
@@ -395,6 +405,8 @@ public class NsiliSource extends MaskableImpl
      */
     private void initMandatoryManagers() {
         try {
+            accessCriteria = new AccessCriteria(accessUserId, accessPassword, accessLicenseKey);
+
             LibraryManager libraryManager = library.get_manager(CATALOG_MGR, accessCriteria);
             setCatalogMgr(CatalogMgrHelper.narrow(libraryManager));
 
@@ -580,6 +592,18 @@ public class NsiliSource extends MaskableImpl
         Integer maxHitCount = (Integer) configuration.get(MAX_HIT_COUNT);
         if (maxHitCount != null && !maxHitCount.equals(this.maxHitCount)) {
             setMaxHitCount(maxHitCount);
+        }
+        String accessUserId = (String) configuration.get(ACCESS_USERID);
+        if (StringUtils.isNotBlank(accessUserId)) {
+            setAccessUserId(accessUserId);
+        }
+        String accessPassword = (String) configuration.get(ACCESS_PASSWORD);
+        if (StringUtils.isNotBlank(accessPassword)) {
+            setAccessPassword(accessPassword);
+        }
+        String accessLicenseKey = (String) configuration.get(ACCESS_LICENSE_KEY);
+        if (StringUtils.isNotBlank(accessLicenseKey)) {
+            setAccessLicenseKey(accessLicenseKey);
         }
         init();
     }
@@ -826,6 +850,30 @@ public class NsiliSource extends MaskableImpl
 
     public Integer getPollInterval() {
         return pollInterval;
+    }
+
+    public String getAccessUserId() {
+        return accessUserId;
+    }
+
+    public void setAccessUserId(String accessUserId) {
+        this.accessUserId = accessUserId;
+    }
+
+    public String getAccessPassword() {
+        return accessPassword;
+    }
+
+    public void setAccessPassword(String accessPassword) {
+        this.accessPassword = accessPassword;
+    }
+
+    public String getAccessLicenseKey() {
+        return accessLicenseKey;
+    }
+
+    public void setAccessLicenseKey(String accessLicenseKey) {
+        this.accessLicenseKey = accessLicenseKey;
     }
 
     public void setResourceReader(ResourceReader resourceReader) {

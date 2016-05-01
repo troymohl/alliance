@@ -36,6 +36,15 @@
         <AD description="Poll Interval to Check if the Source is available (in minutes - minimum 1)."
             name="Poll Interval" id="pollInterval"
             required="true" type="Integer" default="5"/>
+
+        <AD description="User ID for CORBA Service Access"
+            name="Access User" id="accessUserId" required="false" type="String" default=""/>
+
+        <AD description="Password for CORBA Service Access"
+            name="Access Password" id="accessPassword" required="false" type="String" default=""/>
+
+        <AD description="License Key for CORBA Service Access"
+            name="Access License Key" id="accessLicenseKey" required="true" type="String" default=""/>
     </OCD>
 
     <OCD name="NSILI Connected Source" id="NSILI_Connected_Source"
@@ -60,6 +69,15 @@
         <AD description="Poll Interval to Check if the Source is available (in minutes - minimum 1)."
             name="Poll Interval" id="pollInterval"
             required="true" type="Integer" default="5"/>
+
+        <AD description="User ID for CORBA Service Access"
+            name="Access User" id="accessUserId" required="false" type="String" default=""/>
+
+        <AD description="Password for CORBA Service Access"
+            name="Access Password" id="accessPassword" required="false" type="String" default=""/>
+
+        <AD description="License Key for CORBA Service Access"
+            name="Access License Key" id="accessLicenseKey" required="true" type="String" default=""/>
     </OCD>
 
     <Designate pid="NSILI_Federated_Source" factoryPid="NSILI_Federated_Source">
