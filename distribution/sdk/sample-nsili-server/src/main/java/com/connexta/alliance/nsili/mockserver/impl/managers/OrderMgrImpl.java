@@ -40,7 +40,7 @@ public class OrderMgrImpl extends OrderMgrPOA {
 
     private static final int QUERY_AVAILABILITY_DELAY = 10;
 
-    private static final int NUM_PRIORITIES = 10;
+    private static final int NUM_PRIORITIES = 1;
 
     private static final int TIMEOUT = 1;
 
@@ -79,7 +79,7 @@ public class OrderMgrImpl extends OrderMgrPOA {
     // Access Mgr
     @Override
     public String[] get_use_modes() throws ProcessingFault, SystemFault {
-        return new String[0];
+        return new String[]{"Orders"};
     }
 
     @Override

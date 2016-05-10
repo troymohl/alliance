@@ -55,6 +55,21 @@
             <artifactId>catalog-nsili-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.connexta.alliance.nsili</groupId>
+            <artifactId>catalog-nsili-transformer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-grizzly2</artifactId>
+            <version>1.19</version>
+        </dependency>
     </dependencies>
 
     <build>
