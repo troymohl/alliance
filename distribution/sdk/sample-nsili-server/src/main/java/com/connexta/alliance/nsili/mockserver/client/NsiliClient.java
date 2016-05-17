@@ -124,6 +124,7 @@ import com.connexta.alliance.nsili.common.UID.ProductHelper;
 import com.connexta.alliance.nsili.transformer.DAGConverter;
 
 import ddf.catalog.data.Metacard;
+import ddf.catalog.resource.impl.URLResourceReader;
 
 public class NsiliClient {
 
@@ -860,7 +861,8 @@ public class NsiliClient {
     }
 
     private String getProductID(DAG dag) {
-        Metacard metacard = DAGConverter.convertDAG(dag, false, "");
+        DAGConverter dagConverter = new DAGConverter(new URLResourceReader());
+        Metacard metacard = dagConverter.convertDAG(dag, false, "");
         return metacard.getId();
     }
 
