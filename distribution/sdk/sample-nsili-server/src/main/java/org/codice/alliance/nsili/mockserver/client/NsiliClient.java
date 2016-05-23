@@ -40,6 +40,9 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
+import org.codice.alliance.nsili.common.GIAS.ImageSpec;
+import org.codice.alliance.nsili.common.GIAS.ImageSpecHelper;
+import org.codice.alliance.nsili.common.GIAS.SupportDataEncoding;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
@@ -356,7 +359,16 @@ public class NsiliClient {
             System.out.println("Product available: " + productAvail);
 
             System.out.println("Creating order request...");
-            NameValue[] properties = new NameValue[0];
+
+            Any portAny = orb.create_any();
+            Any protocolAny = orb.create_any();
+            protocolAny.insert_string("http");
+            portAny.insert_long(Client.LISTEN_PORT);
+            NameValue portProp = new NameValue("PORT", portAny);
+            NameValue protocolProp = new NameValue("PROTOCOL", protocolAny);
+
+            NameValue[] properties = new NameValue[] {portProp, protocolProp};
+
             OrderContents order = createOrder(orb, product, supportedPackageSpecs, filename);
 
             //Validating Order
@@ -383,14 +395,16 @@ public class NsiliClient {
                 System.out.println(deliveryManifest.package_name);
 
                 elements = deliveryManifest.elements;
-                for (int i = 0; i < elements.length; i++) {
+                if (deliveryManifest.elements != null) {
+                    for (int i = 0; i < elements.length; i++) {
 
-                    String[] files = elements[i].files;
+                        String[] files = elements[i].files;
 
-                    for (int c = 0; c < files.length; c++) {
-                        System.out.println("\t" + files[c]);
+                        for (int c = 0; c < files.length; c++) {
+                            System.out.println("\t" + files[c]);
+                        }
+
                     }
-
                 }
                 System.out.println();
             } catch (Exception e) {
@@ -671,21 +685,30 @@ public class NsiliClient {
         String[] benums = new String[0];
         Rectangle region = new Rectangle(new Coordinate2d(1.1, 1.1), new Coordinate2d(2.2, 2.2));
 
-        //TODO -- Need to figure out which output formats are acceptable - enum?
+        ImageSpec imageSpec = new ImageSpec();
+        imageSpec.encoding = SupportDataEncoding.ASCII;
+        imageSpec.rrds = new short[]{1};
+        imageSpec.algo = "";
+        imageSpec.bpp = 0;
+        imageSpec.comp = "A";
+        imageSpec.imgform = "A";
+        imageSpec.imageid = "1234abc";
+        imageSpec.geo_region_type = GeoRegionType.LAT_LON;
+
+        Rectangle subSection = new Rectangle();
+        subSection.lower_right = new Coordinate2d(0, 0);
+        subSection.upper_left = new Coordinate2d(1, 1);
+        imageSpec.sub_section = subSection;
+        Any imageSpecAny = orb.create_any();
+        ImageSpecHelper.insert(imageSpecAny, imageSpec);
         AlterationSpec aSpec = new AlterationSpec("JPEG",
-                orb.create_any(),
+                imageSpecAny,
                 region,
                 GeoRegionType.NULL_REGION);
 
-        Any portAny = orb.create_any();
-        portAny.insert_string(String.valueOf(Client.LISTEN_PORT));
-        NameValue portProp = new NameValue("PORT", portAny);
-
-        NameValue[] getRelatedFileProps = new NameValue[] {portProp};
-
         FileLocation fileLocation = new FileLocation("user",
                 "pass",
-                "localhost:" + Client.LISTEN_PORT,
+                "localhost",
                 "/nsili/file",
                 filename);
         Destination destination = new Destination();
