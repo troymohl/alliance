@@ -35,7 +35,7 @@ public class Client {
 
     private static final boolean SHOULD_PROCESS_PKG_ELEMENTS = false;
 
-    private static final boolean SHOULD_TEST_STANDING_QUERY_MGR = false;
+    private static final boolean SHOULD_TEST_STANDING_QUERY_MGR = true;
 
     public void runTest(String[] args) throws Exception {
         startHttpListener();

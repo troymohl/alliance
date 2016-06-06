@@ -29,7 +29,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.net.ssl.HostnameVerifier;
@@ -486,6 +488,8 @@ public class NsiliClient {
                 nsiliCallback.setCallbackID(standingQueryCallbackId);
                 standingQueryCallbacks.add(nsiliCallback);
 
+                System.out.println("Registered NSILI Callback: " + standingQueryCallbackId);
+
             } catch (Exception e) {
                 System.err.println("Error submitting standing query: " + NsilCorbaExceptionUtil.getExceptionDetails(e));
                 e.printStackTrace(System.err);
@@ -808,6 +812,10 @@ public class NsiliClient {
                     .free_callback(callback.getCallbackID());
         }
 
+        if (standingQueryRequest != null) {
+            standingQueryRequest.cancel();
+        }
+
         for (TestNsiliStandingQueryCallback callback : standingQueryCallbacks) {
             System.out.println("Freeing standing query callback: " + callback.getCallbackID());
             callback.getQueryRequest()
@@ -1011,6 +1019,8 @@ public class NsiliClient {
 
         private SubmitStandingQueryRequest queryRequest;
 
+        private long numResultsProcessed = 0;
+
         public TestNsiliStandingQueryCallback(SubmitStandingQueryRequest queryRequest) {
             this.queryRequest = queryRequest;
         }
@@ -1064,8 +1074,13 @@ public class NsiliClient {
                     }
                     System.out.println("Results from notification: ");
                     DAGListHolder dagListHolder = new DAGListHolder();
-                    queryRequest.complete_DAG_results(dagListHolder);
-                    processAndPrintResults(dagListHolder.value, false);
+                    while (queryRequest.get_number_of_hits() > 0) {
+                        queryRequest.complete_DAG_results(dagListHolder);
+                        numResultsProcessed += dagListHolder.value.length;
+                        processAndPrintResults(dagListHolder.value, false);
+                    }
+
+                    System.out.println("Number results processed: " + numResultsProcessed);
                 } else {
                     System.out.println("No results available");
                 }
