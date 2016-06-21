@@ -67,7 +67,7 @@ public class Client {
         }
 
         // CatalogMgr
-        Query query = new Query(NsiliConstants.NSIL_ALL_VIEW, "NSIL_CARD.identifier like '%'");
+        Query query = new Query(NsiliConstants.NSIL_ALL_VIEW, "NSIL_CARD.identifier like '%' and NSIL_CARD.sourceLibrary = 'test'");
         int hitCount = nsiliClient.getHitCount(query);
         if (hitCount > 0) {
             DAG[] results = nsiliClient.submit_query(query);
