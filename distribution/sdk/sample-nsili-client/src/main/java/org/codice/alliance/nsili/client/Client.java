@@ -139,7 +139,7 @@ public class Client {
     private void startHttpListener() {
         try {
             ResourceConfig rc = new PackagesResourceConfig(
-                    "org.codice.alliance.nsili.mockserver.client");
+                    "org.codice.alliance.nsili.client");
             server = GrizzlyServerFactory.createHttpServer("http://0.0.0.0:" + LISTEN_PORT, rc);
             NetworkListener networkListener = new NetworkListener("sample-listener",
                     "0.0.0.0",
