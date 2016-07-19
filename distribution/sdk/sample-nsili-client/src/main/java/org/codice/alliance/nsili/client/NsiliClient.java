@@ -45,6 +45,7 @@ import org.apache.cxf.helpers.IOUtils;
 import org.codice.alliance.nsili.common.CB.Callback;
 import org.codice.alliance.nsili.common.CB.CallbackHelper;
 import org.codice.alliance.nsili.common.CB.CallbackPOA;
+import org.codice.alliance.nsili.common.CorbaUtils;
 import org.codice.alliance.nsili.common.GIAS.AccessCriteria;
 import org.codice.alliance.nsili.common.GIAS.AlterationSpec;
 import org.codice.alliance.nsili.common.GIAS.AttributeInformation;
@@ -272,6 +273,7 @@ public class NsiliClient {
     public void processAndPrintResults(DAG[] results, boolean downloadProduct) {
         System.out.println("Printing DAG Attribute Results...");
         for (int i = 0; i < results.length; i++) {
+            System.out.println("\t RESULT : " + (i+1) + " of " + results.length);
             printDAGAttributes(results[i]);
             if (downloadProduct) {
                 try {
@@ -285,14 +287,16 @@ public class NsiliClient {
 
     public void printDAGAttributes(DAG dag) {
         System.out.println("--------------------");
+        System.out.println("PRINTING DAG ATTRIBUTES");
         for (int i = 0; i < dag.nodes.length; i++) {
             Node node = dag.nodes[i];
             if (node.node_type.equals(NodeType.ATTRIBUTE_NODE)) {
                 String name = node.attribute_name;
-                String value = DAGConverter.getNodeValue(node.value);
+                String value = CorbaUtils.getNodeValue(node.value);
                 System.out.println(name + " = " + value);
             }
         }
+        System.out.println("END PRINTING DAGS");
         System.out.println("--------------------");
     }
 

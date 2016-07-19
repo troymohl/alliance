@@ -100,6 +100,11 @@
             <artifactId>ftpserver-core</artifactId>
             <version>1.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>ddf.catalog.core</groupId>
+            <artifactId>versioning-common</artifactId>
+            <version>${ddf.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -116,6 +121,7 @@
                             catalog-nsili-bqs,
                             catalog-nsili-common,
                             catalog-nsili-transformer,
+                            versioning-common,
                             platform-util,
                             antlr4-runtime,
                             commons-lang,

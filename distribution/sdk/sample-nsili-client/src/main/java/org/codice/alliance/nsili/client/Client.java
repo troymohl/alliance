@@ -34,7 +34,9 @@ public class Client {
 
     private static final boolean SHOULD_PROCESS_PKG_ELEMENTS = false;
 
-    private static final boolean SHOULD_TEST_STANDING_QUERY_MGR = true;
+    private static final boolean SHOULD_TEST_STANDING_QUERY_MGR = false;
+
+    private static final boolean SHOULD_DOWNLOAD_PRODUCT = true;
 
     public void runTest(String[] args) throws Exception {
         startHttpListener();
@@ -72,7 +74,7 @@ public class Client {
         if (hitCount > 0) {
             DAG[] results = nsiliClient.submit_query(query);
             if (results != null && results.length > 0) {
-                nsiliClient.processAndPrintResults(results, true);
+                nsiliClient.processAndPrintResults(results, SHOULD_DOWNLOAD_PRODUCT);
 
                 //OrderMgr
                 nsiliClient.order(orb, rootPOA, results);
