@@ -1,0 +1,40 @@
+{
+  "validators": {
+    "datatype": [
+      {
+        "validator": "enumeration",
+        "arguments": [
+          "Collection",
+          "Dataset",
+          "Event",
+          "Image",
+          "Interactive Resource",
+          "Service",
+          "Software",
+          "Sound",
+          "Text",
+          "Video",
+          "Document",
+          "Collection/Exploitation Plan",
+          "Geographic Area of Interest",
+          "GMTI",
+          "Imagery",
+          "Intelligence Requirement",
+          "Message",
+          "Operational Roles",
+          "ORBAT",
+          "Report RFI",
+          "System Assignments",
+          "System Deployment Status",
+          "System Specifications",
+          "Tactical Symbol",
+          "Task",
+          "TDL Data",
+          "Video",
+          "CBRN",
+          "Electronic Order of Battle"
+        ]
+      }
+    ]
+  }
+}

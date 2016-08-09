@@ -70,6 +70,11 @@ public interface Security {
     String METADATA_CLASSIFICATION = "ext.metadata-classification";
 
     /**
+     * Attribute name for accessing the security classification system for the metadata for this Metacard. <br/>
+     */
+    String METADATA_CLASSIFICATION_SYSTEM = "ext.metadata-classification-system";
+
+    /**
      * Attribute name for accessing the metadata dissemination controls for this Metacard. <br/>
      */
     String METADATA_DISSEMINATION = "ext.metadata-dissemination-controls";
@@ -89,6 +94,11 @@ public interface Security {
      * Attribute name for accessing the resource classification for this Metacard. <br/>
      */
     String RESOURCE_CLASSIFICATION = "ext.resource-classification";
+
+    /**
+     * Attribute name for accessing the security classification system for the resource for this Metacard. <br/>
+     */
+    String RESOURCE_CLASSIFICATION_SYSTEM = "ext.resource-classification-system";
 
     /**
      * Attribute name for accessing the resource releasability for this Metacard. <br/>
