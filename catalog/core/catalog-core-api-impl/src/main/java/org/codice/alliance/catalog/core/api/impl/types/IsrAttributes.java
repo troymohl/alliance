@@ -326,6 +326,12 @@ public class IsrAttributes implements Isr, MetacardType {
                 true /* tokenized */,
                 false /* multivalued */,
                 BasicTypes.STRING_TYPE));
+        DESCRIPTORS.add(new AttributeDescriptorImpl(TACTICAL_DATA_LINK_PLATFORM,
+                true /* indexed */,
+                true /* stored */,
+                false /* tokenized */,
+                false /* multivalued */,
+                BasicTypes.SHORT_TYPE));
         DESCRIPTORS.add(new AttributeDescriptorImpl(VIDEO_MOTION_IMAGERY_SYSTEMS_MATRIX_LEVEL,
                 true /* indexed */,
                 true /* stored */,

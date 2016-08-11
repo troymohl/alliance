@@ -249,6 +249,11 @@ public interface Isr {
     String CHEMICAL_BIOLOGICAL_RADIOLOGICAL_NUCLEAR_SUBSTANCE = "isr.cbrn-substance";
 
     /**
+     * Attribute name for accessing the TDL platform number for this Metacard. <br/>
+     */
+    String TACTICAL_DATA_LINK_PLATFORM = "isr.tdl-platform-number";
+
+    /**
      * Attribute name for accessing the TDL activity number for this Metacard. <br/>
      */
     String TACTICAL_DATA_LINK_ACTIVITY = "isr.tdl-activity";
