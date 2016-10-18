@@ -128,6 +128,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddf.catalog.data.Metacard;
+import ddf.catalog.data.impl.MetacardTypeImpl;
 import ddf.catalog.resource.impl.URLResourceReader;
 
 public class NsiliClient {
@@ -882,6 +883,7 @@ public class NsiliClient {
 
     private String getProductID(DAG dag) {
         DAGConverter dagConverter = new DAGConverter(new URLResourceReader());
+        dagConverter.setNsiliMetacardType(new MetacardTypeImpl("TestNsiliMetacardType", new ArrayList<>()));
         Metacard metacard = dagConverter.convertDAG(dag, false, "");
         return metacard.getId();
     }
