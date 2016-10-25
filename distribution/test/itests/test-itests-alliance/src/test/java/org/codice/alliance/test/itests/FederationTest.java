@@ -16,6 +16,8 @@ package org.codice.alliance.test.itests;
 import static org.codice.ddf.itests.common.AbstractIntegrationTest.DynamicUrl.INSECURE_ROOT;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.GMD_CSW_FEDERATED_SOURCE_FACTORY_PID;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswSourceProperties;
+import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.OPENSEARCH_FACTORY_PID;
+import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.getOpenSearchSourceProperties;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasXPath;
@@ -127,6 +129,13 @@ public class FederationTest extends AbstractAllianceIntegrationTest {
             configureFtpNsiliSource();
             configureMgmpSource();
 
+            Map<String, Object> openSearchProperties = getOpenSearchSourceProperties(
+                    OPENSEARCH_SOURCE_ID,
+                    OPENSEARCH_PATH.getUrl(),
+                    getServiceManager());
+            getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, openSearchProperties);
+
+            getCatalogBundle().waitForFederatedSource(OPENSEARCH_SOURCE_ID);
             getCatalogBundle().waitForFederatedSource(MGMP_SOURCE_ID);
 
             getServiceManager().waitForSourcesToBeAvailable(REST_PATH.getUrl(),
