@@ -346,25 +346,25 @@ public class ImageInputTransformerTest {
         NitfHeader header = NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE);
         Tre piaimc = TreFactory.getDefault("PIAIMC", TreSource.ImageExtendedSubheaderData);
         piaimc.add(new TreEntry("CLOUDCVR", "070", "string"));
-        piaimc.add(new TreEntry("SRP", str(1), "string"));
+        piaimc.add(new TreEntry("SRP", "Y", "string"));
         piaimc.add(new TreEntry("SENSMODE", str(12), "string"));
         piaimc.add(new TreEntry("SENSNAME", str(18), "string"));
         piaimc.add(new TreEntry("SOURCE", str(255), "string"));
-        piaimc.add(new TreEntry("COMGEN", str(2), "string"));
+        piaimc.add(new TreEntry("COMGEN", "09", "string"));
         piaimc.add(new TreEntry("SUBQUAL", str(1), "string"));
         piaimc.add(new TreEntry("PIAMSNNUM", str(7), "string"));
         piaimc.add(new TreEntry("CAMSPECS", str(32), "string"));
         piaimc.add(new TreEntry("PROJID", str(2), "string"));
-        piaimc.add(new TreEntry("GENERATION", str(1), "string"));
-        piaimc.add(new TreEntry("ESD", str(1), "string"));
+        piaimc.add(new TreEntry("GENERATION", "8", "string"));
+        piaimc.add(new TreEntry("ESD", "Y", "string"));
         piaimc.add(new TreEntry("OTHERCOND", str(2), "string"));
-        piaimc.add(new TreEntry("MEANGSD", str(7), "string"));
+        piaimc.add(new TreEntry("MEANGSD", "00000.0", "string"));
         piaimc.add(new TreEntry("IDATUM", str(3), "string"));
         piaimc.add(new TreEntry("IELLIP", str(3), "string"));
         piaimc.add(new TreEntry("PREPROC", str(2), "string"));
         piaimc.add(new TreEntry("IPROJ", str(2), "string"));
-        piaimc.add(new TreEntry("SATTRACK_PATH", str(4), "string"));
-        piaimc.add(new TreEntry("SATTRACK_ROW", str(4), "string"));
+        piaimc.add(new TreEntry("SATTRACK_PATH", "0000", "string"));
+        piaimc.add(new TreEntry("SATTRACK_ROW", "0000", "string"));
 
         ImageSegment imageSegment = ImageSegmentFactory.getDefault(FileType.NITF_TWO_ONE);
         imageSegment.addImageBand(new ImageBand());
@@ -374,7 +374,6 @@ public class ImageInputTransformerTest {
         new NitfCreationFlow().fileHeader(() -> header)
                 .imageSegment(() -> imageSegment)
                 .write(file.getAbsolutePath());
-
     }
 
     @Test
