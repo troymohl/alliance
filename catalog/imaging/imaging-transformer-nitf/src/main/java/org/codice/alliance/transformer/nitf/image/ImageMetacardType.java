@@ -18,6 +18,7 @@ import org.codice.alliance.catalog.core.api.impl.types.SecurityAttributes;
 import org.codice.alliance.transformer.nitf.AbstractNitfMetacardType;
 import org.codice.alliance.transformer.nitf.common.AcftbAttribute;
 import org.codice.alliance.transformer.nitf.common.AimidbAttribute;
+import org.codice.alliance.transformer.nitf.common.CsdidaAttribute;
 import org.codice.alliance.transformer.nitf.common.CsexraAttribute;
 import org.codice.alliance.transformer.nitf.common.NitfHeaderAttribute;
 import org.codice.alliance.transformer.nitf.gmti.IndexedMtirpbAttribute;
@@ -60,6 +61,7 @@ public class ImageMetacardType extends AbstractNitfMetacardType {
         descriptors.addAll(new ValidationAttributes().getAttributeDescriptors());
         descriptors.addAll(new IsrAttributes().getAttributeDescriptors());
         descriptors.addAll(new SecurityAttributes().getAttributeDescriptors());
+        descriptors.addAll(getDescriptors(CsdidaAttribute.getAttributes()));
         descriptors.addAll(getDescriptors(CsexraAttribute.getAttributes()));
     }
 }

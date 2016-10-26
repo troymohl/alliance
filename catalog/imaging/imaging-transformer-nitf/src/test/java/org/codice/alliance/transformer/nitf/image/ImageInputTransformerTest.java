@@ -258,18 +258,18 @@ public class ImageInputTransformerTest {
     private void createNitfWithCsdida(File file) {
         NitfHeader header = NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE);
         Tre csdida = TreFactory.getDefault("CSDIDA", TreSource.ExtendedHeaderData);
-        csdida.add(new TreEntry("DAY", str(2), "UINT"));
+        csdida.add(new TreEntry("DAY", "01", "UINT"));
         csdida.add(new TreEntry("MONTH", str(3), "UINT"));
-        csdida.add(new TreEntry("YEAR", str(4), "UINT"));
+        csdida.add(new TreEntry("YEAR", "1234", "UINT"));
         csdida.add(new TreEntry("PLATFORM_CODE", "XY", "string"));
         csdida.add(new TreEntry("VEHICLE_ID", "01", "string"));
-        csdida.add(new TreEntry("PASS", str(2), "string"));
-        csdida.add(new TreEntry("OPERATION", str(3), "string"));
+        csdida.add(new TreEntry("PASS", "01", "string"));
+        csdida.add(new TreEntry("OPERATION", "001", "UINT"));
         csdida.add(new TreEntry("SENSOR_ID", str(2), "string"));
         csdida.add(new TreEntry("PRODUCT_ID", str(2), "string"));
         csdida.add(new TreEntry("RESERVED_0", str(4), "string"));
-        csdida.add(new TreEntry("TIME", str(14), "UINT"));
-        csdida.add(new TreEntry("PROCESS_TIME", str(14), "UINT"));
+        csdida.add(new TreEntry("TIME", "20000202010101", "UINT"));
+        csdida.add(new TreEntry("PROCESS_TIME", "20000202010101", "UINT"));
         csdida.add(new TreEntry("RESERVED_1", str(2), "string"));
         csdida.add(new TreEntry("RESERVED_2", str(2), "string"));
         csdida.add(new TreEntry("RESERVED_3", str(1), "string"));
@@ -280,7 +280,6 @@ public class ImageInputTransformerTest {
                 .add(csdida);
         new NitfCreationFlow().fileHeader(() -> header)
                 .write(file.getAbsolutePath());
-
     }
 
     @Test
