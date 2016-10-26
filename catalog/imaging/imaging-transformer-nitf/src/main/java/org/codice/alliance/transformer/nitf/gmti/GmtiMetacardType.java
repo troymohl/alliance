@@ -19,6 +19,7 @@ import org.codice.alliance.transformer.nitf.AbstractNitfMetacardType;
 import org.codice.alliance.transformer.nitf.common.AcftbAttribute;
 import org.codice.alliance.transformer.nitf.common.CsdidaAttribute;
 import org.codice.alliance.transformer.nitf.common.CsexraAttribute;
+import org.codice.alliance.transformer.nitf.common.HistoaAttribute;
 import org.codice.alliance.transformer.nitf.common.NitfHeaderAttribute;
 import org.codice.alliance.transformer.nitf.common.PiaimcAttribute;
 
@@ -56,5 +57,6 @@ public class GmtiMetacardType extends AbstractNitfMetacardType {
         descriptors.addAll(getDescriptors(PiaimcAttribute.getAttributes()));
         descriptors.addAll(getDescriptors(CsdidaAttribute.getAttributes()));
         descriptors.addAll(getDescriptors(CsexraAttribute.getAttributes()));
+        descriptors.addAll(getDescriptors(HistoaAttribute.getAttributes()));
     }
 }
