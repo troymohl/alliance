@@ -30,7 +30,7 @@ public abstract class AbstractNitfMetacardType extends MetacardTypeImpl {
 
     public abstract void initDescriptors();
 
-    protected Set<AttributeDescriptor> getDescriptors(NitfAttribute[] attributes) {
+    public static Set<AttributeDescriptor> getDescriptors(NitfAttribute[] attributes) {
         Set<AttributeDescriptor> descriptors = new HashSet<>();
         for (NitfAttribute attribute : attributes) {
             descriptors.addAll(attribute.getAttributeDescriptors());
@@ -38,7 +38,7 @@ public abstract class AbstractNitfMetacardType extends MetacardTypeImpl {
         return descriptors;
     }
 
-    protected <T> Set<AttributeDescriptor> getDescriptors(List<NitfAttribute<T>> attributes) {
+    public static <T> Set<AttributeDescriptor> getDescriptors(List<NitfAttribute<T>> attributes) {
         return getDescriptors(attributes.toArray(new NitfAttribute[attributes.size()]));
     }
 
