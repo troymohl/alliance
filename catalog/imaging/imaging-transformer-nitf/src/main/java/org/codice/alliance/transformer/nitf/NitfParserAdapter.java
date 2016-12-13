@@ -31,7 +31,7 @@ public class NitfParserAdapter {
         }
 
         return new NitfParserInputFlow().inputStream(inputStream)
-                .allData();
+                .headerOnly();
     }
 
     /**
