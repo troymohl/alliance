@@ -238,6 +238,9 @@
                                 <descriptor>
                                     mvn:org.codice.alliance.video/video-app/${project.version}/xml/features
                                 </descriptor>
+                                <descriptor>
+                                    mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features
+                                </descriptor>
                                 <descriptor>file:${basedir}/target/classes/alliance-features.xml
                                 </descriptor>
                             </descriptors>
