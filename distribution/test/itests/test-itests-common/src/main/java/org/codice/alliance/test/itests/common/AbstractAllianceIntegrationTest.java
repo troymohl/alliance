@@ -69,6 +69,11 @@ public abstract class AbstractAllianceIntegrationTest extends AbstractIntegratio
                         .versionAsInProject()));
     }
 
+    @Override
+    protected Option[] configureCustom() {
+        return null;
+    }
+
     public static InputStream getAllianceItestResourceAsStream(String filePath) {
         return getFileContentAsStream(filePath, AbstractAllianceIntegrationTest.class);
     }
