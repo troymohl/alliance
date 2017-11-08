@@ -68,6 +68,10 @@ public class BannerMarkings implements Serializable {
     public static ClassificationLevel lookup(String name) {
       return LOOKUP_MAP.get(name);
     }
+
+    public static ClassificationLevel lookupByShortname(String name) {
+      return SHORTNAME_LOOKUP.get(name);
+    }
   }
 
   enum MarkingType {
@@ -84,6 +88,7 @@ public class BannerMarkings implements Serializable {
     FISA("FISA", "FOREIGN INTELLIGENCE SURVEILLANCE ACT"),
     ORCON("ORCON", "ORIGINATOR CONTROLLED"),
     DEA_SENSITIVE("DEA SENSITIVE"),
+    FOUO("FOUO", "FOR OFFICIAL USE ONLY"),
     WAIVED("WAIVED");
 
     private String name;
@@ -107,7 +112,7 @@ public class BannerMarkings implements Serializable {
     }
   }
 
-  enum OtherDissemControl {
+  public enum OtherDissemControl {
     ACCM("ACCM"),
     EXDIS("EXDIS", "EXCLUSIVE DISTRIBUTION"),
     LIMDIS("LIMDIS", "LIMITED DISTRIBUTION"),
@@ -361,7 +366,10 @@ public class BannerMarkings implements Serializable {
       case US:
         classification = ClassificationLevel.lookup(classificationSegment);
         if (classification == null) {
-          throw new MarkingsValidationException("Unknown classification marking", inputMarkings);
+          classification = ClassificationLevel.lookupByShortname(classificationSegment);
+          if (classification == null) {
+            throw new MarkingsValidationException("Unknown classification marking", inputMarkings);
+          }
         }
         break;
       case FGI:

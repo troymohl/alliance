@@ -78,6 +78,15 @@ class BannerMarkingsSpec extends Specification {
         '//JOINT SECRET CAN DEU USA NATO//TK//RELIDO' | SECRET         | ['CAN', 'DEU', 'USA', 'NATO']
     }
 
+    def 'U//FOUO'() {
+        when:
+        def bannerMarkings = BannerMarkings.parseMarkings("U//FOUO")
+
+        then:
+        bannerMarkings.classification == UNCLASSIFIED
+        bannerMarkings.disseminationControls.contains(FOUO)
+    }
+
     def 'test sci controls only'() {
         when:
         def bannerMarkings = BannerMarkings.parseMarkings(markings)
