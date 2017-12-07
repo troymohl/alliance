@@ -121,7 +121,7 @@ public class BannerCommonMarkingExtractor extends MarkingExtractor {
 
   Attribute processCodewords(Metacard metacard, BannerMarkings bannerMarkings) {
     List<Serializable> sciControls = new ArrayList<>();
-    for (BannerMarkings.SciControl sci : bannerMarkings.getSciControls()) {
+    for (SciControl sci : bannerMarkings.getSciControls()) {
       if (sci.getCompartments().isEmpty()) {
         sciControls.add(sci.getControl());
         continue;
@@ -151,7 +151,7 @@ public class BannerCommonMarkingExtractor extends MarkingExtractor {
         bannerMarkings
             .getDisseminationControls()
             .stream()
-            .map(BannerMarkings.DissemControl::getName)
+            .map(DissemControl::getName)
             .collect(Collectors.toList());
 
     Attribute currAttr = metacard.getAttribute(Security.DISSEMINATION_CONTROLS);

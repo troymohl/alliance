@@ -144,7 +144,7 @@ class Dod520001MarkingExtractorSpec extends Specification {
         where:
         markings                                                      |
                 validationError | attributeValue
-        'TOP SECRET//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' |
+        'UNCLASSIFIED//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' |
                 false           | ['DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION']
     }
 

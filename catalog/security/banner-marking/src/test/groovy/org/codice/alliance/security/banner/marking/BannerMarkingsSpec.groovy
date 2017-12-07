@@ -13,18 +13,16 @@
  */
 package org.codice.alliance.security.banner.marking
 
-import org.codice.alliance.security.banner.marking.BannerMarkings.SciControl
 import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.util.stream.Collectors
 
-import static org.codice.alliance.security.banner.marking.BannerMarkings.AeaType.FRD
-import static org.codice.alliance.security.banner.marking.BannerMarkings.AeaType.RD
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.*
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.*
-import static org.codice.alliance.security.banner.marking.BannerMarkings.MarkingType.*
-import static org.codice.alliance.security.banner.marking.BannerMarkings.OtherDissemControl.*
+import static org.codice.alliance.security.banner.marking.AeaType.*
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.*
+import static org.codice.alliance.security.banner.marking.DissemControl.*
+import static org.codice.alliance.security.banner.marking.MarkingType.*
+import static org.codice.alliance.security.banner.marking.OtherDissemControl.*
 
 class BannerMarkingsSpec extends Specification {
     def 'test type and classification'() {
@@ -182,19 +180,21 @@ class BannerMarkingsSpec extends Specification {
 
         then:
         bannerMarkings.aeaMarking.type == type
-        bannerMarkings.aeaMarking.cnwdi == cnwdi
+        bannerMarkings.aeaMarking.criticalNuclearWeaponDesignInformation == cnwdi
         bannerMarkings.aeaMarking.sigmas.size() == sigmas.size()
         bannerMarkings.aeaMarking.sigmas.containsAll(sigmas)
 
         where:
-        markings                                    | type | cnwdi | sigmas
-        'TOP SECRET//RESTRICTED DATA'               | RD   | false | []
-        'TOP SECRET//FORMERLY RESTRICTED DATA'      | FRD  | false | []
-        'SECRET//RD'                                | RD   | false | []
-        'SECRET//TK//RD-N//NOFORN'                  | RD   | true  | []
-        'SECRET//RESTRICTED DATA-N'                 | RD   | true  | []
-        'SECRET//RESTRICTED DATA-SIGMA 1 2'         | RD   | false | [1, 2]
-        'SECRET//FORMERLY RESTRICTED DATA-SIGMA 14' | FRD  | false | [14]
+        markings                                                    | type      | cnwdi | sigmas
+        'TOP SECRET//RESTRICTED DATA'                               | RD        | false | []
+        'TOP SECRET//FORMERLY RESTRICTED DATA'                      | FRD       | false | []
+        'SECRET//RD'                                                | RD        | false | []
+        'SECRET//TK//RD-N//NOFORN'                                  | RD        | true  | []
+        'SECRET//RESTRICTED DATA-N'                                 | RD        | true  | []
+        'SECRET//RESTRICTED DATA-SIGMA 1 2'                         | RD        | false | [1, 2]
+        'SECRET//FORMERLY RESTRICTED DATA-SIGMA 14'                 | FRD       | false | [14]
+        'UNCLASSIFIED//DOD UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION'   | DOD_UCNI  | false | []
+        'UNCLASSIFIED//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION'   | DOE_UCNI  | false | []
     }
 
     def 'test ucni markings'() {
@@ -207,8 +207,8 @@ class BannerMarkingsSpec extends Specification {
 
         where:
         markings                                                  | dod   | doe
-        'SECRET//DOD UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' | true  | false
-        'SECRET//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' | false | true
+        'UNCLASSIFIED//DOD UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' | true  | false
+        'UNCLASSIFIED//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION' | false | true
         'SECRET//FORMERLY RESTRICTED DATA-SIGMA 14'               | false | false
     }
 
@@ -582,5 +582,27 @@ class BannerMarkingsSpec extends Specification {
         'SECRET//EXDIS/NODIS'       | ['1.d.']
         'SECRET//REL TO CAN//EXDIS' | ['1.c.']
         'SECRET//REL TO CAN//NODIS' | ['2.d.']
+    }
+
+    def 'test ucni'() {
+        when:
+        def bannerMarkings = BannerMarkings.parseMarkings(markings)
+
+        then:
+        bannerMarkings.aeaMarking.type == type
+        bannerMarkings.dodUcni == dodUcni
+        bannerMarkings.doeUcni == doeUcni
+
+        where:
+        markings                                                    | type      | dodUcni | doeUcni
+        'TOP SECRET//RESTRICTED DATA'                               | RD        | false   | false
+        'TOP SECRET//FORMERLY RESTRICTED DATA'                      | FRD       | false   | false
+        'SECRET//RD'                                                | RD        | false   | false
+        'SECRET//TK//RD-N//NOFORN'                                  | RD        | false   | false
+        'SECRET//RESTRICTED DATA-N'                                 | RD        | false   | false
+        'SECRET//RESTRICTED DATA-SIGMA 1 2'                         | RD        | false   | false
+        'SECRET//FORMERLY RESTRICTED DATA-SIGMA 14'                 | FRD       | false   | false
+        'UNCLASSIFIED//DOD UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION'   | DOD_UCNI  | true | false
+        'UNCLASSIFIED//DOE UNCLASSIFIED CONTROLLED NUCLEAR INFORMATION'   | DOE_UCNI  | false | true
     }
 }

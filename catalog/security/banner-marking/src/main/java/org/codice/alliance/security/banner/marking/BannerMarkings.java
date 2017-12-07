@@ -14,350 +14,65 @@
 package org.codice.alliance.security.banner.marking;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class BannerMarkings implements Serializable {
-  private static final List<String> NATO_CLASS_QUALIFIERS =
+  protected static final String NATO_FGI = "NATO";
+
+  protected static final String COSMIC_FGI = "COSMIC";
+
+  protected static final List<String> NATO_CLASS_QUALIFIERS =
       ImmutableList.of("ATOMAL", "BALK", "BOHEMIA");
 
-  public enum ClassificationLevel {
-    UNCLASSIFIED("UNCLASSIFIED", "U"),
-    RESTRICTED("RESTRICTED", "R"),
-    CONFIDENTIAL("CONFIDENTIAL", "C"),
-    SECRET("SECRET", "S"),
-    TOP_SECRET("TOP SECRET", "TS");
+  protected static final Pattern SPACE_PATTERN = Pattern.compile(" ");
 
-    private String name;
+  protected static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
-    private String shortName;
+  protected String inputMarkings;
 
-    private static final Map<String, ClassificationLevel> LOOKUP_MAP =
-        Arrays.stream(ClassificationLevel.values())
-            .collect(Collectors.toMap(cl -> cl.name, cl -> cl));
+  protected ClassificationLevel classification;
 
-    private static final Map<String, ClassificationLevel> SHORTNAME_LOOKUP =
-        Arrays.stream(ClassificationLevel.values())
-            .collect(Collectors.toMap(cl -> cl.shortName, cl -> cl));
+  protected MarkingType type;
 
-    ClassificationLevel(String name, String shortName) {
-      this.name = name;
-      this.shortName = shortName;
-    }
+  protected String fgiAuthority;
 
-    public String getName() {
-      return name;
-    }
+  protected String natoQualifier;
 
-    public String getShortName() {
-      return shortName;
-    }
+  protected List<String> jointAuthorities;
 
-    public static ClassificationLevel lookup(String name) {
-      return LOOKUP_MAP.get(name);
-    }
+  protected List<String> usFgiCountryCodes;
 
-    public static ClassificationLevel lookupByShortname(String name) {
-      return SHORTNAME_LOOKUP.get(name);
-    }
-  }
+  protected List<SciControl> sciControls;
 
-  enum MarkingType {
-    US,
-    FGI,
-    JOINT
-  }
+  protected SapControl sapControl = null;
 
-  public enum DissemControl {
-    IMCON("IMCON", "CONTROLLED IMAGERY"),
-    NOFORN("NOFORN", "NOT RELEASABLE TO FOREIGN NATIONALS"),
-    PROPIN("PROPIN", "CAUTION-PROPRIETARY INFORMATION INVOLVED"),
-    RELIDO("RELIDO", "RELEASABLE BY INFORMATION DISCLOSURE OFFICIAL"),
-    FISA("FISA", "FOREIGN INTELLIGENCE SURVEILLANCE ACT"),
-    ORCON("ORCON", "ORIGINATOR CONTROLLED"),
-    DEA_SENSITIVE("DEA SENSITIVE"),
-    FOUO("FOUO", "FOR OFFICIAL USE ONLY"),
-    WAIVED("WAIVED");
+  protected AeaMarking aeaMarking = null;
 
-    private String name;
-
-    private List<String> lookupNames;
-
-    DissemControl(String... lookupNames) {
-      this.lookupNames = ImmutableList.copyOf(lookupNames);
-      name = lookupNames[0];
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public static DissemControl lookup(String name) {
-      return Arrays.stream(DissemControl.values())
-          .filter(dc -> dc.lookupNames.contains(name))
-          .findFirst()
-          .orElse(null);
-    }
-  }
-
-  public enum OtherDissemControl {
-    ACCM("ACCM"),
-    EXDIS("EXDIS", "EXCLUSIVE DISTRIBUTION"),
-    LIMDIS("LIMDIS", "LIMITED DISTRIBUTION"),
-    NODIS("NODIS", "NO DISTRIBUTION"),
-    SBU("SBU", "SENSITIVE BUT UNCLASSIFIED"),
-    SBU_NOFORN("SBU NOFORN", "SENSITIVE BUT UNCLASSIFIED NOFORN");
-
-    private String name;
-
-    private List<String> lookupNames;
-
-    OtherDissemControl(String... lookupNames) {
-      this.lookupNames = ImmutableList.copyOf(lookupNames);
-      name = lookupNames[0];
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public static OtherDissemControl lookup(String name) {
-      return Arrays.stream(OtherDissemControl.values())
-          .filter(dc -> dc.lookupNames.contains(name))
-          .findFirst()
-          .orElse(null);
-    }
-
-    public static boolean prefixMatch(String value) {
-      return Arrays.stream(OtherDissemControl.values())
-          .flatMap(odc -> odc.lookupNames.stream())
-          .anyMatch(value::startsWith);
-    }
-  }
-
-  enum AeaType {
-    RD("RESTRICTED DATA"),
-    FRD("FORMERLY RESTRICTED DATA");
-
-    private final String name;
-
-    AeaType(String name) {
-      this.name = name;
-    }
-
-    public String getName() {
-      return name;
-    }
-  }
-
-  public static class SciControl implements Serializable {
-    private final String control;
-
-    private final Map<String, List<String>> compartments;
-
-    private SciControl(String marking) {
-      String[] split = marking.split("[-]");
-      control = split[0];
-
-      if (split.length == 1) {
-        compartments = ImmutableMap.of();
-        return;
-      }
-
-      Map<String, List<String>> tempCompartments = new HashMap<>();
-      for (int i = 1; i < split.length; i++) {
-        String[] compartment = split[i].split(" ");
-        List<String> subComps;
-        if (compartment.length > 1) {
-          subComps =
-              ImmutableList.copyOf(
-                  Arrays.asList(Arrays.copyOfRange(compartment, 1, compartment.length)));
-        } else {
-          subComps = ImmutableList.of();
-        }
-        tempCompartments.put(compartment[0], subComps);
-      }
-
-      compartments = ImmutableSortedMap.copyOf(tempCompartments);
-    }
-
-    public String getControl() {
-      return control;
-    }
-
-    public Map<String, List<String>> getCompartments() {
-      return compartments;
-    }
-  }
-
-  static class SapControl implements Serializable {
-    private boolean multiple;
-
-    private boolean hvsaco;
-
-    private List<String> programs;
-
-    private SapControl(String programString) {
-      programs =
-          ImmutableList.copyOf(
-              Pattern.compile("[/]").splitAsStream(programString).collect(Collectors.toList()));
-
-      multiple = (programs.size() == 1 && programs.contains("MULTIPLE PROGRAMS"));
-      if (multiple) {
-        programs = ImmutableList.of();
-      }
-
-      hvsaco = false;
-    }
-
-    private SapControl() {
-      programs = ImmutableList.of();
-      multiple = false;
-      hvsaco = true;
-    }
-
-    public boolean isMultiple() {
-      return multiple;
-    }
-
-    public List<String> getPrograms() {
-      return programs;
-    }
-
-    public boolean isHvsaco() {
-      return hvsaco;
-    }
-
-    @Override
-    public String toString() {
-      if (hvsaco) {
-        return "HVSACO";
-      }
-
-      StringBuilder sb = new StringBuilder("SAR");
-      if (multiple) {
-        sb.append("-MULTIPLE PROGRAMS");
-        return sb.toString();
-      }
-      sb.append(programs.stream().collect(Collectors.joining("/", "-", "")));
-
-      return sb.toString();
-    }
-  }
-
-  static class AeaMarking implements Serializable {
-    private AeaType type;
-
-    private boolean cnwdi;
-
-    private List<Integer> sigmas;
-
-    private AeaMarking(String marking) {
-      if (marking.startsWith("RD") || marking.startsWith("RESTRICTED DATA")) {
-        type = AeaType.RD;
-      } else {
-        type = AeaType.FRD;
-      }
-
-      String[] split = marking.split("[-]");
-      if (split.length == 1) {
-        cnwdi = false;
-        sigmas = ImmutableList.of();
-      } else if (split[1].equals("N")) {
-        cnwdi = true;
-        sigmas = ImmutableList.of();
-      } else {
-        cnwdi = false;
-        sigmas =
-            ImmutableList.copyOf(
-                Pattern.compile(" ")
-                    .splitAsStream(split[1].substring("SIGMA".length()).trim())
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList()));
-      }
-    }
-
-    public AeaType getType() {
-      return type;
-    }
-
-    public boolean isCnwdi() {
-      return cnwdi;
-    }
-
-    public List<Integer> getSigmas() {
-      return sigmas;
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder(type.getName());
-      if (isCnwdi()) {
-        sb.append("-N");
-      }
-      if (CollectionUtils.isNotEmpty(sigmas)) {
-        sb.append(
-            sigmas
-                .stream()
-                .map(i -> Integer.toString(i))
-                .collect(Collectors.joining(" ", "-SIGMA ", "")));
-      }
-
-      return sb.toString();
-    }
-  }
-
-  private String inputMarkings;
-
-  private ClassificationLevel classification;
-
-  private final MarkingType type;
-
-  private String fgiAuthority;
-
-  private String natoQualifier;
-
-  private List<String> jointAuthorities;
-
-  private List<String> usFgiCountryCodes;
-
-  private List<SciControl> sciControls;
-
-  private SapControl sapControl = null;
-
-  private AeaMarking aeaMarking = null;
-
-  private Boolean dodUcni = null;
-
-  private Boolean doeUcni = null;
-
-  private List<DissemControl> disseminationControls;
+  protected List<DissemControl> disseminationControls;
 
   // 10.e.
-  private List<String> relTo;
+  protected List<String> relTo;
 
   // 10.g.
-  private List<String> displayOnly;
+  protected List<String> displayOnly;
 
-  private List<OtherDissemControl> otherDissemControl;
+  protected List<OtherDissemControl> otherDissemControl;
 
   // ACCS
   // 11.b.
-  private List<String> accm;
+  protected List<String> accm;
 
-  private BannerMarkings(MarkingType type, String classificationSegment, String inputMarkings)
+  protected BannerMarkings(MarkingType type, String classificationSegment, String inputMarkings)
       throws MarkingsValidationException {
     this.type = type;
     this.inputMarkings = inputMarkings;
@@ -378,8 +93,40 @@ public class BannerMarkings implements Serializable {
             ClassificationLevel.lookup(
                 classificationSegment.substring(fgiAuthority.length()).trim());
         if (classification == null) {
+          switch (classificationSegment) {
+            case "NU":
+              classification = ClassificationLevel.UNCLASSIFIED;
+              fgiAuthority = NATO_FGI;
+              break;
+            case "NR":
+              classification = ClassificationLevel.RESTRICTED;
+              fgiAuthority = NATO_FGI;
+              break;
+            case "NC":
+              classification = ClassificationLevel.CONFIDENTIAL;
+              fgiAuthority = NATO_FGI;
+              break;
+            case "NS":
+              classification = ClassificationLevel.SECRET;
+              fgiAuthority = NATO_FGI;
+              break;
+            case "CTS":
+              classification = ClassificationLevel.TOP_SECRET;
+              fgiAuthority = COSMIC_FGI;
+              break;
+            default:
+              break;
+          }
+        }
+        if (classification == null) {
+          classification =
+              ClassificationLevel.lookupByShortname(
+                  classificationSegment.substring(fgiAuthority.length()).trim());
+        }
+        if (classification == null) {
           throw new MarkingsValidationException("Unknown classification marking", inputMarkings);
         }
+
         break;
       case JOINT:
         String suffix = classificationSegment.substring("JOINT".length()).trim();
@@ -391,14 +138,32 @@ public class BannerMarkings implements Serializable {
                     .filter(suffix::startsWith)
                     .findFirst()
                     .orElse(null));
+        if (classification != null) {
+          suffix = suffix.substring(classification.getName().length());
+        } else {
+          classification =
+              ClassificationLevel.lookupByShortname(
+                  Arrays.stream(ClassificationLevel.values())
+                      .map(ClassificationLevel::getShortName)
+                      .filter(suffix::startsWith)
+                      .findFirst()
+                      .orElse(null));
+          if (classification != null && classification.getShortName() != null) {
+            suffix = suffix.substring(classification.getShortName().length());
+          }
+        }
         if (classification == null) {
           throw new MarkingsValidationException(
               "Unknown JOINT classification marking", inputMarkings);
         }
-        suffix = suffix.substring(classification.getName().length());
-        jointAuthorities =
-            ImmutableList.copyOf(
-                Pattern.compile(" ").splitAsStream(suffix).collect(Collectors.toList()));
+
+        List<String> allJointAuthorities =
+            SPACE_PATTERN
+                .splitAsStream(suffix)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.toList());
+        Collections.sort(allJointAuthorities);
+        jointAuthorities = ImmutableList.copyOf(allJointAuthorities);
         break;
       default:
         break;
@@ -446,11 +211,17 @@ public class BannerMarkings implements Serializable {
   }
 
   public Boolean getDodUcni() {
-    return dodUcni == null ? Boolean.FALSE : dodUcni;
+    if (aeaMarking == null) {
+      return false;
+    }
+    return aeaMarking.getType() == AeaType.DOD_UCNI;
   }
 
   public Boolean getDoeUcni() {
-    return doeUcni == null ? Boolean.FALSE : doeUcni;
+    if (aeaMarking == null) {
+      return false;
+    }
+    return aeaMarking.getType() == AeaType.DOE_UCNI;
   }
 
   public List<DissemControl> getDisseminationControls() {
@@ -475,7 +246,7 @@ public class BannerMarkings implements Serializable {
 
   public boolean isNato() {
     return (type == MarkingType.FGI
-        && ("COSMIC".equals(fgiAuthority) || "NATO".equals(fgiAuthority)));
+        && (COSMIC_FGI.equals(fgiAuthority) || NATO_FGI.equals(fgiAuthority)));
   }
 
   public static BannerMarkings parseMarkings(String markings) throws MarkingsValidationException {
@@ -503,8 +274,6 @@ public class BannerMarkings implements Serializable {
     processors.add(bannerMarkings::processUsFgi);
     processors.add(bannerMarkings::processSap);
     processors.add(bannerMarkings::processAea);
-    processors.add(bannerMarkings::processDodUcni);
-    processors.add(bannerMarkings::processDoeUcni);
     processors.add(bannerMarkings::processOtherDissem);
     processors.add(bannerMarkings::processDisseminationControls);
     processors.add(bannerMarkings::processSciControls);
@@ -534,11 +303,11 @@ public class BannerMarkings implements Serializable {
     return bannerMarkings;
   }
 
-  private static <T> List<T> ensureCollectionInitialized(List<T> collection) {
+  protected static <T> List<T> ensureCollectionInitialized(List<T> collection) {
     return collection == null ? ImmutableList.of() : collection;
   }
 
-  private boolean processSap(String segment) {
+  protected boolean processSap(String segment) {
     if ((sapControl != null)
         || (!segment.startsWith("SAR-")
             && !segment.startsWith("SPECIAL ACCESS REQUIRED-")
@@ -554,12 +323,8 @@ public class BannerMarkings implements Serializable {
     return true;
   }
 
-  private boolean processAea(String segment) {
-    if ((aeaMarking != null)
-        || (!segment.startsWith("RD")
-            && !segment.startsWith("FRD")
-            && !segment.startsWith("RESTRICTED DATA")
-            && !segment.startsWith("FORMERLY RESTRICTED DATA"))) {
+  protected boolean processAea(String segment) {
+    if (aeaMarking != null || AeaType.lookupType(segment) == null) {
       return false;
     }
 
@@ -567,41 +332,31 @@ public class BannerMarkings implements Serializable {
     return true;
   }
 
-  private boolean processDodUcni(String segment) {
-    if (dodUcni != null || !segment.startsWith("DOD U")) {
+  protected boolean processUsFgi(String segment) {
+    if (usFgiCountryCodes != null
+        || (!segment.startsWith("FGI") && !segment.startsWith("FOREIGN GOVERNMENT INFORMATION"))) {
       return false;
     }
 
-    dodUcni = true;
-    return true;
-  }
+    String suffix = null;
+    if (segment.startsWith("FGI")) {
+      suffix = segment.substring("FGI".length()).trim();
 
-  private boolean processDoeUcni(String segment) {
-    if (doeUcni != null || !segment.startsWith("DOE U")) {
-      return false;
+    } else if (segment.startsWith("FOREIGN GOVERNMENT INFORMATION")) {
+      suffix = segment.substring("FOREIGN GOVERNMENT INFORMATION".length()).trim();
     }
 
-    doeUcni = true;
-    return true;
-  }
-
-  private boolean processUsFgi(String segment) {
-    if (usFgiCountryCodes != null || !segment.startsWith("FGI")) {
-      return false;
-    }
-
-    String suffix = segment.substring("FGI".length()).trim();
-    if (suffix.isEmpty()) {
+    if (suffix == null || suffix.isEmpty()) {
       usFgiCountryCodes = ImmutableList.of();
     } else {
       usFgiCountryCodes =
-          ImmutableList.copyOf(
-              Pattern.compile(" ").splitAsStream(suffix).collect(Collectors.toList()));
+          ImmutableList.copyOf(SPACE_PATTERN.splitAsStream(suffix).collect(Collectors.toList()));
     }
+
     return true;
   }
 
-  private boolean processNato(String segment) {
+  protected boolean processNato(String segment) {
     if (natoQualifier != null || !NATO_CLASS_QUALIFIERS.contains(segment)) {
       return false;
     }
@@ -610,8 +365,8 @@ public class BannerMarkings implements Serializable {
     return true;
   }
 
-  private boolean processOtherDissem(String segment) {
-    if (otherDissemControl != null || !OtherDissemControl.prefixMatch(segment)) {
+  protected boolean processOtherDissem(String segment) {
+    if (otherDissemControl != null || !OtherDissemControl.prefixBannerMatch(segment)) {
       return false;
     }
 
@@ -626,7 +381,7 @@ public class BannerMarkings implements Serializable {
       // until a non-ACCM control is encountered
       if (tok.startsWith("ACCM-")) {
         processingAccm = true;
-      } else if (OtherDissemControl.lookup(tok) != null) {
+      } else if (OtherDissemControl.lookupBannerName(tok) != null) {
         processingAccm = false;
       }
 
@@ -637,7 +392,7 @@ public class BannerMarkings implements Serializable {
           tempAccm.add(tok);
         }
       } else {
-        tempOther.add(OtherDissemControl.lookup(tok));
+        tempOther.add(OtherDissemControl.lookupBannerName(tok));
       }
     }
 
@@ -646,15 +401,12 @@ public class BannerMarkings implements Serializable {
     return true;
   }
 
-  private boolean processDisseminationControls(String segment) {
+  protected boolean processDisseminationControls(String segment) {
     String[] split = segment.split("[/]");
 
-    if (disseminationControls != null
-        || !(split[0].startsWith("REL TO")
-            || split[0].startsWith("DISPLAY ONLY")
-            || Arrays.stream(DissemControl.values())
-                .map(DissemControl::getName)
-                .anyMatch(split[0]::equals))) {
+    if (!(split[0].startsWith("REL TO")
+        || split[0].startsWith("DISPLAY ONLY")
+        || DissemControl.lookupBannerName(split[0]) != null)) {
       return false;
     }
 
@@ -665,27 +417,21 @@ public class BannerMarkings implements Serializable {
         String suffix = s.substring("REL TO".length());
         relTo =
             ImmutableList.copyOf(
-                Pattern.compile(",")
-                    .splitAsStream(suffix)
-                    .map(String::trim)
-                    .collect(Collectors.toList()));
+                COMMA_PATTERN.splitAsStream(suffix).map(String::trim).collect(Collectors.toList()));
       } else if (s.startsWith("DISPLAY ONLY")) {
         String suffix = s.substring("DISPLAY ONLY".length());
         displayOnly =
             ImmutableList.copyOf(
-                Pattern.compile(",")
-                    .splitAsStream(suffix)
-                    .map(String::trim)
-                    .collect(Collectors.toList()));
+                COMMA_PATTERN.splitAsStream(suffix).map(String::trim).collect(Collectors.toList()));
       } else {
-        tempDissem.add(DissemControl.lookup(s.trim()));
+        tempDissem.add(DissemControl.lookupBannerName(s.trim()));
       }
     }
     disseminationControls = ImmutableList.copyOf(tempDissem);
     return true;
   }
 
-  private boolean processSciControls(String segment) {
+  protected boolean processSciControls(String segment) {
     String[] split = segment.split("[/]");
 
     List<SciControl> tempSci = new ArrayList<>();

@@ -13,23 +13,24 @@
  */
 package org.codice.alliance.security.banner.marking;
 
-import static org.codice.alliance.security.banner.marking.BannerMarkings.AeaType.FRD;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.AeaType.RD;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.CONFIDENTIAL;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.RESTRICTED;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.SECRET;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.TOP_SECRET;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.UNCLASSIFIED;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.IMCON;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.NOFORN;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.ORCON;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.PROPIN;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.RELIDO;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.DissemControl.WAIVED;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.MarkingType.FGI;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.MarkingType.JOINT;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.OtherDissemControl.EXDIS;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.OtherDissemControl.NODIS;
+import static org.codice.alliance.security.banner.marking.AeaType.FRD;
+import static org.codice.alliance.security.banner.marking.AeaType.RD;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.CONFIDENTIAL;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.RESTRICTED;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.SECRET;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.TOP_SECRET;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.UNCLASSIFIED;
+import static org.codice.alliance.security.banner.marking.DissemControl.FOUO;
+import static org.codice.alliance.security.banner.marking.DissemControl.IMCON;
+import static org.codice.alliance.security.banner.marking.DissemControl.NOFORN;
+import static org.codice.alliance.security.banner.marking.DissemControl.ORCON;
+import static org.codice.alliance.security.banner.marking.DissemControl.PROPIN;
+import static org.codice.alliance.security.banner.marking.DissemControl.RELIDO;
+import static org.codice.alliance.security.banner.marking.DissemControl.WAIVED;
+import static org.codice.alliance.security.banner.marking.MarkingType.FGI;
+import static org.codice.alliance.security.banner.marking.MarkingType.JOINT;
+import static org.codice.alliance.security.banner.marking.OtherDissemControl.EXDIS;
+import static org.codice.alliance.security.banner.marking.OtherDissemControl.NODIS;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.Set;
 
 public class BannerValidator {
 
-  private static final Comparator<String> COUNTRY_CODE_COMPARATOR =
+  protected static final Comparator<String> COUNTRY_CODE_COMPARATOR =
       (o1, o2) -> {
         if (o1.length() == o2.length()) {
           return o1.compareTo(o2);
@@ -48,7 +49,7 @@ public class BannerValidator {
         return Integer.compare(o1.length(), o2.length());
       };
 
-  private static final Comparator<String> USA_FIRST_COUNTRY_CODE_COMPARATOR =
+  protected static final Comparator<String> USA_FIRST_COUNTRY_CODE_COMPARATOR =
       (o1, o2) -> {
         if (o1.equals("USA")) {
           return -1;
@@ -62,7 +63,7 @@ public class BannerValidator {
         return Integer.compare(o1.length(), o2.length());
       };
 
-  static void validate(BannerMarkings bannerMarkings) throws MarkingsValidationException {
+  protected static void validate(BannerMarkings bannerMarkings) throws MarkingsValidationException {
     Set<ValidationError> errors = new HashSet<>();
 
     errors.addAll(validateFgiJoint(bannerMarkings));
@@ -80,26 +81,22 @@ public class BannerValidator {
     }
   }
 
-  private static Set<ValidationError> validateFgiJoint(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateFgiJoint(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings.getType() == FGI) {
-      if (bannerMarkings.getFgiAuthority().equals("COSMIC")) {
-        if (bannerMarkings.getClassification() != TOP_SECRET) {
-          errors.add(
-              new ValidationError(
-                  "COSMIC is applied only to TOP SECRET material that belongs to NATO.",
-                  "4.b.2.a."));
-        }
+      if (bannerMarkings.getFgiAuthority().equals("COSMIC")
+          && bannerMarkings.getClassification() != TOP_SECRET) {
+        errors.add(
+            new ValidationError(
+                "COSMIC is applied only to TOP SECRET material that belongs to NATO.", "4.b.2.a."));
       }
-      if (bannerMarkings.getFgiAuthority().equals("NATO")) {
-        if (bannerMarkings.getClassification() == TOP_SECRET
-            || bannerMarkings.getClassification() == UNCLASSIFIED) {
-          errors.add(
-              new ValidationError(
-                  "NATO is applied only to SECRET, CONFIDENTIAL, and RESTRICTED material belonging to NATO",
-                  "4.b.2.a."));
-        }
+      if (bannerMarkings.getFgiAuthority().equals("NATO")
+          && bannerMarkings.getClassification() == TOP_SECRET) {
+        errors.add(
+            new ValidationError(
+                "NATO is applied only to SECRET, CONFIDENTIAL, RESTRICTED, and UNCLASSIFIED material belonging to NATO",
+                "4.b.2.a."));
       }
 
       if (bannerMarkings.getFgiAuthority().equals("NATO")
@@ -148,13 +145,13 @@ public class BannerValidator {
     return errors;
   }
 
-  private static Set<ValidationError> validateSciControls(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateSciControls(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings
         .getSciControls()
         .stream()
-        .map(BannerMarkings.SciControl::getControl)
+        .map(SciControl::getControl)
         .anyMatch(c -> c.equals("HCS") || c.equals("KLONDIKE"))) {
       if (!bannerMarkings.getDisseminationControls().contains(NOFORN)) {
         errors.add(new ValidationError("HCS/KLONDIKE require NOFORN", "6.f."));
@@ -186,7 +183,7 @@ public class BannerValidator {
     return errors;
   }
 
-  private static Set<ValidationError> validateSapControls(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateSapControls(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings.getSapControl() != null) {
@@ -207,41 +204,42 @@ public class BannerValidator {
     return errors;
   }
 
-  private static Set<ValidationError> validateAeaMarkings(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateAeaMarkings(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings.getAeaMarking() != null) {
-      if (bannerMarkings.getAeaMarking().getType() == RD) {
-        if (bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
-          errors.add(new ValidationError("RD data must be marked at least CONFIDENTIAL", "8.a.4."));
-        }
+      if (bannerMarkings.getAeaMarking().getType() == RD
+          && bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
+        errors.add(new ValidationError("RD data must be marked at least CONFIDENTIAL", "8.a.4."));
       }
-      if (bannerMarkings.getAeaMarking().getType() == FRD) {
-        if (bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
-          errors.add(
-              new ValidationError("FRD data must be marked at least CONFIDENTIAL", "8.b.2."));
-        }
+      if (bannerMarkings.getAeaMarking().getType() == FRD
+          && bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
+        errors.add(new ValidationError("FRD data must be marked at least CONFIDENTIAL", "8.b.2."));
       }
-      if (bannerMarkings.getAeaMarking().isCnwdi()) {
-        if (bannerMarkings.getAeaMarking().getType() == FRD) {
-          errors.add(
-              new ValidationError(
-                  "CNWDI is a subset of RD and not applicable to FRD documents", "8.c.3."));
-        }
+      if (bannerMarkings.getAeaMarking().isCriticalNuclearWeaponDesignInformation()
+          && bannerMarkings.getAeaMarking().getType() == FRD) {
+        errors.add(
+            new ValidationError(
+                "CNWDI is a subset of RD and not applicable to FRD documents", "8.c.3."));
       }
       if (bannerMarkings.getAeaMarking().getSigmas().stream().anyMatch(i -> i < 1 || i > 99)) {
         errors.add(new ValidationError("Valid SIGMA values are 1 to 99 inclusive", "8.d.3."));
+      }
+
+      if ((bannerMarkings.getAeaMarking().getType() == AeaType.DOE_UCNI)
+          && bannerMarkings.getClassification() != UNCLASSIFIED) {
+        errors.add(new ValidationError("UCNI Data must be marked UNCLASSIFIED", "8.f.3."));
       }
     }
 
     return errors;
   }
 
-  private static Set<ValidationError> validateFgi(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateFgi(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (!bannerMarkings.getUsFgiCountryCodes().isEmpty()) {
-      if (bannerMarkings.getType() != BannerMarkings.MarkingType.US) {
+      if (bannerMarkings.getType() != MarkingType.US) {
         errors.add(new ValidationError("FGI markings only valid in US products", "9.a."));
       }
       if (bannerMarkings.getUsFgiCountryCodes().contains("USA")) {
@@ -268,20 +266,20 @@ public class BannerValidator {
     return errors;
   }
 
-  private static Set<ValidationError> validateDisseminationControls(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateDisseminationControls(
+      BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings.getDisseminationControls().isEmpty()) {
       return errors;
     }
 
-    if (bannerMarkings.getDisseminationControls().contains(ORCON)) {
-      if (bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
-        errors.add(
-            new ValidationError(
-                "ORCON dissemination only valid with classifications at a level no less than CONFIDENTIAL",
-                "10.d.3."));
-      }
+    if (bannerMarkings.getDisseminationControls().contains(ORCON)
+        && bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
+      errors.add(
+          new ValidationError(
+              "ORCON dissemination only valid with classifications at a level no less than CONFIDENTIAL",
+              "10.d.3."));
     }
     if (bannerMarkings.getDisseminationControls().contains(IMCON)) {
       if (bannerMarkings.getClassification().compareTo(SECRET) < 0) {
@@ -310,27 +308,31 @@ public class BannerValidator {
                 "2.d."));
       }
     }
-    if (bannerMarkings.getDisseminationControls().contains(PROPIN)) {
-      if (bannerMarkings.getClassification() == RESTRICTED) {
-        errors.add(
-            new ValidationError(
-                "PROPIN marking not valid with RESTRICTED classification level", "2", "3.b."));
-      }
+    if (bannerMarkings.getDisseminationControls().contains(PROPIN)
+        && bannerMarkings.getClassification() == RESTRICTED) {
+      errors.add(
+          new ValidationError(
+              "PROPIN marking not valid with RESTRICTED classification level", "2", "3.b."));
     }
-    if (bannerMarkings.getDisseminationControls().contains(RELIDO)) {
-      if (bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
-        errors.add(
-            new ValidationError(
-                "RELIDO dissemination only valid with classifications at a level no less than CONFIDENTIAL",
-                "2",
-                "4.c."));
-      }
+    if (bannerMarkings.getDisseminationControls().contains(RELIDO)
+        && bannerMarkings.getClassification().compareTo(CONFIDENTIAL) < 0) {
+      errors.add(
+          new ValidationError(
+              "RELIDO dissemination only valid with classifications at a level no less than CONFIDENTIAL",
+              "2",
+              "4.c."));
+    }
+    if (bannerMarkings.getDisseminationControls().contains(FOUO)
+        && bannerMarkings.getClassification() != UNCLASSIFIED) {
+      errors.add(
+          new ValidationError(
+              "FOUO dissemination is only valid with classification of UNCLASSIFIED", "10.b.1."));
     }
 
     return errors;
   }
 
-  private static Set<ValidationError> validateRelToDisplayOnly(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateRelToDisplayOnly(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (!bannerMarkings.getRelTo().isEmpty()) {
@@ -395,7 +397,7 @@ public class BannerValidator {
     return errors;
   }
 
-  private static Set<ValidationError> validateOtherDissemControls(BannerMarkings bannerMarkings) {
+  protected static Set<ValidationError> validateOtherDissemControls(BannerMarkings bannerMarkings) {
     Set<ValidationError> errors = new HashSet<>();
 
     if (bannerMarkings.getOtherDissemControl().contains(EXDIS)) {
@@ -412,15 +414,14 @@ public class BannerValidator {
       }
     }
 
-    if (bannerMarkings.getOtherDissemControl().contains(NODIS)) {
-      if (!bannerMarkings.getRelTo().isEmpty()) {
-        errors.add(
-            new ValidationError(
-                "Documents bearing the NODIS marking cannot be released to foreign "
-                    + "goverments or international organizations",
-                "3",
-                "2.d."));
-      }
+    if (bannerMarkings.getOtherDissemControl().contains(NODIS)
+        && !bannerMarkings.getRelTo().isEmpty()) {
+      errors.add(
+          new ValidationError(
+              "Documents bearing the NODIS marking cannot be released to foreign "
+                  + "goverments or international organizations",
+              "3",
+              "2.d."));
     }
 
     return errors;

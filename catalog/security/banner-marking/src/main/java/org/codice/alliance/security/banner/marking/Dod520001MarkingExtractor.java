@@ -66,7 +66,7 @@ public class Dod520001MarkingExtractor extends MarkingExtractor {
 
   Attribute processSap(Metacard metacard, BannerMarkings bannerMarkings) {
     Attribute currAttr = metacard.getAttribute(SECURITY_DOD5200_SAP);
-    BannerMarkings.SapControl sapControl = bannerMarkings.getSapControl();
+    SapControl sapControl = bannerMarkings.getSapControl();
     if (sapControl == null) {
       return currAttr;
     }
@@ -76,7 +76,7 @@ public class Dod520001MarkingExtractor extends MarkingExtractor {
 
   Attribute processAea(Metacard metacard, BannerMarkings bannerMarkings) {
     Attribute currAttr = metacard.getAttribute(SECURITY_DOD5200_AEA);
-    BannerMarkings.AeaMarking aeaMarking = bannerMarkings.getAeaMarking();
+    AeaMarking aeaMarking = bannerMarkings.getAeaMarking();
     if (aeaMarking == null) {
       return currAttr;
     }
@@ -122,7 +122,7 @@ public class Dod520001MarkingExtractor extends MarkingExtractor {
         bannerMarkings
             .getOtherDissemControl()
             .stream()
-            .map(BannerMarkings.OtherDissemControl::getName)
+            .map(OtherDissemControl::getName)
             .collect(Collectors.toList());
     if (!CollectionUtils.isEmpty(bannerMarkings.getAccm())) {
       otherDissem.addAll(

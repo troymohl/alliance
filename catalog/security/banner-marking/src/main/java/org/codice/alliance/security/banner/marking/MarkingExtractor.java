@@ -13,8 +13,8 @@
  */
 package org.codice.alliance.security.banner.marking;
 
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.SECRET;
-import static org.codice.alliance.security.banner.marking.BannerMarkings.ClassificationLevel.TOP_SECRET;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.SECRET;
+import static org.codice.alliance.security.banner.marking.ClassificationLevel.TOP_SECRET;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -88,7 +88,7 @@ public abstract class MarkingExtractor implements ContentMetadataExtractor {
   }
 
   public String translateClassification(
-      BannerMarkings.ClassificationLevel classLevel, boolean isNato, String natoQualifier) {
+      ClassificationLevel classLevel, boolean isNato, String natoQualifier) {
     if (!isNato) {
       return classLevel.getShortName();
     }
