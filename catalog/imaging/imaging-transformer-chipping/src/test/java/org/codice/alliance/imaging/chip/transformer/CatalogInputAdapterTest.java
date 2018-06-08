@@ -19,14 +19,12 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ddf.catalog.content.data.ContentItem;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.operation.ResourceRequest;
-import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,14 +38,10 @@ public class CatalogInputAdapterTest {
 
   private Metacard mockMetacard;
 
-  private List<Serializable> attributeValues;
-
   @Before
   public void setUp() {
-    attributeValues = new ArrayList<>();
     Attribute attribute = mock(Attribute.class);
-    when(attribute.getName()).thenReturn(Metacard.DERIVED_RESOURCE_URI);
-    when(attribute.getValues()).thenReturn(attributeValues);
+    when(attribute.getName()).thenReturn(Metacard.RESOURCE_URI);
     Metacard metacard = mock(Metacard.class);
     when(metacard.getAttribute(anyString())).thenReturn(attribute);
     this.mockMetacard = metacard;
@@ -75,17 +69,28 @@ public class CatalogInputAdapterTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testMalformedURI() throws URISyntaxException {
-    attributeValues.add("   ");
-    when(mockMetacard.getAttribute(anyString())).thenReturn(mockAttribute);
-    catalogInputAdapter.buildReadRequest(mockMetacard, OVERVIEW);
+    Attribute attribute = mock(Attribute.class);
+    when(attribute.getName()).thenReturn(Metacard.RESOURCE_URI);
+    when(attribute.getValue()).thenReturn("   ");
+
+    Metacard metacard = mock(Metacard.class);
+    when(metacard.getAttribute(anyString())).thenReturn(attribute);
+
+    catalogInputAdapter.buildReadRequest(metacard, OVERVIEW);
   }
 
   @Test
   public void testSuccessfulCase() throws URISyntaxException {
-    attributeValues.add("content:10101#overview");
-    ResourceRequest request = catalogInputAdapter.buildReadRequest(mockMetacard, OVERVIEW);
+    Attribute attribute = mock(Attribute.class);
+    when(attribute.getName()).thenReturn(Metacard.RESOURCE_URI);
+    when(attribute.getValue()).thenReturn("content:10101#overview");
+    Metacard metacard = mock(Metacard.class);
+    when(metacard.getAttribute(anyString())).thenReturn(attribute);
+
+    ResourceRequest request = catalogInputAdapter.buildReadRequest(metacard, OVERVIEW);
     assertThat(request.getAttributeName(), is(Metacard.RESOURCE_URI));
     assertThat(request.getAttributeValue().toString(), is("content:10101#overview"));
+    assertThat(request.getProperties().get(ContentItem.QUALIFIER_KEYWORD), is(OVERVIEW));
   }
 
   @Test

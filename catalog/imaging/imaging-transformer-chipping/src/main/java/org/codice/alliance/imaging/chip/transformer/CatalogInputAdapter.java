@@ -15,15 +15,18 @@ package org.codice.alliance.imaging.chip.transformer;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import ddf.catalog.content.data.ContentItem;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
+import ddf.catalog.data.types.Core;
 import ddf.catalog.operation.ResourceRequest;
 import ddf.catalog.operation.impl.ResourceRequestById;
 import ddf.catalog.operation.impl.ResourceRequestByProductUri;
 import java.io.Serializable;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,26 +50,32 @@ public class CatalogInputAdapter {
       throw new IllegalArgumentException("method argument 'qualifier' may not be null.");
     }
 
-    Attribute attribute = metacard.getAttribute(Metacard.DERIVED_RESOURCE_URI);
+    Attribute attribute = metacard.getAttribute(Core.RESOURCE_URI);
 
     if (attribute != null) {
-      List<Serializable> values = attribute.getValues();
+      Serializable value = attribute.getValue();
 
-      if (values == null) {
+      if (value == null) {
         throw new IllegalStateException(
-            String.format(
-                "metacard attribute %s has no values assigned.", Metacard.DERIVED_RESOURCE_URI));
+            String.format("metacard attribute %s has no value assigned.", Core.RESOURCE_URI));
       }
 
-      URI qualifiedUri = findDerivedResourceUri(values, qualifier);
+      Map<String, Serializable> props = new HashMap<>();
+      props.put(ContentItem.QUALIFIER_KEYWORD, qualifier);
 
-      return new ResourceRequestByProductUri(qualifiedUri);
+      try {
+        return new ResourceRequestByProductUri(new URI((String) value), props);
+      } catch (URISyntaxException e) {
+        throw new IllegalArgumentException(
+            String.format(
+                "The supplied metacard does contains an invalid '%s' attribute.",
+                Core.RESOURCE_URI));
+      }
     }
 
     throw new IllegalStateException(
         String.format(
-            "The supplied metacard does not contain the " + "'%s' attribute.",
-            Metacard.DERIVED_RESOURCE_URI));
+            "The supplied metacard does not contain the '%s' attribute.", Core.RESOURCE_URI));
   }
 
   /**
@@ -80,32 +89,6 @@ public class CatalogInputAdapter {
     notNull(metacard, "method argument 'metacard' may not be null.");
     LOGGER.trace("building a framework resource request for id '{}'", metacard.getId());
     return new ResourceRequestById(metacard.getId());
-  }
-
-  private URI findDerivedResourceUri(List<Serializable> values, String qualifier) {
-    List<URI> qualifiedUri =
-        values
-            .stream()
-            .map(String::valueOf)
-            .map(URI::create)
-            .filter(uri -> uri.getFragment().equals(qualifier))
-            .collect(Collectors.toList());
-
-    if (qualifiedUri.isEmpty()) {
-      throw new IllegalArgumentException(
-          String.format(
-              "The derived resource URI for qualifier '%s' was not found on the metacard.",
-              qualifier));
-    }
-
-    if (qualifiedUri.size() > 1) {
-      throw new IllegalStateException(
-          String.format(
-              "Metacard contains multiple derived resource URIs with the same qualifier: '%s'.",
-              qualifier));
-    }
-
-    return qualifiedUri.get(0);
   }
 
   public String getResourceSiteName(Metacard metacard) {
