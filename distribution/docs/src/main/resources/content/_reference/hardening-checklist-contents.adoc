@@ -1,5 +1,5 @@
 :title: Hardening Checklist
-:type: subSecuring
+:type: referenceIntro
 :status: published
 :summary: ${cal-branding} additions to checklist of hardening steps.
 :parent: Security Hardening
