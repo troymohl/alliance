@@ -49,7 +49,6 @@
 * ddf.support:support-githooks:jar:2.3.14
 * ddf.thirdparty:rest-assured:jar:2.14.0
 * ddf.thirdparty:restito:jar:2.14.0
-* ddf.ui.search:standard:jar:2.14.0
 * ddf:solr-distro:zip:assembly:2.14.0
 * io.netty:netty-all:jar:4.1.16.Final
 * javax.inject:javax.inject:jar:1
