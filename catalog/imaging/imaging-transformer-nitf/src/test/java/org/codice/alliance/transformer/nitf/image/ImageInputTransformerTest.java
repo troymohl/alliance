@@ -706,7 +706,8 @@ public class ImageInputTransformerTest {
         new NitfValue(
             "Checks an uncompressed 1024x1024 8 bit mono image with GEOcentric data. Airfield"));
     map.put(
-        NitfHeaderAttribute.FILE_SECURITY_CLASSIFICATION_ATTRIBUTE, new NitfValue("UNCLASSIFIED"));
+        NitfHeaderAttribute.FILE_SECURITY_CLASSIFICATION_ATTRIBUTE,
+        new NitfValue("UNCLASSIFIED", "U"));
     map.put(
         NitfHeaderAttribute.FILE_CLASSIFICATION_SECURITY_SYSTEM_ATTRIBUTE,
         new NitfValue(TEST_CLASSIFICATION_SYSTEM));
@@ -738,7 +739,8 @@ public class ImageInputTransformerTest {
     final String imageIdentifier2 = "- BASE IMAGE -";
     map.put(ImageAttribute.MISSION_ID_ATTRIBUTE, new NitfValue(imageIdentifier2));
     map.put(ImageAttribute.IMAGE_IDENTIFIER_2_ATTRIBUTE, new NitfValue(imageIdentifier2));
-    map.put(ImageAttribute.IMAGE_SECURITY_CLASSIFICATION_ATTRIBUTE, new NitfValue("UNCLASSIFIED"));
+    map.put(
+        ImageAttribute.IMAGE_SECURITY_CLASSIFICATION_ATTRIBUTE, new NitfValue("UNCLASSIFIED", "U"));
     map.put(ImageAttribute.IMAGE_CLASSIFICATION_SECURITY_SYSTEM_ATTRIBUTE, new NitfValue(null));
     map.put(ImageAttribute.IMAGE_CODEWORDS_ATTRIBUTE, new NitfValue(null));
     map.put(ImageAttribute.IMAGE_CONTROL_AND_HANDLING_ATTRIBUTE, new NitfValue(null));
@@ -757,15 +759,15 @@ public class ImageInputTransformerTest {
     map.put(ImageAttribute.IMAGE_SOURCE_ATTRIBUTE, new NitfValue("Unknown"));
     map.put(ImageAttribute.NUMBER_OF_SIGNIFICANT_ROWS_IN_IMAGE_ATTRIBUTE, new NitfValue(1024L));
     map.put(ImageAttribute.NUMBER_OF_SIGNIFICANT_COLUMNS_IN_IMAGE_ATTRIBUTE, new NitfValue(1024L));
-    map.put(ImageAttribute.PIXEL_VALUE_TYPE_ATTRIBUTE, new NitfValue("INTEGER"));
-    map.put(ImageAttribute.IMAGE_REPRESENTATION_ATTRIBUTE, new NitfValue("MONOCHROME"));
+    map.put(ImageAttribute.PIXEL_VALUE_TYPE_ATTRIBUTE, new NitfValue("INT"));
+    map.put(ImageAttribute.IMAGE_REPRESENTATION_ATTRIBUTE, new NitfValue("MONOCHROME", "MONO"));
     map.put(ImageAttribute.IMAGE_CATEGORY_ATTRIBUTE, new NitfValue("VISUAL", "VIS"));
     map.put(ImageAttribute.ACTUAL_BITS_PER_PIXEL_PER_BAND_ATTRIBUTE, new NitfValue(8));
-    map.put(ImageAttribute.PIXEL_JUSTIFICATION_ATTRIBUTE, new NitfValue("RIGHT"));
-    map.put(ImageAttribute.IMAGE_COORDINATE_REPRESENTATION_ATTRIBUTE, new NitfValue("GEOGRAPHIC"));
+    map.put(ImageAttribute.PIXEL_JUSTIFICATION_ATTRIBUTE, new NitfValue("R"));
+    map.put(ImageAttribute.IMAGE_COORDINATE_REPRESENTATION_ATTRIBUTE, new NitfValue("G"));
     map.put(ImageAttribute.NUMBER_OF_IMAGE_COMMENTS_ATTRIBUTE, new NitfValue(0));
     map.put(ImageAttribute.IMAGE_COMMENT_1_ATTRIBUTE, new NitfValue(null));
-    map.put(ImageAttribute.IMAGE_COMPRESSION_ATTRIBUTE, new NitfValue("NOTCOMPRESSED"));
+    map.put(ImageAttribute.IMAGE_COMPRESSION_ATTRIBUTE, new NitfValue("NOTCOMPRESSED", "NC"));
     return map;
   }
 

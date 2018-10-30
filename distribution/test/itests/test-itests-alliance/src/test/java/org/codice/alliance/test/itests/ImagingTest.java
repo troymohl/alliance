@@ -390,7 +390,7 @@ public class ImagingTest extends AbstractAllianceIntegrationTest {
     return new MetacardXmlValidator(response, id)
         .hasStringElement("media.type", "image/nitf")
         .hasStringElement("media.compression", "JPEG2000")
-        .hasStringElement(ImageAttribute.IMAGE_COMPRESSION, "JPEG2000")
+        .hasStringElement(ImageAttribute.IMAGE_COMPRESSION, "C8")
         .hasBase64Binary("thumbnail", fileNamePrefix + ".thumbnail");
   }
 

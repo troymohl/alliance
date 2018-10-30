@@ -188,6 +188,8 @@ public class NitfHeaderAttribute extends NitfAttributeImpl<NitfHeader> {
           Security.CLASSIFICATION,
           "FSCLAS",
           header -> header.getFileSecurityMetadata().getSecurityClassification().name(),
+          header ->
+              header.getFileSecurityMetadata().getSecurityClassification().getTextEquivalent(),
           new SecurityAttributes().getAttributeDescriptor(Security.CLASSIFICATION),
           FILE_SECURITY_CLASSIFICATION);
 
@@ -198,7 +200,9 @@ public class NitfHeaderAttribute extends NitfAttributeImpl<NitfHeader> {
           header ->
               NitfAttributeConverters.fipsToStandardCountryCode(
                   header.getFileSecurityMetadata().getSecurityClassificationSystem()),
-          new SecurityAttributes().getAttributeDescriptor(Security.CLASSIFICATION_SYSTEM));
+          header -> header.getFileSecurityMetadata().getSecurityClassificationSystem(),
+          new SecurityAttributes().getAttributeDescriptor(Security.CLASSIFICATION_SYSTEM),
+          FILE_CLASSIFICATON_SECURITY_SYSTEM);
 
   public static final NitfHeaderAttribute FILE_CODE_WORDS_ATTRIBUTE =
       new NitfHeaderAttribute(
@@ -221,7 +225,9 @@ public class NitfHeaderAttribute extends NitfAttributeImpl<NitfHeader> {
           Security.RELEASABILITY,
           "FSREL",
           header -> handleReleasability(header.getFileSecurityMetadata().getReleaseInstructions()),
-          new SecurityAttributes().getAttributeDescriptor(Security.RELEASABILITY));
+          header -> header.getFileSecurityMetadata().getReleaseInstructions(),
+          new SecurityAttributes().getAttributeDescriptor(Security.RELEASABILITY),
+          FILE_RELEASING_INSTRUCTIONS);
 
   public static final NitfHeaderAttribute ORIGINATORS_NAME_ATTRIBUTE =
       new NitfHeaderAttribute(
@@ -242,20 +248,6 @@ public class NitfHeaderAttribute extends NitfAttributeImpl<NitfHeader> {
   /*
    * Non-normalized attributes
    */
-
-  public static final NitfHeaderAttribute EXT_FILE_CLASSIFICATION_SECURITY_SYSTEM_ATTRIBUTE =
-      new NitfHeaderAttribute(
-          FILE_CLASSIFICATON_SECURITY_SYSTEM,
-          "FSCLSY",
-          header -> header.getFileSecurityMetadata().getSecurityClassificationSystem(),
-          BasicTypes.STRING_TYPE);
-
-  public static final NitfHeaderAttribute EXT_FILE_RELEASING_INSTRUCTIONS_ATTRIBUTE =
-      new NitfHeaderAttribute(
-          FILE_RELEASING_INSTRUCTIONS,
-          "FSREL",
-          header -> header.getFileSecurityMetadata().getReleaseInstructions(),
-          BasicTypes.STRING_TYPE);
 
   public static final NitfHeaderAttribute COMPLEXITY_LEVEL_ATTRIBUTE =
       new NitfHeaderAttribute(
@@ -372,6 +364,23 @@ public class NitfHeaderAttribute extends NitfAttributeImpl<NitfHeader> {
       Function<NitfHeader, Serializable> accessorFunction,
       AttributeType attributeType) {
     super(longName, shortName, accessorFunction, attributeType);
+    ATTRIBUTES.add(this);
+  }
+
+  private NitfHeaderAttribute(
+      final String longName,
+      final String shortName,
+      final Function<NitfHeader, Serializable> accessorFunction,
+      final Function<NitfHeader, Serializable> extAccessorFunction,
+      AttributeDescriptor attributeDescriptor,
+      String extNitfName) {
+    super(
+        longName,
+        shortName,
+        accessorFunction,
+        extAccessorFunction,
+        attributeDescriptor,
+        extNitfName);
     ATTRIBUTES.add(this);
   }
 

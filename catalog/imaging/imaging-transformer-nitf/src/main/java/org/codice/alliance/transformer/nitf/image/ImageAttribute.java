@@ -213,6 +213,7 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
           Media.ENCODING,
           "IREP",
           segment -> segment.getImageRepresentation().name(),
+          segment -> segment.getImageRepresentation().getTextEquivalent(),
           new MediaAttributes().getAttributeDescriptor(Media.ENCODING),
           IMAGE_REPRESENTATION);
 
@@ -230,6 +231,7 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
           Media.COMPRESSION,
           "IC",
           segment -> segment.getImageCompression().name(),
+          segment -> segment.getImageCompression().getTextEquivalent(),
           new MediaAttributes().getAttributeDescriptor(Media.COMPRESSION),
           IMAGE_COMPRESSION);
 
@@ -273,7 +275,7 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
       new ImageAttribute(
           IMAGE_SECURITY_CLASSIFICATION,
           "ISCLAS",
-          segment -> segment.getSecurityMetadata().getSecurityClassification().name(),
+          segment -> segment.getSecurityMetadata().getSecurityClassification().getTextEquivalent(),
           BasicTypes.STRING_TYPE);
 
   public static final ImageAttribute IMAGE_CLASSIFICATION_SECURITY_SYSTEM_ATTRIBUTE =
@@ -385,7 +387,7 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
       new ImageAttribute(
           PIXEL_VALUE_TYPE,
           "PVTYPE",
-          segment -> segment.getPixelValueType().name(),
+          segment -> segment.getPixelValueType().getTextEquivalent(),
           BasicTypes.STRING_TYPE);
 
   public static final ImageAttribute ACTUAL_BITS_PER_PIXEL_PER_BAND_ATTRIBUTE =
@@ -399,14 +401,15 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
       new ImageAttribute(
           PIXEL_JUSTIFICATION,
           "PJUST",
-          segment -> segment.getPixelJustification().name(),
+          segment -> segment.getPixelJustification().getTextEquivalent(),
           BasicTypes.STRING_TYPE);
 
   public static final ImageAttribute IMAGE_COORDINATE_REPRESENTATION_ATTRIBUTE =
       new ImageAttribute(
           IMAGE_COORDINATE_REPRESENTATION,
           "ICORDS",
-          segment -> segment.getImageCoordinatesRepresentation().name(),
+          segment ->
+              segment.getImageCoordinatesRepresentation().getTextEquivalent(segment.getFileType()),
           BasicTypes.STRING_TYPE);
 
   public static final ImageAttribute NUMBER_OF_IMAGE_COMMENTS_ATTRIBUTE =
@@ -485,7 +488,10 @@ public class ImageAttribute extends NitfAttributeImpl<ImageSegment> {
 
   public static final ImageAttribute IMAGE_MODE_ATTRIBUTE =
       new ImageAttribute(
-          IMAGE_MODE, "IMODE", segment -> segment.getImageMode().name(), BasicTypes.STRING_TYPE);
+          IMAGE_MODE,
+          "IMODE",
+          segment -> segment.getImageMode().getTextEquivalent(),
+          BasicTypes.STRING_TYPE);
 
   public static final ImageAttribute NUMBER_OF_BLOCKS_PER_ROW_ATTRIBUTE =
       new ImageAttribute(
