@@ -28,7 +28,6 @@
     <packaging>pom</packaging>
     <properties>
         <setup.folder>target/dependencies</setup.folder>
-        <opendj-embedded.app.version>1.3.3</opendj-embedded.app.version>
     </properties>
     <dependencies>
         <dependency>
