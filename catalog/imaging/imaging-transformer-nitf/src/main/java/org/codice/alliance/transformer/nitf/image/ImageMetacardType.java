@@ -26,10 +26,10 @@ public class ImageMetacardType extends AbstractNitfMetacardType {
 
   @Override
   public void initDescriptors() {
-    descriptors.addAll(getDescriptors(GraphicAttribute.values()));
-    descriptors.addAll(getDescriptors(ImageAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(LabelAttribute.values()));
-    descriptors.addAll(getDescriptors(SymbolAttribute.values()));
-    descriptors.addAll(getDescriptors(TextAttribute.values()));
+    addAll(getDescriptors(GraphicAttribute.values()));
+    addAll(getDescriptors(ImageAttribute.getAttributes()));
+    addAll(getDescriptors(LabelAttribute.values()));
+    addAll(getDescriptors(SymbolAttribute.values()));
+    addAll(getDescriptors(TextAttribute.values()));
   }
 }

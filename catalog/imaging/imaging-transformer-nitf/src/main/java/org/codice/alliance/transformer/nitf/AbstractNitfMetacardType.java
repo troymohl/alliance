@@ -66,29 +66,29 @@ public abstract class AbstractNitfMetacardType extends MetacardTypeImpl {
   }
 
   private void setDefaultDescriptors() {
-    descriptors.addAll(getDescriptors(NitfHeaderAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(AcftbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(AimidbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(CmetaaAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(CsdidaAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(CsexraAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(ExpltbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(HistoaAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(IndexedMtirpbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(IndexedPiaprdAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(MtirpbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(PiaimcAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(PiaprdAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(PiatgbAttribute.getAttributes()));
-    descriptors.addAll(getDescriptors(StdidcAttribute.getAttributes()));
-    descriptors.addAll(new CoreAttributes().getAttributeDescriptors());
-    descriptors.addAll(new AssociationsAttributes().getAttributeDescriptors());
-    descriptors.addAll(new ContactAttributes().getAttributeDescriptors());
-    descriptors.addAll(new MediaAttributes().getAttributeDescriptors());
-    descriptors.addAll(new DateTimeAttributes().getAttributeDescriptors());
-    descriptors.addAll(new LocationAttributes().getAttributeDescriptors());
-    descriptors.addAll(new ValidationAttributes().getAttributeDescriptors());
-    descriptors.addAll(new IsrAttributes().getAttributeDescriptors());
-    descriptors.addAll(new SecurityAttributes().getAttributeDescriptors());
+    addAll(getDescriptors(NitfHeaderAttribute.getAttributes()));
+    addAll(getDescriptors(AcftbAttribute.getAttributes()));
+    addAll(getDescriptors(AimidbAttribute.getAttributes()));
+    addAll(getDescriptors(CmetaaAttribute.getAttributes()));
+    addAll(getDescriptors(CsdidaAttribute.getAttributes()));
+    addAll(getDescriptors(CsexraAttribute.getAttributes()));
+    addAll(getDescriptors(ExpltbAttribute.getAttributes()));
+    addAll(getDescriptors(HistoaAttribute.getAttributes()));
+    addAll(getDescriptors(IndexedMtirpbAttribute.getAttributes()));
+    addAll(getDescriptors(IndexedPiaprdAttribute.getAttributes()));
+    addAll(getDescriptors(MtirpbAttribute.getAttributes()));
+    addAll(getDescriptors(PiaimcAttribute.getAttributes()));
+    addAll(getDescriptors(PiaprdAttribute.getAttributes()));
+    addAll(getDescriptors(PiatgbAttribute.getAttributes()));
+    addAll(getDescriptors(StdidcAttribute.getAttributes()));
+    addAll(new CoreAttributes().getAttributeDescriptors());
+    addAll(new AssociationsAttributes().getAttributeDescriptors());
+    addAll(new ContactAttributes().getAttributeDescriptors());
+    addAll(new MediaAttributes().getAttributeDescriptors());
+    addAll(new DateTimeAttributes().getAttributeDescriptors());
+    addAll(new LocationAttributes().getAttributeDescriptors());
+    addAll(new ValidationAttributes().getAttributeDescriptors());
+    addAll(new IsrAttributes().getAttributeDescriptors());
+    addAll(new SecurityAttributes().getAttributeDescriptors());
   }
 }
